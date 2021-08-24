@@ -1,0 +1,13 @@
+.connectButton {
+  height: 60px;
+  &:not(:last-child) {
+    margin-bottom: 10px;
+  }
+}
+
+.connectButtonInner {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+}

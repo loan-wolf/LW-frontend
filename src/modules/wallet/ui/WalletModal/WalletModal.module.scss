@@ -1,0 +1,16 @@
+.title {
+  margin-bottom: 20px;
+}
+
+.address {
+  margin-bottom: 20px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+
+  & > *:not(:last-child) {
+    margin-right: 10px;
+  }
+}

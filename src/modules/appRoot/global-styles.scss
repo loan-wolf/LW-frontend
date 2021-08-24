@@ -1,0 +1,116 @@
+
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+
+* {
+  min-width: 0;
+  min-height: 0;
+}
+html {
+  box-sizing: border-box;
+  overflow-y: scroll;
+}
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+body {
+  font-size: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  line-height: 1.5;
+  color: var(--colorText);
+  -webkit-text-size-adjust: 100%;
+  background-color: var(--colorBgDeep);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  width: 100%;
+  flex: 1 0 auto;
+  overflow-x: hidden;
+}
+
+html.html-scroll-lock {
+  overflow-y: scroll;
+}
+
+body.body-scroll-lock {
+  overflow: hidden;
+  position: fixed;
+}
+
+// #app {
+//   display: flex;
+//   flex: 1 0 auto;
+//   flex-direction: column;
+// }
+
+/* prettier-ignore */
+body, h1, h2, h3, h4, h5, h6, p, ol, ul {
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+  font-weight: normal;
+}
+ol,
+ul {
+  list-style: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+th,
+td {
+  padding: 0;
+  text-align: left;
+}
+textarea {
+  resize: none;
+}
+/* prettier-ignore */
+input, textarea, button, select {
+  border: 0;
+  outline: none;
+  font: inherit;
+  -webkit-font-smoothing: inherit;
+}
+button {
+  padding: 0;
+  background: none;
+}
+button:focus {
+  outline: none;
+}
+/* prettier-ignore */
+input, textarea, button, select, label, a {
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+/* prettier-ignore */
+img, embed, iframe, object, audio, video {
+  max-width: 100%;
+  height: auto;
+}
+hr {
+  margin: 30px 0;
+  height: 1px;
+  border: none;
+  background-color: var(--colorBorder);
+}
+::selection {
+  // color: #fff;
+  background-color: var(--colorUserSelect);
+}

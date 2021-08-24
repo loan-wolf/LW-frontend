@@ -1,0 +1,26 @@
+.header {
+  padding: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.network {
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.networkBulb {
+  position: relative;
+  top: 1px;
+  margin-right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+}

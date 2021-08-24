@@ -1,0 +1,18 @@
+.text {
+  &.truncateOne {
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &.truncateMany {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+  }
+
+  &.isCentered {
+    text-align: center;
+  }
+}

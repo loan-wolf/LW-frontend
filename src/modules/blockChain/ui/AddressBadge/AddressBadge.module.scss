@@ -1,0 +1,23 @@
+.addressBadge {
+  display: inline-block;
+  padding: 0 0.6em;
+  border-radius: 4px;
+  background-color: var(--colorControlDefault);
+
+  &.isClickable {
+    cursor: pointer;
+    user-select: none;
+    transition: background-color ease var(--durNorm);
+
+    &:hover {
+      background-color: var(--colorControlDefaultHover);
+      transition-duration: var(--durFast);
+    }
+
+    &:active {
+      transform: translateY(1px);
+      background-color: var(--colorControlDefaultActive);
+      transition-duration: var(--durFast);
+    }
+  }
+}
