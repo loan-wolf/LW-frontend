@@ -1,5 +1,6 @@
 .connectButton {
-  height: 60px;
+  height: 60px !important;
+
   &:not(:last-child) {
     margin-bottom: 10px;
   }
