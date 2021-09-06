@@ -6,6 +6,9 @@
     <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
     <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" charset="utf-8" type="text/javascript">
     </script>
+    <style type="text/css">
+      .inline { display: inline; border: 1px solid #ddd; padding: 9px; }
+    </style>
   </head>
   <body>
 
@@ -16,6 +19,10 @@
 
       function html(id, val) {
         document.getElementById(id).innerHTML = val;
+      }
+
+      function get(id) {
+        return document.getElementById(id).value;
       }
 
       async function createContract(title, address) {
@@ -52,7 +59,7 @@
 
       async function deposit(addr) {
         let poolContract = await createContract('LoanWolfPool', addr);
-        await poolContract.lend(100);
+        await poolContract.lend(get('depositAmount'));
       }
 
       async function allow(addr) {
@@ -62,12 +69,22 @@
 
       async function borrow(addr) {
         let poolContract = await createContract('LoanWolfPool', addr);
-        await poolContract.configureNew(accounts[0], 10, 12, 100);
+        await poolContract.configureNew(accounts[0], 10, 12, get('borrowAmount'));
       }
 
       async function borrowSubmit(addr, loanId) {
         let poolContract = await createContract('LoanWolfPool', addr);
         await poolContract.borrow(loanId);
+      }
+
+      async function repay(addr, loanId) {
+        let poolContract = await createContract('LoanWolfPool', addr);
+        await poolContract.payment(loanId, get('repayAmount'));
+      }
+
+      async function withdraw(addr) {
+        let poolContract = await createContract('LoanWolfPool', addr);
+        await poolContract.withdrawl(get('withdrawAmount'));
       }
 
       async function app() {
@@ -79,12 +96,15 @@
         const total = await testDaiContract.totalSupply();
         html('totalDAI', total.toString());
 
-        const userBalance = await testDaiContract.balanceOf(accounts[0]);
-        html('userBalance', userBalance.toString());
+        const userDai = await testDaiContract.balanceOf(accounts[0]);
+        html('userDai', userDai.toString());
 
         const pool1address = await poolFactoryContract.poolsList(0);
         let poolContract = await createContract('LoanWolfPool', pool1address);
         const symbol = await poolContract.symbol();
+
+        const userRDai = await poolContract.balanceOf(accounts[0]);
+        html('userRDai', userRDai.toString());
 
         const allowance = await testDaiContract.allowance(accounts[0], pool1address);
         const depositBalance = await poolContract.balanceOf(accounts[0]);
@@ -93,18 +113,31 @@
 
         let btn1;
         if (allowance <= 0) {
-          btn1 = `<a href="#" onclick="allow('${pool1address}')">Allow</a>`
+          btn1 = `<a href="#" onclick="allow('${pool1address}')">Allow to deposit</a>`
         } else {
-          btn1 = `<a href="#" onclick="deposit('${pool1address}')">Deposit</a>`
+          btn1 = `<div class="inline"><input type="text" id="depositAmount" size="4" value="0" /> <a href="#" onclick="deposit('${pool1address}')">Deposit</a></div>`
         }
 
-        let btn2 = `<a href="#" onclick="borrow('${pool1address}')">Borrow</a>`;
+        let btn2 = `<div class="inline"><input type="text" id="borrowAmount" size="4" value="0" /> <a href="#" onclick="borrow('${pool1address}')">Borrow</a></div>`;
 
-        html('pool1', `<a title="${pool1address}">${addrtrim(pool1address)}</a> Liquidity: ${liquidity} ${symbol} | Deposit: ${depositBalance} DAI ${btn1} ${btn2}`)
+        let btn3 = `<div class="inline"><input type="text" id="withdrawAmount" size="4" value="0" /> <a href="#" onclick="withdraw('${pool1address}')">Withdraw</a></div>`;
 
-        const loanId = await poolContract.loanIDs(accounts[0], 1);
+        html('pool1', `<a title="${pool1address}">${addrtrim(pool1address)}</a> Liquidity: ${liquidity} ${symbol} <!--Deposit: ${depositBalance} DAI--> ${btn1} ${btn2} ${btn3}`)
 
-        html('loans', `${addrtrim(loanId.toString())} <a href="#" onclick="borrowSubmit('${pool1address}', '${loanId}')">Finalize</a>`)
+        const loanId = await poolContract.loanIDs(accounts[0],0);
+
+        const finalizeBtn = `<a href="#" onclick="borrowSubmit('${pool1address}', '${loanId}')">Finalize</a>`;
+
+        let repayButton;
+        if (allowance <= 0) {
+          repayButton = `<a href="#" onclick="allow('${pool1address}')">Allow to repay</a>`
+        } else {
+          repayButton = `<div class="inline"><input type="text" id="repayAmount" size="4" value="0" /> <a href="#" onclick="repay('${pool1address}', '${loanId}')">Repay</a></div>`;
+        }
+
+        const isComplete = await poolContract.isComplete(loanId.toString());
+
+        html('loans', `${addrtrim(loanId.toString())} ${isComplete? 'Complete': 'Not complete ' + finalizeBtn + ' ' + repayButton}`)
 
       }
 
@@ -118,7 +151,8 @@
 
     <div>Connected wallet: <span id="connectedWallet"></span></div>
     <div>Total DAI: <span id="totalDAI"></span></div>
-    <div>Your DAI balance: <span id="userBalance"></span></div>
+    <div>Your DAI balance: <span id="userDai"></span></div>
+    <div>Your rDAI balance: <span id="userRDai"></span></div>
     <h4>Pools</h4>
     <div>Pool 1: <span id="pool1"></span></div>
     <h4>Loans</h4>
