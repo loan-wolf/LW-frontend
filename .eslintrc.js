@@ -104,8 +104,14 @@ module.exports = {
     {
       env,
       files: ['**/*.d.ts', '**/*.ts', '**/*.tsx'],
-      extends: ['react-app', 'plugin:import/typescript', 'prettier'],
+      extends: [
+        'react-app',
+        'plugin:import/typescript',
+        'plugin:css-modules/recommended',
+        'prettier',
+      ],
       plugins: [
+        'css-modules',
         'prettier',
         '@typescript-eslint',
         'react',
