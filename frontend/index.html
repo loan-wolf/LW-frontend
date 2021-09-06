@@ -1,0 +1,128 @@
+<html></<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" charset="utf-8" type="text/javascript">
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+
+      let provider, accounts;
+      let testDaiContract, testUsdtContract;
+
+      function html(id, val) {
+        document.getElementById(id).innerHTML = val;
+      }
+
+      async function createContract(title, address) {
+        const body = await fetch(`./${title}.json?nocache=${new Date().getTime()}`);
+        const TokenArtifact = await body.json();
+        let contract = new ethers.Contract(
+          address,
+          TokenArtifact.abi,
+          provider.getSigner(0)
+        );
+        return contract;
+      }
+
+      const onClickConnect = async () => {
+
+        try {
+          await ethereum.request({ method: 'eth_requestAccounts' });
+          accounts = await ethereum.request({ method: 'eth_accounts' });
+
+          provider = new ethers.providers.Web3Provider(window.ethereum);
+
+          app();
+
+        } catch (error) {
+          console.error(error);
+        }
+
+      }
+
+      function addrtrim(addr) {
+        const l = addr.length;
+        return addr.substr(0, 2) + '..' + addr.substr(l-3, l-1);
+      }
+
+      async function deposit(addr) {
+        let poolContract = await createContract('LoanWolfPool', addr);
+        await poolContract.lend(100);
+      }
+
+      async function allow(addr) {
+        let poolContract = await createContract('LoanWolfPool', addr);
+        await testDaiContract.approve(addr, ethers.utils.parseEther('1000'));
+      }
+
+      async function borrow(addr) {
+        let poolContract = await createContract('LoanWolfPool', addr);
+        await poolContract.configureNew(accounts[0], 10, 12, 100);
+      }
+
+      async function borrowSubmit(addr, loanId) {
+        let poolContract = await createContract('LoanWolfPool', addr);
+        await poolContract.borrow(loanId);
+      }
+
+      async function app() {
+        testDaiContract = await createContract('testDai', '0x57A9E5b84b9b9D096E97E959a73f0aBe8b05D75c');
+        testUsdtContract = await createContract('testUsdt', '0x31d146266EB08bD335F6e7090B2F9dd0D2828A3b');
+        let poolFactoryContract = await createContract('PoolFactory', '0xf4367ab359B495dC8cf22C583Df9C5323B852D9B');
+        html('connectedWallet', accounts[0]);
+
+        const total = await testDaiContract.totalSupply();
+        html('totalDAI', total.toString());
+
+        const userBalance = await testDaiContract.balanceOf(accounts[0]);
+        html('userBalance', userBalance.toString());
+
+        const pool1address = await poolFactoryContract.poolsList(0);
+        let poolContract = await createContract('LoanWolfPool', pool1address);
+        const symbol = await poolContract.symbol();
+
+        const allowance = await testDaiContract.allowance(accounts[0], pool1address);
+        const depositBalance = await poolContract.balanceOf(accounts[0]);
+
+        const liquidity = await testDaiContract.balanceOf(pool1address);
+
+        let btn1;
+        if (allowance <= 0) {
+          btn1 = `<a href="#" onclick="allow('${pool1address}')">Allow</a>`
+        } else {
+          btn1 = `<a href="#" onclick="deposit('${pool1address}')">Deposit</a>`
+        }
+
+        let btn2 = `<a href="#" onclick="borrow('${pool1address}')">Borrow</a>`;
+
+        html('pool1', `<a title="${pool1address}">${addrtrim(pool1address)}</a> Liquidity: ${liquidity} ${symbol} | Deposit: ${depositBalance} DAI ${btn1} ${btn2}`)
+
+        const loanId = await poolContract.loanIDs(accounts[0], 1);
+
+        html('loans', `${addrtrim(loanId.toString())} <a href="#" onclick="borrowSubmit('${pool1address}', '${loanId}')">Finalize</a>`)
+
+      }
+
+    ethereum.on('accountsChanged', function (accounts) {
+      onClickConnect();
+    });
+
+    onClickConnect();
+
+    </script>
+
+    <div>Connected wallet: <span id="connectedWallet"></span></div>
+    <div>Total DAI: <span id="totalDAI"></span></div>
+    <div>Your DAI balance: <span id="userBalance"></span></div>
+    <h4>Pools</h4>
+    <div>Pool 1: <span id="pool1"></span></div>
+    <h4>Loans</h4>
+    <div id="loans"></div>
+
+  </body>
+</html>
