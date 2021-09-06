@@ -68,21 +68,29 @@ export function PoolInfo({ ContractLoanWolfPool }: Props) {
   )
 
   const deposit = useCallback(() => {
-    contractLoanWolfPool.lend(100)
+    contractLoanWolfPool.lend(100, {
+      gasLimit: 500000,
+    })
   }, [contractLoanWolfPool])
 
   const allow = useCallback(() => {
-    contractTestDai.approve(poolAddress, parseEther('1000'))
+    contractTestDai.approve(poolAddress, parseEther('1000'), {
+      gasLimit: 500000,
+    })
   }, [contractTestDai, poolAddress])
 
   const borrow = useCallback(() => {
     if (!walletAddress) return
-    contractLoanWolfPool.configureNew(walletAddress, 10, 12, 100)
+    contractLoanWolfPool.configureNew(walletAddress, 10, 12, 100, {
+      gasLimit: 500000,
+    })
   }, [contractLoanWolfPool, walletAddress])
 
   const borrowSubmit = useCallback(() => {
     if (!loanId.data) return
-    contractLoanWolfPool.borrow(loanId.data)
+    contractLoanWolfPool.borrow(loanId.data, {
+      gasLimit: 500000,
+    })
   }, [contractLoanWolfPool, loanId.data])
 
   return (
