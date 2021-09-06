@@ -16,7 +16,7 @@ export type SWRResponse<Data, Error = unknown> = SWRResponseSource<
   Data,
   Error
 > & {
-  initialLoading: boolean
+  isLoading: boolean
 }
 
 const defaultConfig = {
@@ -37,10 +37,9 @@ export const useSWR = <Data = unknown, Error = unknown>(
     ...defaultConfig,
     ...config,
   })
-  const initialLoading = result.data == null && result.isValidating
   return {
     ...result,
-    initialLoading,
+    isLoading: result.data == null && result.isValidating,
   }
 }
 
@@ -53,9 +52,8 @@ export const useSWRInfinite = <Data = unknown, Error = unknown>(
     ...defaultConfig,
     ...config,
   })
-  const initialLoading = result.data == null && result.isValidating
   return {
     ...result,
-    initialLoading,
+    isLoading: result.data == null && result.isValidating,
   }
 }

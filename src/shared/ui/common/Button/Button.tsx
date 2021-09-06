@@ -1,4 +1,5 @@
 import cns from 'classnames'
+// eslint-disable-next-line css-modules/no-unused-class
 import s from './Button.module.scss'
 
 type Props = {

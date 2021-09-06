@@ -9,6 +9,8 @@ import { Text } from 'shared/ui/common/Text'
 import { Button } from 'shared/ui/common/Button'
 import { Modal, ModalProps } from 'modules/modal/ui/Modal'
 
+import { ContractTestDai } from 'modules/contracts/contracts'
+import { formatBalance } from 'modules/blockChain/utils/formatBalance'
 import s from './WalletModal.module.scss'
 
 export function WalletModal(props: ModalProps) {
@@ -16,6 +18,12 @@ export function WalletModal(props: ModalProps) {
   const { walletAddress: address } = useWalletInfo()
   const [connector] = useWalletConnectorStorage()
   const disconnect = useWalletDisconnect()
+
+  const { data: totalSupply, isLoading: isLoadingTotalSupply } =
+    ContractTestDai.useSwrWeb3('totalSupply')
+
+  const { data: daiBalance, isLoading: isLoadingDaiBalance } =
+    ContractTestDai.useSwrWeb3(address ? 'balanceOf' : null, String(address))
 
   const handleDisconnect = useCallback(() => {
     disconnect()
@@ -31,8 +39,22 @@ export function WalletModal(props: ModalProps) {
         Connected with {connector}
       </Text>
 
-      <Text size={12} className={s.address}>
+      <Text size={12} className={s.infoRow}>
+        Address:
+        <br />
         {address}
+      </Text>
+
+      <Text size={12} className={s.infoRow}>
+        Total Dai supply:
+        <br />
+        {isLoadingTotalSupply ? 'Loading...' : formatBalance(totalSupply)}
+      </Text>
+
+      <Text size={12} className={s.infoRow}>
+        Wallet Dai balance:
+        <br />
+        {isLoadingDaiBalance ? 'Loading...' : formatBalance(daiBalance)}
       </Text>
 
       <div className={s.actions}>

@@ -33,7 +33,7 @@ export function Text({
       className={cns(s.text, className, {
         [s.isCentered]: isCentered,
         [s.truncateOne]: isTruncateOne,
-        [s.truncateOne]: isTruncateMany,
+        [s.truncateMany]: isTruncateMany,
       })}
     >
       {children}

@@ -7,7 +7,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "gh-pages -d build"
+    "deploy": "npm run build && gh-pages -d build",
+    "typechain": "typechain --target=ethers-v5 --out-dir ./src/generated './abi/*.json'",
+    "postinstall": "husky install && yarn typechain"
   },
   "browserslist": {
     "production": [

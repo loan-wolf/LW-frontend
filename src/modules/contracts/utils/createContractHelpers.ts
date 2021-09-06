@@ -1,10 +1,13 @@
-import type { Signer, providers } from 'ethers'
-import { JsonRpcProvider } from '@ethersproject/providers'
-import { getRpcUrl } from 'modules/blockChain/utils/getRpcUrls'
 import { useWeb3React } from '@web3-react/core'
 import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
 import { useGlobalMemo } from 'shared/hooks/useGlobalMemo'
+import { useContractSwr } from '../hooks/useContractSwr'
+
+import type { Signer, providers } from 'ethers'
+import { JsonRpcProvider } from '@ethersproject/providers'
+import { getRpcUrl } from 'modules/blockChain/utils/getRpcUrls'
 import { Chains, getChainName } from 'modules/blockChain/chains'
+import { FilterMethods } from 'shared/utils/utilTypes'
 
 type Library = Signer | providers.Provider
 
@@ -13,7 +16,7 @@ interface Factory {
   connect(address: string, library: Library): unknown
 }
 
-type Address = {
+export type Address = {
   [key in Chains]?: string
 }
 
@@ -44,7 +47,7 @@ export function createContractHelpers<F extends Factory>({
     return factory.connect(address[chainId] as string, library) as Instance
   }
 
-  function useRpc() {
+  function useContractRpc() {
     const chainId = useCurrentChain()
 
     return useGlobalMemo(
@@ -57,7 +60,7 @@ export function createContractHelpers<F extends Factory>({
     )
   }
 
-  function useWeb3() {
+  function useContractWeb3() {
     const { library, active, account } = useWeb3React()
     const chainId = useCurrentChain()
 
@@ -76,11 +79,28 @@ export function createContractHelpers<F extends Factory>({
     )
   }
 
+  const getUseSwr = function (type: 'web3' | 'rpc') {
+    return function <M extends FilterMethods<Instance>>(
+      method: M | null,
+      ...params: Parameters<Instance[M]>
+    ) {
+      const contractInstance =
+        type === 'web3' ? useContractWeb3() : useContractRpc()
+      const data = useContractSwr(contractInstance, method, ...params)
+      return data
+    }
+  }
+
+  const useSwrWeb3 = getUseSwr('web3')
+  const useSwrRpc = getUseSwr('rpc')
+
   return {
     address,
     factory,
     connect,
-    useRpc,
-    useWeb3,
+    useContractRpc,
+    useContractWeb3,
+    useSwrWeb3,
+    useSwrRpc,
   }
 }

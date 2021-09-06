@@ -1,6 +1,7 @@
 import { StrictMode, useMemo, memo } from 'react'
 import { useWalletAutoConnect } from 'modules/wallet/hooks/useWalletAutoConnect'
 import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
+import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
 
 import { PageMain } from 'pages/PageMain'
 import { ContentBox } from 'shared/ui/layout/ContentBox'
@@ -20,14 +21,27 @@ function App() {
     () => SUPPORTED_CHAINS.includes(chainId),
     [chainId],
   )
+  const { isWalletConnected } = useWalletInfo()
+
+  if (!isChainSupported) {
+    return (
+      <PageLayout>
+        <ContentBox>Chain not supported</ContentBox>
+      </PageLayout>
+    )
+  }
+
+  if (!isWalletConnected) {
+    return (
+      <PageLayout>
+        <ContentBox>Wallet is not connected</ContentBox>
+      </PageLayout>
+    )
+  }
 
   return (
     <PageLayout>
-      {isChainSupported ? (
-        <PageMain />
-      ) : (
-        <ContentBox>Chain not supported</ContentBox>
-      )}
+      <PageMain />
     </PageLayout>
   )
 }

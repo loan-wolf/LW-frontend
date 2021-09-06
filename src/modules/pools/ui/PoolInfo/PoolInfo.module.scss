@@ -1,0 +1,21 @@
+.row {
+  margin-bottom: 20px;
+}
+
+.rowTitle {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.rowText {
+  font-size: 16px;
+}
+
+.actions {
+  display: flex;
+
+  & > *:not(:last-child) {
+    margin-right: 10px;
+  }
+}
