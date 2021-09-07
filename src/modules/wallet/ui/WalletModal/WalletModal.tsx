@@ -19,11 +19,11 @@ export function WalletModal(props: ModalProps) {
   const [connector] = useWalletConnectorStorage()
   const disconnect = useWalletDisconnect()
 
-  const { data: totalSupply, isLoading: isLoadingTotalSupply } =
-    ContractTestDai.useSwrWeb3('totalSupply')
-
-  const { data: daiBalance, isLoading: isLoadingDaiBalance } =
-    ContractTestDai.useSwrWeb3(address ? 'balanceOf' : null, String(address))
+  const totalSupply = ContractTestDai.useSwrWeb3('totalSupply')
+  const daiBalance = ContractTestDai.useSwrWeb3(
+    address ? 'balanceOf' : null,
+    String(address),
+  )
 
   const handleDisconnect = useCallback(() => {
     disconnect()
@@ -48,13 +48,13 @@ export function WalletModal(props: ModalProps) {
       <Text size={12} className={s.infoRow}>
         Total Dai supply:
         <br />
-        {isLoadingTotalSupply ? 'Loading...' : formatBalance(totalSupply)}
+        {totalSupply.isLoading ? 'Loading...' : formatBalance(totalSupply.data)}
       </Text>
 
       <Text size={12} className={s.infoRow}>
         Wallet Dai balance:
         <br />
-        {isLoadingDaiBalance ? 'Loading...' : formatBalance(daiBalance)}
+        {daiBalance.isLoading ? 'Loading...' : formatBalance(daiBalance.data)}
       </Text>
 
       <div className={s.actions}>

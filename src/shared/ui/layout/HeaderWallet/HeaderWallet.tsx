@@ -9,18 +9,20 @@ import s from './HeaderWallet.module.scss'
 
 export function HeaderWallet() {
   const { isWalletConnected, walletAddress } = useWalletInfo()
-  const openWalletModal = useWalletModal()
-  const openConnectWalletModal = useConnectWalletModal()
+  const walletModal = useWalletModal()
+  const connectWalletModal = useConnectWalletModal()
 
   if (!isWalletConnected) {
-    return <Button onClick={openConnectWalletModal} children="Connect" />
+    return (
+      <Button onClick={() => connectWalletModal.open({})} children="Connect" />
+    )
   }
 
   return (
     <AddressBadge
       symbols={4}
       address={walletAddress!}
-      onClick={openWalletModal}
+      onClick={() => walletModal.open({})}
       className={s.badge}
     />
   )

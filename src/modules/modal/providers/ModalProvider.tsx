@@ -2,10 +2,11 @@ import { memo, useMemo, useCallback, createContext, useRef } from 'react'
 import { useUpdate } from 'react-use'
 import type { ModalProps } from '../ui/Modal'
 
-export type ModalComponentType = React.ComponentType<ModalProps>
+export type ModalComponentType<P> = React.ComponentType<ModalProps & P>
 
 type ModalContextValue = {
-  openModal: (modal: ModalComponentType) => void
+  openModal: <P>(modal: ModalComponentType<P>, props: P) => void
+  closeModal: <P>(modal: ModalComponentType<P>) => void
 }
 
 export const modalContext = createContext({} as ModalContextValue)
@@ -15,21 +16,29 @@ type Props = {
 }
 
 function ModalProviderRaw({ children }: Props) {
-  const stateRef = useRef(null as ModalComponentType | null)
   const update = useUpdate()
 
+  const stateRef = useRef<{
+    modal: React.ComponentType<any>
+    props: any
+  } | null>(null)
+
   const openModal = useCallback(
-    (modal: ModalComponentType) => {
-      stateRef.current = modal
+    function <P>(modal: ModalComponentType<P>, props: P) {
+      stateRef.current = { modal, props }
       update()
     },
     [update],
   )
 
-  const closeModal = useCallback(() => {
-    stateRef.current = null
-    update()
-  }, [update])
+  const closeModal = useCallback(
+    function <P>(modal?: ModalComponentType<P>) {
+      if (modal && modal !== stateRef.current?.modal) return
+      stateRef.current = null
+      update()
+    },
+    [update],
+  )
 
   const context = useMemo(
     () => ({
@@ -42,7 +51,12 @@ function ModalProviderRaw({ children }: Props) {
   return (
     <modalContext.Provider value={context}>
       {children}
-      {stateRef.current && <stateRef.current onClose={closeModal} />}
+      {stateRef.current && (
+        <stateRef.current.modal
+          onClose={closeModal}
+          {...stateRef.current.props}
+        />
+      )}
     </modalContext.Provider>
   )
 }

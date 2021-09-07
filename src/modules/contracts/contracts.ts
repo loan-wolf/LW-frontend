@@ -22,3 +22,7 @@ export const getContractLoanWolfPool = (address: Address) =>
     factory: generated.LoanWolfPool__factory,
     address,
   })
+
+export type ContractLoanWolfPoolType = ReturnType<
+  typeof getContractLoanWolfPool
+>

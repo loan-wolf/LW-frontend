@@ -1,136 +1,150 @@
-import { identity } from 'lodash'
 import { parseEther } from 'ethers/lib/utils'
 
 import { useCallback } from 'react'
 import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
+import { usePropmptModal } from 'modules/modal/ui/PromptModal/usePropmptModal'
 
 import { Button } from 'shared/ui/common/Button'
+import { ButtonsRow } from 'shared/ui/common/ButtonsRow'
+import { PoolDataRow } from '../PoolDataRow'
+import { PoolLoan } from '../PoolLoan'
 
 import {
   ContractTestDai,
-  getContractLoanWolfPool,
+  ContractLoanWolfPoolType,
 } from 'modules/contracts/contracts'
 import { formatBalance } from 'modules/blockChain/utils/formatBalance'
-import type { SWRResponse } from 'modules/network/hooks/useSwr'
-
-import s from './PoolInfo.module.scss'
-
-type RowProps<D> = {
-  title?: React.ReactNode
-  data: SWRResponse<D>
-  render?: (d?: D) => React.ReactNode
-}
-
-function Row<D>({ title, data, render = identity }: RowProps<D>) {
-  return (
-    <div className={s.row}>
-      <div className={s.rowTitle}>{title}</div>
-      <div className={s.rowText}>
-        {data.isLoading
-          ? 'Loading...'
-          : data.error
-          ? 'Error'
-          : render(data.data)}
-      </div>
-    </div>
-  )
-}
 
 type Props = {
-  ContractLoanWolfPool: ReturnType<typeof getContractLoanWolfPool>
+  ContractLoanWolfPool: ContractLoanWolfPoolType
 }
 
 export function PoolInfo({ ContractLoanWolfPool }: Props) {
   const { walletAddress } = useWalletInfo()
+  const userAddress = String(walletAddress)
+  const promptModal = usePropmptModal()
+
   const contractLoanWolfPool = ContractLoanWolfPool.useContractWeb3()
   const contractTestDai = ContractTestDai.useContractWeb3()
   const poolAddress = contractLoanWolfPool.address
 
   const symbol = ContractLoanWolfPool.useSwrWeb3('symbol')
-
   const allowance = ContractTestDai.useSwrWeb3(
     'allowance',
-    String(walletAddress),
+    userAddress,
     poolAddress,
   )
-
   const liquidity = ContractLoanWolfPool.useSwrWeb3('balanceOf', poolAddress)
-
   const depositBalance = ContractLoanWolfPool.useSwrWeb3(
     'balanceOf',
-    String(walletAddress),
+    userAddress,
   )
+  const loanId = ContractLoanWolfPool.useSwrWeb3('loanIDs', userAddress, 0)
+  const userRDai = ContractLoanWolfPool.useSwrWeb3('balanceOf', userAddress)
 
-  const loanId = ContractLoanWolfPool.useSwrWeb3(
-    'loanIDs',
-    String(walletAddress),
-    1,
-  )
-
-  const deposit = useCallback(() => {
-    contractLoanWolfPool.lend(100, {
-      gasLimit: 500000,
+  // Deposit
+  const handleDeposit = useCallback(() => {
+    promptModal.open({
+      title: 'Enter deposit amount',
+      onSubmit: value => {
+        contractLoanWolfPool.lend(Number(value), {
+          gasLimit: 500000,
+        })
+        promptModal.close()
+      },
     })
-  }, [contractLoanWolfPool])
+  }, [promptModal, contractLoanWolfPool])
 
-  const allow = useCallback(() => {
-    contractTestDai.approve(poolAddress, parseEther('1000'), {
-      gasLimit: 500000,
+  // Allow
+  const handleAllow = useCallback(() => {
+    promptModal.open({
+      title: 'Enter allowance amount',
+      onSubmit: value => {
+        contractTestDai.approve(poolAddress, parseEther(value), {
+          gasLimit: 500000,
+        })
+        promptModal.close()
+      },
     })
-  }, [contractTestDai, poolAddress])
+  }, [contractTestDai, promptModal, poolAddress])
 
-  const borrow = useCallback(() => {
-    if (!walletAddress) return
-    contractLoanWolfPool.configureNew(walletAddress, 10, 12, 100, {
-      gasLimit: 500000,
+  // Borrow
+  const handleBorrow = useCallback(() => {
+    promptModal.open({
+      title: 'Enter allowance amount',
+      onSubmit: value => {
+        contractLoanWolfPool.configureNew(userAddress, 10, 12, Number(value), {
+          gasLimit: 500000,
+        })
+        promptModal.close()
+      },
     })
-  }, [contractLoanWolfPool, walletAddress])
+  }, [userAddress, promptModal, contractLoanWolfPool])
 
-  const borrowSubmit = useCallback(() => {
-    if (!loanId.data) return
-    contractLoanWolfPool.borrow(loanId.data, {
-      gasLimit: 500000,
+  // Withdraw
+  const handleWithdraw = useCallback(() => {
+    promptModal.open({
+      title: 'Enter withdraw amount',
+      onSubmit: value => {
+        contractLoanWolfPool.withdrawl(Number(value), {
+          gasLimit: 500000,
+        })
+        promptModal.close()
+      },
     })
-  }, [contractLoanWolfPool, loanId.data])
+  }, [contractLoanWolfPool, promptModal])
 
   return (
     <div>
-      <Row title="Symbol" data={symbol} />
+      <PoolDataRow title="Symbol" data={symbol} />
 
-      <Row title="Allowance" data={allowance} render={formatBalance} />
+      <PoolDataRow title="Allowance" data={allowance} render={formatBalance} />
 
-      <Row title="Liquidity" data={liquidity} render={formatBalance} />
+      <PoolDataRow title="Liquidity" data={liquidity} render={formatBalance} />
 
-      <Row
+      <PoolDataRow
         title="Deposit balance"
         data={depositBalance}
         render={formatBalance}
       />
 
-      <Row
-        title="Loan id"
-        data={loanId}
-        render={id => (
-          <>
-            <span>{id}</span>
-            <Button onClick={borrowSubmit}>Finalize</Button>
-          </>
-        )}
+      <PoolDataRow
+        title="User rDai balance"
+        data={userRDai}
+        render={formatBalance}
       />
 
-      <div className={s.actions}>
+      <PoolDataRow
+        title="Loan id"
+        data={loanId}
+        render={id =>
+          id !== undefined &&
+          allowance.data && (
+            <PoolLoan
+              ContractLoanWolfPool={ContractLoanWolfPool}
+              loanId={id}
+              allowance={allowance.data}
+              onClickAllow={handleAllow}
+            />
+          )
+        }
+      />
+
+      <ButtonsRow>
         {!allowance.isLoading && allowance.data && (
           <>
             {allowance.data.isZero() ? (
-              <Button onClick={allow}>Allow</Button>
+              <Button onClick={handleAllow}>Allow</Button>
             ) : (
-              <Button onClick={deposit}>Deposit</Button>
+              <Button onClick={handleDeposit}>Deposit</Button>
             )}
           </>
         )}
 
-        <Button onClick={borrow}>Borrow</Button>
-      </div>
+        <Button onClick={handleBorrow}>Borrow</Button>
+
+        <Button onClick={handleWithdraw}>Withdraw</Button>
+      </ButtonsRow>
     </div>
   )
 }
