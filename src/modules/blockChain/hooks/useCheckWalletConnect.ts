@@ -4,13 +4,13 @@ import { useConnectWalletModal } from 'modules/wallet/ui/ConnectWalletModal'
 
 export function useCheckWalletConnect() {
   const { isWalletConnected } = useWalletInfo()
-  const openConnectWalletModal = useConnectWalletModal()
+  const сonnectWalletModal = useConnectWalletModal()
   const checkWalletConnect = useCallback(() => {
     if (!isWalletConnected) {
-      openConnectWalletModal()
+      сonnectWalletModal.open({})
       return false
     }
     return true
-  }, [isWalletConnected, openConnectWalletModal])
+  }, [isWalletConnected, сonnectWalletModal])
   return checkWalletConnect
 }
