@@ -48,12 +48,14 @@ function ModalProviderRaw({ children }: Props) {
     [openModal, closeModal],
   )
 
+  const handleClose = useCallback(() => closeModal(), [closeModal])
+
   return (
     <modalContext.Provider value={context}>
       {children}
       {stateRef.current && (
         <stateRef.current.modal
-          onClose={closeModal}
+          onClose={handleClose}
           {...stateRef.current.props}
         />
       )}
