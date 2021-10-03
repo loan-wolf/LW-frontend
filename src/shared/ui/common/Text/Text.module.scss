@@ -15,4 +15,8 @@
   &.isCentered {
     text-align: center;
   }
+
+  &.isUppercased {
+    text-transform: uppercase;
+  }
 }

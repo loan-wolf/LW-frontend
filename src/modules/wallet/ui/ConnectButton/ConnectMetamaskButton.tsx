@@ -3,7 +3,7 @@ import { useWalletConnect } from '../../hooks/useWalletConnect'
 import { useWalletConnectors } from '../../hooks/useWalletConnectors'
 import { ConnectButton } from './ConnectButton'
 import { ConnectWalletButtonProps } from './types'
-import iconUrl from 'assets/metamask.svg'
+import { ReactComponent as MetamaskSVG } from 'assets/metamask.svg'
 import { openWindow } from 'shared/utils/openWindow'
 import { isClientSide } from 'shared/utils/isClientSide'
 
@@ -32,7 +32,7 @@ export function ConnectMetamaskButton(props: ConnectWalletButtonProps) {
   return (
     <ConnectButton
       {...rest}
-      iconSrc={iconUrl}
+      icon={<MetamaskSVG />}
       onClick={handleConnect}
       children="Metamask"
     />

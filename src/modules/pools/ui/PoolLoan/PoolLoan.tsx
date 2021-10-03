@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { usePropmptModal } from 'modules/modal/ui/PromptModal/usePropmptModal'
 
-import { Button } from 'shared/ui/common/Button'
+import { Button } from 'shared/ui/controls/Button'
 import { ButtonsRow } from 'shared/ui/common/ButtonsRow'
 
 import type { BigNumber } from 'ethers'
@@ -20,7 +20,6 @@ export function PoolLoan({
   loanId,
   onClickAllow,
 }: Props) {
-  const promptModal = usePropmptModal()
   const contractLoanWolfPool = ContractLoanWolfPool.useContractWeb3()
 
   const isComplete = ContractLoanWolfPool.useSwrWeb3('isComplete', loanId)
@@ -31,6 +30,8 @@ export function PoolLoan({
       gasLimit: 500000,
     })
   }, [contractLoanWolfPool, loanId])
+
+  const promptModal = usePropmptModal()
 
   // Repay
   const handleRepay = useCallback(() => {

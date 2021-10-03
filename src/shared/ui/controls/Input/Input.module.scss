@@ -1,0 +1,57 @@
+@import '~shared/styles/index.global.scss';
+
+.wrap {
+  position: relative;
+}
+
+.placeholder {
+  @include inputPlaceholderFloating();
+
+  &.isMoved {
+    @include inputPlaceholderFloated();
+  }
+}
+
+.field {
+  @include inputBase();
+  display: block;
+  padding: 20px 24px 0;
+  width: 100%;
+
+  &:not(.isTextarea) {
+    height: 60px;
+  }
+
+  &.isTextarea {
+    resize: none;
+    min-height: 60px;
+    line-height: 20px;
+    padding-top: 9px;
+    padding-bottom: 9px;
+  }
+
+  &:hover {
+    @include inputHover();
+  }
+
+  &:focus {
+    @include inputFocus();
+  }
+
+  &.isError {
+    @include inputError();
+    padding-right: 40px;
+
+    &:focus {
+      @include inputErrorFocus();
+    }
+  }
+
+  &:disabled {
+    @include inputDisabled();
+  }
+
+  &.withFloatingIcon {
+    padding-left: 38px;
+  }
+}

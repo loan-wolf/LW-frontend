@@ -1,5 +1,7 @@
 import { Chains, parseChainId } from 'modules/blockChain/chains'
 
+export const BASE_URL = process.env.PUBLIC_URL
+
 export const API_PATH = process.env.REACT_APP_API_PATH
 
 export const DEFAULT_CHAIN: Chains = parseChainId(

@@ -3,7 +3,7 @@ import { useWalletConnect } from '../../hooks/useWalletConnect'
 import { useWalletConnectors } from '../../hooks/useWalletConnectors'
 import { ConnectButton } from './ConnectButton'
 import { ConnectWalletButtonProps } from './types'
-import iconUrl from 'assets/walletconnect.svg'
+import { ReactComponent as WalletConnectSVG } from 'assets/walletconnect.svg'
 
 export function ConnectWalletConnectButton(props: ConnectWalletButtonProps) {
   const { onConnect, ...rest } = props
@@ -22,7 +22,7 @@ export function ConnectWalletConnectButton(props: ConnectWalletButtonProps) {
   return (
     <ConnectButton
       {...rest}
-      iconSrc={iconUrl}
+      icon={<WalletConnectSVG />}
       onClick={handleConnect}
       children="WalletConnect"
     />

@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react'
 import { noop } from 'lodash/fp'
 import { ThemesEnum, THEME_DEFAULT } from 'modules/themes/constants'
-import { getThemeColors } from 'modules/themes/themeColors'
+import { getThemeColors } from 'modules/themes/themeVars'
 import {
   getLSTheme,
   setLSTheme,

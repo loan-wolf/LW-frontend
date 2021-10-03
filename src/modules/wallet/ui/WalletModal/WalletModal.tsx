@@ -6,7 +6,7 @@ import { useWalletConnectorStorage } from 'modules/wallet/hooks/useWalletConnect
 import { useCopyToClipboard } from 'shared/hooks/useCopyToClipboard'
 
 import { Text } from 'shared/ui/common/Text'
-import { Button } from 'shared/ui/common/Button'
+import { Button } from 'shared/ui/controls/Button'
 import { Modal, ModalProps } from 'modules/modal/ui/Modal'
 
 import { ContractTestDai } from 'modules/contracts/contracts'

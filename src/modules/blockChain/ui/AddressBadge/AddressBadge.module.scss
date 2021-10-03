@@ -2,6 +2,7 @@
   display: inline-block;
   padding: 0 0.6em;
   border-radius: 4px;
+  color: var(--colorTextContrast);
   background-color: var(--colorControlDefault);
 
   &.isClickable {

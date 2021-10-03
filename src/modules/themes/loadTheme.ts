@@ -1,7 +1,7 @@
 import { flow, forEach, toPairs } from 'lodash/fp'
 import { isClientSide } from 'shared/utils/isClientSide'
 import { ThemesEnum, THEME_DEFAULT } from './constants'
-import { getThemeColors } from './themeColors'
+import { getThemeColors } from './themeVars'
 import { LS_PREFIX } from 'config'
 
 const LS_KEY_THEME = `${LS_PREFIX}_THEME`

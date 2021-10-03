@@ -4,7 +4,7 @@ import { useCallback } from 'react'
 import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
 import { usePropmptModal } from 'modules/modal/ui/PromptModal/usePropmptModal'
 
-import { Button } from 'shared/ui/common/Button'
+import { Button } from 'shared/ui/controls/Button'
 import { ButtonsRow } from 'shared/ui/common/ButtonsRow'
 import { PoolDataRow } from '../PoolDataRow'
 import { PoolLoan } from '../PoolLoan'

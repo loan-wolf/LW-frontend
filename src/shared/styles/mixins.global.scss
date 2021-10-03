@@ -1,0 +1,52 @@
+@mixin reset-button {
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  font: inherit;
+  display: inline-block;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+@mixin scrollbar-style($bar, $bg) {
+  scrollbar-color: $bar $bg;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-track {
+    width: 0;
+    overflow: overlay;
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-style: solid;
+    border-color: $bar;
+    border-radius: 2px;
+  }
+}
+
+@mixin iteratePropsMap($prop, $cssProp, $propsMap, $val: '') {
+  @each $propName, $propValue in $propsMap {
+    &.#{$prop}--#{$propName} {
+      #{$cssProp}: #{$propValue}#{$val};
+    }
+  }
+}
+
+@mixin iteratePropsArr($propName, $cssProp, $propsArr, $val: '') {
+  @each $propValue in $propsArr {
+    &.#{$propName}--#{$propValue} {
+      #{$cssProp}: #{$propValue}#{$val};
+    }
+  }
+}

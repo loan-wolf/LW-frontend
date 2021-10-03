@@ -1,5 +1,5 @@
 export * from './constants'
 export * from './loadTheme'
-export * from './themeColors'
+export * from './themeVars'
 export * from './ThemeProvider'
 export * from './useTheme'

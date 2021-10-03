@@ -1,0 +1,45 @@
+.drawerLogo {
+  display: flex;
+  margin-bottom: 160px;
+  height: 50px;
+  align-items: center;
+
+  & svg {
+    display: block;
+  }
+}
+
+.drawerLink {
+  display: flex;
+  margin-bottom: 24px;
+  text-decoration: none;
+  color: var(--colorTextSecondary);
+  user-select: none;
+  font-size: 16px;
+  font-weight: 500;
+  width: fit-content;
+  transition: color ease var(--durNorm);
+
+  &:hover {
+    transition-duration: var(--durFast);
+  }
+
+  &.isActive {
+    color: var(--colorTextActive);
+
+    & .linkIcon svg {
+      fill: var(--colorTextActive);
+    }
+  }
+}
+
+.linkIcon {
+  flex: 0 0 auto;
+  margin-right: 24px;
+
+  & svg {
+    display: block;
+    fill: var(--colorTextSecondary);
+    transition: fill ease var(--durNorm);
+  }
+}

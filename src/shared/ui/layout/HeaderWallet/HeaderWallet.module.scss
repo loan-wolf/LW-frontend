@@ -1,7 +1,20 @@
-.badge {
-  height: 40px;
+.wrap {
   display: flex;
   align-items: center;
-  font-size: 14px;
-  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+}
+
+.address {
+  margin-right: 10px;
+}
+
+.badge {
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 16px;
+  border: 1px solid var(--colorControlBorder);
+  overflow: hidden;
+  cursor: pointer;
 }

@@ -17,12 +17,17 @@ export function ConnectWalletModal(props: Props) {
   }
 
   return (
-    <Modal {...props} width={360}>
-      <Text size={16} isCentered className={s.title}>
-        Connect with:
+    <Modal {...props}>
+      <Text size={44} weight={700} isUppercased isCentered className={s.title}>
+        Connect with
       </Text>
-      <ConnectMetamaskButton {...common} />
-      <ConnectWalletConnectButton {...common} />
+      <Text size={20} weight={400} isCentered className={s.subtitle}>
+        To make transactions you need connect Wallet first
+      </Text>
+      <div className={s.connectors}>
+        <ConnectMetamaskButton {...common} />
+        <ConnectWalletConnectButton {...common} />
+      </div>
     </Modal>
   )
 }

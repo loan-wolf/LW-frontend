@@ -1,0 +1,78 @@
+@mixin inputPlaceholder($color) {
+  &::placeholder {
+    color: $color;
+  }
+
+  &:-ms-input-placeholder {
+    color: $color;
+  }
+
+  &::-ms-input-placeholder {
+    color: $color;
+  }
+
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    transition: background-color 9999999s ease-in-out 0s, color 5000s ease-in-out 0s;
+  }
+}
+
+@mixin inputBase() {
+  color: var(--colorText);
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 16px;
+  border: 1px solid var(--colorInputBorder);
+  background-color: var(--colorInputBg);
+  transition: border-color ease var(--durNorm), box-shadow ease var(--durNorm);
+  @include inputPlaceholder(var(--colorInputPlaceholder));
+}
+
+@mixin inputHover() {
+  border-color: var(--colorInputBorderHover);
+  transition-duration: var(--durFast);
+}
+
+@mixin inputFocus() {
+  outline: none;
+  border-color: var(--colorInputBorderFocus);
+  box-shadow: 0 0 0 1px var(--colorInputBorderFocus);
+  transition-duration: var(--durFast);
+}
+
+@mixin inputError() {
+  border-color: var(--colorInputBorderError);
+}
+
+@mixin inputErrorFocus() {
+  border-color: var(--colorInputBorderError);
+  box-shadow: 0 0 0 1px var(--colorInputBorderError);
+}
+
+@mixin inputDisabled() {
+  color: var(--colorInputTextDisabled);
+  border-color: var(--colorInputBorderDisabled);
+  @include inputPlaceholder(var(--colorInputPlaceholderDisabled));
+}
+
+@mixin inputPlaceholderFloating() {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 24px;
+  height: 100%;
+  pointer-events: none;
+  font-size: 16px;
+  font-weight: 500;
+  user-select: none;
+  color: var(--colorInputPlaceholder);
+  transform-origin: top left;
+  transition: transform var(--easeOutCubic) var(--durFast);
+}
+
+@mixin inputPlaceholderFloated() {
+  transform: translate(0, -5px) scale(0.75);
+}

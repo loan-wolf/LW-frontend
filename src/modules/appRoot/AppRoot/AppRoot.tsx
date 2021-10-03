@@ -1,18 +1,21 @@
 import { StrictMode, useMemo, memo } from 'react'
 import { useWalletAutoConnect } from 'modules/wallet/hooks/useWalletAutoConnect'
 import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
-import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
+// import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
 
-import { PageMain } from 'pages/PageMain'
+import { BrowserRouter } from 'react-router-dom'
+
+import { RouterRoot } from 'modules/router/ui/RouterRoot'
 import { ContentBox } from 'shared/ui/layout/ContentBox'
-import { PageLayout } from 'shared/ui/layout/PageLayout'
 import { Web3AppProvider } from 'modules/blockChain/providers/web3Provider'
 import { WalletConnectorsProvider } from 'modules/wallet/providers/walletConnectorsProvider'
 import { ThemeProvider } from 'modules/themes/ThemeProvider'
 import { ModalProvider } from 'modules/modal/providers/ModalProvider'
+// import { HeaderWallet } from 'shared/ui/layout/HeaderWallet'
+import 'modules/appRoot/fonts.scss'
 import 'modules/appRoot/global-styles.scss'
 
-import { SUPPORTED_CHAINS } from 'config'
+import { BASE_URL, SUPPORTED_CHAINS } from 'config'
 
 function App() {
   useWalletAutoConnect()
@@ -21,29 +24,26 @@ function App() {
     () => SUPPORTED_CHAINS.includes(chainId),
     [chainId],
   )
-  const { isWalletConnected } = useWalletInfo()
+  // const { isWalletConnected } = useWalletInfo()
 
   if (!isChainSupported) {
     return (
-      <PageLayout>
+      <>
         <ContentBox>Chain not supported</ContentBox>
-      </PageLayout>
+      </>
     )
   }
 
-  if (!isWalletConnected) {
-    return (
-      <PageLayout>
-        <ContentBox>Wallet is not connected</ContentBox>
-      </PageLayout>
-    )
-  }
+  // if (!isWalletConnected) {
+  //   return (
+  //     <>
+  //       <ContentBox>Wallet is not connected</ContentBox>
+  //       <HeaderWallet />
+  //     </>
+  //   )
+  // }
 
-  return (
-    <PageLayout>
-      <PageMain />
-    </PageLayout>
-  )
+  return <RouterRoot />
 }
 
 const AppMemoized = memo(App)
@@ -54,9 +54,11 @@ export function AppRoot() {
       <Web3AppProvider>
         <WalletConnectorsProvider>
           <ThemeProvider>
-            <ModalProvider>
-              <AppMemoized />
-            </ModalProvider>
+            <BrowserRouter basename={BASE_URL}>
+              <ModalProvider>
+                <AppMemoized />
+              </ModalProvider>
+            </BrowserRouter>
           </ThemeProvider>
         </WalletConnectorsProvider>
       </Web3AppProvider>

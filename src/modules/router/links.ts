@@ -1,0 +1,6 @@
+export const home = '/'
+export const markets = '/app/markets'
+export const deposit = '/app/deposit'
+export const borrow = '/app/borrow'
+export const dashboard = '/app/dashboard'
+export const analytics = '/app/analytics'

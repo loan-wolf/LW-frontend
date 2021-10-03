@@ -1,0 +1,93 @@
+@import '~shared/styles/index.global.scss';
+
+.root {
+  position: relative;
+}
+
+.placeholder {
+  @include inputPlaceholderFloating();
+
+  &.isMoved {
+    @include inputPlaceholderFloated();
+  }
+}
+
+.box {
+  @include inputBase();
+  height: 60px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 20px 24px 0;
+  cursor: pointer;
+  user-select: none;
+
+  &:hover {
+    @include inputHover();
+  }
+
+  &.isFocused {
+    @include inputFocus();
+  }
+
+  &.isError {
+    @include inputError();
+
+    &.isFocused {
+      @include inputErrorFocus();
+    }
+  }
+
+  &.withFloatingIcon {
+    padding-left: 38px;
+  }
+}
+
+.placeholder {
+  color: var(--colorInputPlaceholder);
+}
+
+.input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+.optionIcon {
+  margin-right: 10px;
+  margin-left: auto;
+  position: relative;
+  top: -10px;
+
+  svg {
+    display: block;
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.arrowWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 38px;
+}
+
+.arrow {
+  display: block;
+  fill: var(--colorInputPlaceholder);
+  transition: transform var(--easeOutBack) var(--durNorm);
+
+  .isFocused & {
+    transform: rotate(180deg);
+  }
+}

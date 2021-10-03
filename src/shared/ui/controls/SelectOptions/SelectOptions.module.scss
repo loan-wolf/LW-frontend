@@ -1,0 +1,84 @@
+@import '~shared/styles/index.global.scss';
+
+.optionsWrapper {
+  z-index: 1;
+  position: absolute;
+  left: 0;
+  top: calc(100% + 5px);
+  width: 100%;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid var(--colorInputBorder);
+  background-color: var(--colorInputBg);
+  animation: optionsAppear 0.15s var(--easeOutCubic) 0s 1;
+
+  :global(.theme-light) & {
+    box-shadow: 0 10px 20px 0 rgba(0, 129, 204, 0.1);
+  }
+}
+
+.options {
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+  max-height: 340px;
+  @include scrollbar-style(var(--colorInputBorder), var(--colorInputBg));
+}
+
+@keyframes optionsAppear {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  height: 60px;
+  padding: 0 24px;
+  border: 1px solid var(--colorInputBg);
+  user-select: none;
+  cursor: pointer;
+  transition: background-color ease var(--durNorm);
+
+  &:first-child {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+
+  &:last-child {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
+
+  &:hover,
+  &.isActive {
+    background-color: var(--colorControlBgHover);
+    transition-duration: var(--durFast);
+  }
+}
+
+.optionsNotify {
+  font-size: 16px;
+  color: var(--colorTextSecondary);
+  line-height: 20px;
+  text-align: center;
+  padding: 10px;
+}
+
+.icon {
+  margin-right: 9px;
+  margin-left: auto;
+
+  svg {
+    display: block;
+    margin-left: 10px;
+    width: 40px;
+    height: 40px;
+  }
+}

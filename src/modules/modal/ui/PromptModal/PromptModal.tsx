@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { useMount } from 'react-use'
 
 import { Text } from 'shared/ui/common/Text'
-import { Button } from 'shared/ui/common/Button'
+import { Button } from 'shared/ui/controls/Button'
 import { Modal, ModalProps } from 'modules/modal/ui/Modal'
 
 import s from './PromptModal.module.scss'

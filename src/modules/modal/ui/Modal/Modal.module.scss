@@ -15,13 +15,57 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0,0,0,0.2);
+  background-color: rgba(8, 5, 11, 0.3);
+  backdrop-filter: blur(24px);
+  animation: overlayAppear 0.15s var(--easeOutQuad) 0s 1;
+}
+
+@keyframes overlayAppear {
+  0% {
+    backdrop-filter: blur(0px);
+  }
+  100% {
+    backdrop-filter: blur(24px);
+  }
 }
 
 .body {
   position: relative;
   padding: 30px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  animation: bodyPop var(--durNorm) var(--easeOutBack) 0s 1;
+}
+
+@keyframes bodyPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.close {
+  position: absolute;
+  width: 56px !important;
+  height: 56px !important;
+  top: 64px;
+  right: 64px;
+  animation: closePop 0.35s var(--easeOutBack) 0s 1;
+}
+
+@keyframes closePop {
+  0% {
+    opacity: 0;
+    transform: scale(0.1);
+  }
+  20% {
+    opacity: 0;
+    transform: scale(0.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
