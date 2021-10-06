@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useNFCSStateMock } from 'modules/wallet/hooks/useNFCSStateMock'
 
 import { NFCSMintForm } from '../NFCSMintForm'
 import { NFCSMintProgress } from '../NFCSMintProgress'
@@ -10,13 +10,23 @@ type Props = {} & ModalProps
 
 export function NFCSModal(props: Props) {
   const { onClose } = props
-  const [tempState, setTempState] = useState(0)
+  const [stateMock, setStateMock] = useNFCSStateMock()
 
   return (
     <Modal width={580} {...props}>
-      {tempState === 0 && <NFCSMintForm onSuccess={() => setTempState(1)} />}
-      {tempState === 1 && <NFCSMintProgress onClose={() => setTempState(2)} />}
-      {tempState === 2 && <NFCSMintFinish onClose={() => onClose()} />}
+      {stateMock.status === 'not-generated' && (
+        <NFCSMintForm
+          onSuccess={() => setStateMock({ status: 'generating' })}
+        />
+      )}
+      {stateMock.status === 'generating' && (
+        <NFCSMintProgress
+          onClose={() => setStateMock({ status: 'generated', nfcs: 9 })}
+        />
+      )}
+      {stateMock.status === 'generated' && (
+        <NFCSMintFinish onClose={() => onClose()} />
+      )}
     </Modal>
   )
 }

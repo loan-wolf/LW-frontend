@@ -11,3 +11,21 @@
 .generateButton {
   margin-right: 16px;
 }
+
+.generatedWrap {
+  display: flex;
+  align-items: center;
+}
+
+.generatedBolt {
+  display: block;
+  margin-right: 16px;
+  fill: var(--colorText);
+}
+
+.line {
+  margin: 0 8px;
+  width: 1px;
+  height: 26px;
+  background-color: var(--colorBorder);
+}

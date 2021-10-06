@@ -1,3 +1,5 @@
+import { useNFCSStateMock } from 'modules/wallet/hooks/useNFCSStateMock'
+
 import { Text } from 'shared/ui/common/Text'
 import { Button } from 'shared/ui/controls/Button'
 
@@ -8,6 +10,7 @@ type Props = {
 }
 
 export function NFCSMintFinish({ onClose }: Props) {
+  const [{ nfcs }] = useNFCSStateMock()
   return (
     <>
       <Text
@@ -23,7 +26,7 @@ export function NFCSMintFinish({ onClose }: Props) {
         Your Credit Score:
       </Text>
       <div className={s.scoreWrap}>
-        <div>9</div>
+        <div>{nfcs}</div>
         <Button className={s.finish} onClick={onClose}>
           Finish
         </Button>
