@@ -1,4 +1,4 @@
-import { useLockBodyScroll } from 'react-use'
+import { useKeyPressEvent, useLockBodyScroll } from 'react-use'
 import { Button } from 'shared/ui/controls/Button'
 import { ReactComponent as CloseSVG } from 'assets/close.svg'
 import s from './Modal.module.scss'
@@ -14,6 +14,7 @@ type Props = ModalProps & {
 
 export function Modal({ width, children, onClose }: Props) {
   useLockBodyScroll()
+  useKeyPressEvent('Escape', onClose)
   return (
     <div className={s.wrap}>
       <div className={s.overlay} onClick={onClose} />

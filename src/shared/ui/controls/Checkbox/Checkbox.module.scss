@@ -1,0 +1,63 @@
+.wrap {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 10px;
+  border: 1px solid var(--colorInputBorder);
+  background-color: var(--colorInputBg);
+  transition: background-color ease var(--durNorm),
+    border-color ease var(--durNorm);
+
+  &:hover {
+    border-color: var(--colorInputBorderHover);
+    background-color: var(--colorControlBg);
+    transition-duration: var(--durFast);
+  }
+
+  &.isChecked {
+    background-color: rgba(183, 232, 47, 0.4);
+
+    & .icon {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  &.isDisabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+.input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  opacity: 0;
+
+  &:focus + .iconWrap:before {
+    box-shadow: 0 0 0 3px var(--colorControlBoxFocus);
+  }
+}
+
+.iconWrap {
+  position: relative;
+}
+
+.icon {
+  display: block;
+  width: 16px;
+  height: 16px;
+  fill: var(--colorText);
+  opacity: 0;
+  transform: scale(0.4);
+  transition: opacity ease var(--durNorm),
+    transform var(--easeOutBack) var(--durNorm);
+}

@@ -1,24 +1,39 @@
 .button {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
   cursor: pointer;
   user-select: none;
-  border-radius: 4px;
+  border-radius: 16px;
+  overflow: hidden;
   line-height: 1;
-  background-color: var(--colorControlDefault);
-  transition: background-color ease var(--durNorm);
+  transition: background-color ease var(--durNorm),
+    box-shadow ease var(--durNorm);
+
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transition: opacity ease var(--durNorm);
+  }
 
   &:hover {
-    background-color: var(--colorControlDefaultHover);
-    transition-duration: var(--durFast);
+    transition-duration: var(--durMed);
+
+    &:before {
+      transition-duration: var(--durMed);
+    }
   }
 
   &:active {
     transform: translateY(1px);
-    background-color: var(--colorControlDefaultActive);
-    transition-duration: var(--durFast);
+    transition-duration: var(--durMed);
   }
 
   &.isFullWidth {
@@ -26,8 +41,18 @@
     justify-content: center;
   }
 
+  &.size--24 {
+    padding: 0 10px;
+    height: 24px;
+    font-size: 12px;
+    border-radius: 10px;
 
-  &.size--sm {
+    &.isSquare {
+      width: 24px;
+    }
+  }
+
+  &.size--30 {
     padding: 0 10px;
     height: 30px;
     font-size: 12px;
@@ -37,7 +62,7 @@
     }
   }
 
-  &.size--md {
+  &.size--40 {
     padding: 0 20px;
     height: 40px;
     font-size: 14px;
@@ -47,20 +72,114 @@
     }
   }
 
+  &.size--56 {
+    padding: 0 10px;
+    height: 56px;
+    font-size: 12px;
+
+    &.isSquare {
+      width: 56px;
+    }
+  }
+
+  &.size--60 {
+    padding: 0 20px;
+    height: 60px;
+    font-size: 20px;
+    font-weight: 500;
+
+    &.isSquare {
+      width: 60px;
+    }
+  }
+
+  &.size--72 {
+    padding: 0 20px;
+    height: 72px;
+    font-size: 20px;
+    font-weight: 500;
+
+    &.isSquare {
+      width: 72px;
+    }
+  }
+
   &.isSquare {
     padding: 0;
   }
 
-  &.fashion--glass {
+  &.fashion--default {
     color: var(--colorText);
-    border-radius: 16px;
-    background-color: var(--colorControlBg);
-    border: 1px solid var(--colorControlBorder);
-    transition: background-color ease var(--durNorm);
+    background: linear-gradient(100.84deg, #b36efd 32.17%, #4876fb 86.65%);
+    box-shadow: 0px 12px 40px rgba(108, 72, 251, 0.61);
+
+    &:before {
+      background: linear-gradient(234.12deg, #b36efd 36.56%, #4876fb 128.08%);
+      opacity: 0;
+    }
 
     &:hover {
       background-color: var(--colorControlBgHover);
-      transition-duration: var(--durFast);
+      box-shadow: 0px 12px 80px rgba(108, 72, 251, 0.8);
+
+      &:before {
+        opacity: 1;
+      }
+    }
+
+    svg {
+      display: block;
+      fill: var(--colorText);
+    }
+  }
+
+  &.fashion--glass {
+    color: var(--colorText);
+    background-color: var(--colorControlBg);
+    border: 1px solid var(--colorControlBorder);
+
+    &:hover {
+      background-color: var(--colorControlBgHover);
+    }
+
+    svg {
+      display: block;
+      fill: var(--colorText);
+    }
+  }
+
+  &.fashion--glass-branded {
+    color: var(--colorBranded);
+    background-color: rgba(61, 162, 255, 0.12);
+    border: 1px solid var(--colorBranded);
+
+    &:hover {
+      background-color: rgba(61, 162, 255, 0.3);
+    }
+
+    svg {
+      display: block;
+      fill: var(--colorBranded);
+    }
+  }
+
+  &.fashion--secondary {
+    color: var(--colorText);
+    border: 1px solid var(--colorControlBorder);
+
+    &:before {
+      background: radial-gradient(
+        66.67% 2992.67% at 50% 70%,
+        rgba(179, 110, 253, 1) 0%,
+        rgba(72, 118, 251, 0) 100%
+      );
+      opacity: 0.4;
+    }
+
+    &:hover {
+      &:before {
+        opacity: 1;
+      }
     }
 
     svg {
@@ -69,3 +188,10 @@
     }
   }
 }
+
+.content {
+  position: relative;
+}
+
+// background: radial-gradient(66.67% 2992.67% at 50% 70%, rgba(179, 110, 253, 1.0) 0%, rgba(72, 118, 251, 0) 100%);
+// background: radial-gradient(66.67% 2992.67% at 50% 70%, rgba(179, 110, 253, 0.4) 0%, rgba(72, 118, 251, 0) 100%);

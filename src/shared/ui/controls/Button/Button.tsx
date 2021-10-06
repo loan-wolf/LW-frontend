@@ -2,19 +2,21 @@ import cns from 'classnames'
 // eslint-disable-next-line css-modules/no-unused-class
 import s from './Button.module.scss'
 
+type ButtonSize = 24 | 30 | 40 | 56 | 60 | 72
+
 type Props = {
-  size?: 'sm' | 'md'
+  size?: ButtonSize
   type?: 'button' | 'submit'
-  fashion?: 'default' | 'glass'
+  fashion?: 'default' | 'secondary' | 'glass' | 'glass-branded'
   isSquare?: boolean
   isFullWidth?: boolean
   onClick?: React.MouseEventHandler
-  children: React.ReactNode
+  children?: React.ReactNode
   className?: string
 }
 
 export function Button({
-  size = 'md',
+  size = 60,
   type = 'button',
   fashion = 'default',
   onClick,
@@ -37,7 +39,8 @@ export function Button({
           [s.isFullWidth]: isFullWidth,
         },
       )}
-      children={children}
-    />
+    >
+      <span className={s.content}>{children}</span>
+    </button>
   )
 }

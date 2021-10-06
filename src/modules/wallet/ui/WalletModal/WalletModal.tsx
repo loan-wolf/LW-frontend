@@ -58,13 +58,19 @@ export function WalletModal(props: ModalProps) {
       </Text>
 
       <div className={s.actions}>
-        <Button size="sm" onClick={handleCopy} children="Copy address" />
         <Button
-          size="sm"
+          size={30}
+          fashion="glass"
+          onClick={handleCopy}
+          children="Copy address"
+        />
+        <Button
+          size={30}
+          fashion="glass"
           onClick={handleEtherscan}
           children="View on Etherscan"
         />
-        <Button size="sm" onClick={handleDisconnect}>
+        <Button size={30} fashion="glass" onClick={handleDisconnect}>
           Disconnect
         </Button>
       </div>

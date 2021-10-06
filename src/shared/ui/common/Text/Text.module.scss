@@ -1,3 +1,5 @@
+@import '~shared/styles/index.global.scss';
+
 .text {
   &.truncateOne {
     max-width: 100%;
@@ -19,4 +21,24 @@
   &.isUppercased {
     text-transform: uppercase;
   }
+
+  @include iteratePropsArr(
+    'size',
+    'font-size',
+    [ 12 , 14 , 16 , 18 , 20 , 44 ],
+    'px'
+  );
+
+  @include iteratePropsArr('weight', 'font-weight', [ 400, 500, 600, 700 ]);
+
+  @include iteratePropsMap(
+    'color',
+    'color',
+    (
+      white: var(--colorWhite),
+      default: var(--colorText),
+      secondary: var(--colorTextSecondary),
+      branded: var(--colorBranded),
+    )
+  );
 }

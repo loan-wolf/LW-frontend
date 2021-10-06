@@ -11,3 +11,20 @@
   align-items: center;
   justify-content: center;
 }
+
+.connectedText {
+  margin-bottom: 30px;
+}
+
+.highlight {
+  color: var(--colorText);
+}
+
+.createNFCS {
+  margin: 0 auto 30px;
+  box-shadow: inset 0px 4px 84px rgba(61, 162, 255, 0.32);
+
+  svg {
+    fill: var(--colorBranded);
+  }
+}

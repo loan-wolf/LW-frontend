@@ -42,22 +42,12 @@ export function SelectOptionItem({
       onMouseDown={onMouseDown}
     >
       {typeof label === 'string' ? (
-        <Text
-          size={16}
-          // color="default"
-          weight={400}
-          children={label}
-        />
+        <Text size={16} weight={400} children={label} />
       ) : (
         label
       )}
       {typeof hint === 'string' ? (
-        <Text
-          size={12}
-          // color="secondary"
-          weight={400}
-          children={hint}
-        />
+        <Text size={12} weight={400} children={hint} />
       ) : (
         hint
       )}

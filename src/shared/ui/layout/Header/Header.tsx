@@ -4,7 +4,8 @@ import { useCurrentMatch } from 'modules/router/hooks/useCurreentMatch'
 import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
 
 import { Text } from 'shared/ui/common/Text'
-import { HeaderWallet } from '../HeaderWallet'
+import { HeaderNFCS } from 'modules/wallet/ui/HeaderNFCS'
+import { HeaderWallet } from 'modules/wallet/ui/HeaderWallet'
 
 import s from './Header.module.scss'
 import { getChainColor, getChainName } from 'modules/blockChain/chains'
@@ -29,6 +30,7 @@ export function Header({ title, className }: Props) {
     <header className={cns(s.header, className)}>
       <div className={s.title}>{headerTitle}</div>
       <div className={s.actions}>
+        <HeaderNFCS className={s.nfcs} />
         <div className={s.network}>
           <div
             className={s.networkBulb}

@@ -4,6 +4,8 @@ import { ThemesEnum } from './constants'
 const themedIndexes = [ThemesEnum.DARK, ThemesEnum.LIGHT]
 
 const themedSets = {
+  colorBranded: ['#3DA2FF', ''],
+
   // Text
   colorText: ['#ffffff', '#000626'],
   colorTextContrast: ['#000626', '#ffffff'],
@@ -42,6 +44,7 @@ const shared = {
   colorWhite: '#ffffff',
 
   durFast: '100ms',
+  durMed: '200ms',
   durNorm: '300ms',
 
   // Easings
