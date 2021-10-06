@@ -1,0 +1,31 @@
+.undertitle {
+  margin-bottom: 18px;
+}
+
+.title {
+  margin-bottom: 56px;
+}
+
+.scoreWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  width: 275px;
+  height: 275px;
+  font-weight: 600;
+  font-size: 144px;
+  color: var(--colorBranded);
+  border: 1px solid rgba(217, 218, 255, 0.24);
+  border-radius: 50%;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(123, 115, 252, 0) 0%, rgba(157, 78, 241, 0.2) 100%);
+}
+
+.finish {
+  position: absolute;
+  bottom: -63px;
+  width: 126px !important;
+  height: 126px !important;
+  border-radius: 50% !important;
+}

@@ -11,7 +11,6 @@ export function usePermittedAddresses() {
       const accounts = permissions[0].caveats.find(
         (c: any) => c.type === 'filterResponse',
       ).value
-      console.log(accounts)
       return accounts
     },
   )
