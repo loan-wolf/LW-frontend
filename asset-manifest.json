@@ -2,7 +2,7 @@
   "files": {
     "static/js/0.f7641ecb.chunk.js": "/LW-frontend/static/js/0.f7641ecb.chunk.js",
     "static/js/0.f7641ecb.chunk.js.map": "/LW-frontend/static/js/0.f7641ecb.chunk.js.map",
-    "main.css": "/LW-frontend/static/css/main.af83b851.chunk.css",
+    "main.css": "/LW-frontend/static/css/main.19330dae.chunk.css",
     "main.js": "/LW-frontend/static/js/main.3bbb2d97.chunk.js",
     "main.js.map": "/LW-frontend/static/js/main.3bbb2d97.chunk.js.map",
     "runtime-main.js": "/LW-frontend/static/js/runtime-main.2751a2d3.js",
@@ -18,7 +18,7 @@
     "static/js/7.f6e6adac.chunk.js": "/LW-frontend/static/js/7.f6e6adac.chunk.js",
     "static/js/7.f6e6adac.chunk.js.map": "/LW-frontend/static/js/7.f6e6adac.chunk.js.map",
     "index.html": "/LW-frontend/index.html",
-    "static/css/main.af83b851.chunk.css.map": "/LW-frontend/static/css/main.af83b851.chunk.css.map",
+    "static/css/main.19330dae.chunk.css.map": "/LW-frontend/static/css/main.19330dae.chunk.css.map",
     "static/js/0.f7641ecb.chunk.js.LICENSE.txt": "/LW-frontend/static/js/0.f7641ecb.chunk.js.LICENSE.txt",
     "static/js/3.417f237b.chunk.js.LICENSE.txt": "/LW-frontend/static/js/3.417f237b.chunk.js.LICENSE.txt",
     "static/js/4.c8a40851.chunk.js.LICENSE.txt": "/LW-frontend/static/js/4.c8a40851.chunk.js.LICENSE.txt",
@@ -48,7 +48,7 @@
   "entrypoints": [
     "static/js/runtime-main.2751a2d3.js",
     "static/js/4.c8a40851.chunk.js",
-    "static/css/main.af83b851.chunk.css",
+    "static/css/main.19330dae.chunk.css",
     "static/js/main.3bbb2d97.chunk.js"
   ]
 }
