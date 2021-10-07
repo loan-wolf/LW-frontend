@@ -1,13 +1,13 @@
-import { usePoolContract } from 'modules/contracts/hooks/usePoolContract'
+// import { usePoolContract } from 'modules/contracts/hooks/usePoolContract'
 
-import { PoolInfo } from 'modules/pools/ui/PoolInfo'
+// import { PoolInfo } from 'modules/pools/ui/PoolInfo'
 import { MarketsTable } from 'modules/pools/ui/MarketsTable'
 
 import { createRoute } from 'modules/router/utils/createRoute'
 import s from './RouteMarkets.module.scss'
 
 function RouteMarkets() {
-  const PoolContract0 = usePoolContract(0)
+  // const PoolContract0 = usePoolContract(0)
 
   return (
     <>
@@ -20,11 +20,11 @@ function RouteMarkets() {
 
       <br />
 
-      {PoolContract0 ? (
+      {/* {PoolContract0 ? (
         <PoolInfo ContractLoanWolfPool={PoolContract0} />
       ) : (
         'Pool is loading...'
-      )}
+      )} */}
     </>
   )
 }
