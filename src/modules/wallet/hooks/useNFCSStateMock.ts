@@ -16,7 +16,7 @@ let globalState: MockedState = {
 export function useNFCSStateMock() {
   const state = useSWR<MockedState>('nfcs-state-mock', () => globalState)
 
-  const data = state.data!
+  const data = state.data || globalState
 
   const setState = useCallback(
     (nextState: Partial<MockedState>) => {
