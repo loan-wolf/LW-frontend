@@ -20,30 +20,30 @@ export const poolAssetIcons = {
   WBTC: <TokenWBTC />,
 } as const
 
-export const poolAssetOptions = [
-  {
+export const poolAssetOptions = {
+  [poolAssets.DAI]: {
     label: poolAssets.DAI,
     value: poolAssets.DAI,
     icon: poolAssetIcons.DAI,
   },
-  {
+  [poolAssets.USDC]: {
     label: poolAssets.USDC,
     value: poolAssets.USDC,
     icon: poolAssetIcons.USDC,
   },
-  {
+  [poolAssets.USDT]: {
     label: poolAssets.USDT,
     value: poolAssets.USDT,
     icon: poolAssetIcons.USDT,
   },
-  {
+  [poolAssets.ETH]: {
     label: poolAssets.ETH,
     value: poolAssets.ETH,
     icon: poolAssetIcons.ETH,
   },
-  {
+  [poolAssets.WBTC]: {
     label: poolAssets.WBTC,
     value: poolAssets.WBTC,
     icon: poolAssetIcons.WBTC,
   },
-]
+} as const

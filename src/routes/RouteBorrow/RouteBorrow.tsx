@@ -16,6 +16,20 @@ import { poolAssetOptions } from 'modules/pools/constants/poolAssets'
 import { createRoute } from 'modules/router/utils/createRoute'
 // import s from './RouteBorrow.module.scss'
 
+const borrowOptions = [
+  poolAssetOptions.USDC,
+  poolAssetOptions.USDT,
+  poolAssetOptions.DAI,
+]
+
+const collateralOptions = [
+  poolAssetOptions.DAI,
+  poolAssetOptions.USDC,
+  poolAssetOptions.USDT,
+  poolAssetOptions.ETH,
+  poolAssetOptions.WBTC,
+]
+
 type FormData = {
   borrowedAsset: string
   amount: string
@@ -42,7 +56,7 @@ function RouteBorrow() {
       <SelectControl
         name="borrowedAsset"
         placeholder="Borrowed asset"
-        options={poolAssetOptions}
+        options={borrowOptions}
         rules={{ required: formErrors.required }}
       />
 
@@ -72,7 +86,7 @@ function RouteBorrow() {
       <SelectControl
         name="collateralAsset"
         placeholder="Collateral asset"
-        options={poolAssetOptions}
+        options={collateralOptions}
         rules={{ required: formErrors.required }}
       />
 
