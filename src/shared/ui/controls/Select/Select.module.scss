@@ -1,6 +1,6 @@
 @import '~shared/styles/index.global.scss';
 
-.root {
+.wrap {
   position: relative;
   margin-bottom: var(--fieldMargin);
 
@@ -105,4 +105,9 @@
   .isFocused & {
     transform: rotate(180deg);
   }
+}
+
+.wrap:hover .error,
+.wrap.isFocused .error {
+  @include inputErrorMessageOpened();
 }

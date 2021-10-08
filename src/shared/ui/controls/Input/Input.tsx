@@ -1,4 +1,5 @@
-import React, { useState, forwardRef, useCallback } from 'react'
+import { useState, forwardRef, useCallback } from 'react'
+import { FieldError } from 'shared/ui/controls/FieldError'
 // import TextareaAutosize from 'react-textarea-autosize'
 import cns from 'classnames'
 
@@ -20,11 +21,11 @@ type Props = {
   rows?: number
   minRows?: number
   maxRows?: number
+  error?: React.ReactNode
 
   required?: boolean
   disabled?: boolean
   readonly?: boolean
-  isError?: boolean
   isAutosizable?: boolean
   withFloatingIcon?: boolean
 
@@ -38,7 +39,6 @@ type Props = {
 function InputRaw(
   {
     className,
-    isError,
     isAutosizable,
     placeholder,
     type = 'text',
@@ -48,6 +48,7 @@ function InputRaw(
     value: valueProp,
     onChange,
     concat,
+    error,
     ...restProps
   }: Props,
   ref: React.Ref<InputElement>,
@@ -95,7 +96,7 @@ function InputRaw(
     onChange: handleChange,
     value,
     className: cns(s.field, {
-      [s.isError]: isError,
+      [s.isError]: Boolean(error),
       [s.isTextarea]: isTextarea || isAutosizable,
       [s.withFloatingIcon]: withFloatingIcon,
     }),
@@ -108,6 +109,7 @@ function InputRaw(
   return (
     <div
       className={cns(s.wrap, className, {
+        [s.isFocused]: isFocused,
         [s.isConcatTop]: concat === 'top',
         [s.isConcatBottom]: concat === 'bottom',
       })}
@@ -120,6 +122,7 @@ function InputRaw(
         {placeholder}
       </div>
       <Tag {...fieldProps} ref={ref as any} type={type} />
+      {error && <FieldError className={s.error}>{error}</FieldError>}
     </div>
   )
 }

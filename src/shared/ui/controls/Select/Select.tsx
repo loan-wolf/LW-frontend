@@ -1,4 +1,4 @@
-import React, {
+import {
   useState,
   useCallback,
   useRef,
@@ -13,10 +13,11 @@ import {
   SelectOptionItem,
   SelectOptionsNotify,
 } from '../SelectOptions'
+import { FieldError } from 'shared/ui/controls/FieldError'
 import { ReactComponent as ArrowIcon } from 'assets/drop.svg'
 import s from './Select.module.scss'
 
-type Value = string | number
+type Value = string
 
 type Option = {
   label: string
@@ -32,9 +33,9 @@ type Props = {
   value?: Value
   defaultValue?: Value
   options: Option[]
-  isError?: boolean
   withFloatingIcon?: boolean
   concat?: 'top' | 'bottom'
+  error?: React.ReactNode
   onChange?: (value: Value) => void
   onFocus?: React.FocusEventHandler
   onBlur?: React.FocusEventHandler
@@ -50,11 +51,11 @@ function SelectRaw(props: Props, ref: React.Ref<HTMLInputElement>) {
     placeholder,
     onChange,
     className,
-    isError,
     withFloatingIcon,
     concat,
     onFocus,
     onBlur,
+    error,
   } = props
 
   const optsCount = options.length
@@ -163,7 +164,7 @@ function SelectRaw(props: Props, ref: React.Ref<HTMLInputElement>) {
   return (
     <div
       ref={rootRef}
-      className={cns(s.root, className, {
+      className={cns(s.wrap, className, {
         [s.isConcatTop]: concat === 'top',
         [s.isConcatBottom]: concat === 'bottom',
       })}
@@ -184,7 +185,7 @@ function SelectRaw(props: Props, ref: React.Ref<HTMLInputElement>) {
       <div
         className={cns(s.box, {
           [s.isFocused]: isFocused,
-          [s.isError]: isError,
+          [s.isError]: Boolean(error),
           [s.withFloatingIcon]: withFloatingIcon,
         })}
         onClick={handleClickBox}
@@ -203,6 +204,7 @@ function SelectRaw(props: Props, ref: React.Ref<HTMLInputElement>) {
         <div className={s.arrowWrap}>
           <ArrowIcon className={s.arrow} />
         </div>
+        {error && <FieldError className={s.error}>{error}</FieldError>}
       </div>
       {isFocused && (
         <SelectOptions optionsRef={optionsRef}>

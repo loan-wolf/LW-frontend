@@ -15,6 +15,7 @@ const themedSets = {
   // Background
   colorBgDeep: ['#070315', '#F9FAFE'],
   colorBgTop: ['#141321', '#FFFFFF'],
+  colorBgError: ['#9e0035', '#FFFFFF'],
 
   // Borders
   colorBorder: ['#424166', '#B4B5D8'],
@@ -34,7 +35,7 @@ const themedSets = {
   colorInputPlaceholder: ['rgba(181, 190, 237, 0.5)', ''],
   colorInputBorderHover: ['rgba(181, 190, 237, 0.5)', ''],
   colorInputBorderFocus: ['rgba(183, 232, 47, 0.4)', ''],
-  colorInputBorderError: ['', ''],
+  colorInputBorderError: ['rgba(255, 80, 80, 0.8)', ''],
   colorInputTextDisabled: ['', ''],
   colorInputBorderDisabled: ['', ''],
   colorInputPlaceholderDisabled: ['', ''],

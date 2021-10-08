@@ -76,3 +76,9 @@
 @mixin inputPlaceholderFloated() {
   transform: translate(0, -5px) scale(0.75);
 }
+
+@mixin inputErrorMessageOpened() {
+  opacity: 1;
+  transform: scale(1);
+  transition-duration: var(--durFast);
+}

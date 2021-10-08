@@ -1,33 +1,80 @@
+import { useCallback } from 'react'
+import { useForm } from 'react-hook-form'
+
 import { Button } from 'shared/ui/controls/Button'
 import { TermsHint } from 'shared/ui/common/TermsHint'
-import { Input } from 'shared/ui/controls/Input'
-import { Select } from 'shared/ui/controls/Select'
+import { InputControl } from 'shared/ui/controls/Input'
+import { SelectControl } from 'shared/ui/controls/Select'
 import {
   FormInfoFrame,
   FormInfoFramesList,
 } from 'shared/ui/common/FormInfoFrame'
+import { Form } from 'shared/ui/controls/Form'
 
-import { poolAssetOptions } from 'modules/pools/data/poolAssets'
+import * as formErrors from 'shared/constants/formErrors'
+import { poolAssetOptions } from 'modules/pools/constants/poolAssets'
 import { createRoute } from 'modules/router/utils/createRoute'
 // import s from './RouteBorrow.module.scss'
 
-function RouteBorrow() {
-  return (
-    <>
-      <Select placeholder="Borrowed asset" options={poolAssetOptions} />
+type FormData = {
+  borrowedAsset: string
+  amount: string
+  term: string
+  collateralAsset: string
+}
 
-      <Input concat="bottom" placeholder="Amount" />
-      <Select
+function RouteBorrow() {
+  const formMethods = useForm<FormData>({
+    defaultValues: {
+      borrowedAsset: '',
+      amount: '',
+      term: '',
+      collateralAsset: '',
+    },
+  })
+
+  const submit = useCallback(formData => {
+    console.log(formData)
+  }, [])
+
+  return (
+    <Form formMethods={formMethods} onSubmit={submit}>
+      <SelectControl
+        name="borrowedAsset"
+        placeholder="Borrowed asset"
+        options={poolAssetOptions}
+        rules={{ required: formErrors.required }}
+      />
+
+      <InputControl
+        name="amount"
+        concat="bottom"
+        placeholder="Amount"
+        rules={{
+          required: formErrors.required,
+          validate: val =>
+            Number(val) < 0.01 ? 'Should not be less than 0.01' : false,
+        }}
+      />
+
+      <SelectControl
+        name="term"
         concat="top"
         placeholder="Term"
+        rules={{ required: formErrors.required }}
         options={[
-          { label: '30 days', value: 30 },
-          { label: '60 days', value: 60 },
-          { label: '90 days', value: 90 },
+          { label: '30 days', value: '30' },
+          { label: '60 days', value: '60' },
+          { label: '90 days', value: '90' },
         ]}
       />
 
-      <Select placeholder="Collateral asset" options={poolAssetOptions} />
+      <SelectControl
+        name="collateralAsset"
+        placeholder="Collateral asset"
+        options={poolAssetOptions}
+        rules={{ required: formErrors.required }}
+      />
 
       <FormInfoFramesList>
         <FormInfoFrame
@@ -50,11 +97,11 @@ function RouteBorrow() {
         />
       </FormInfoFramesList>
 
-      <Button fashion="secondary" isFullWidth>
+      <Button type="submit" fashion="secondary" isFullWidth>
         Borrow
       </Button>
       <TermsHint />
-    </>
+    </Form>
   )
 }
 
