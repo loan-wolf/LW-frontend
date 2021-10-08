@@ -1,3 +1,4 @@
+import { get } from 'lodash'
 import { ReactComponent as TokenDAI } from 'assets/token-dai.svg'
 import { ReactComponent as TokenUSDC } from 'assets/token-usdc.svg'
 import { ReactComponent as TokenUSDT } from 'assets/token-usdt.svg'
@@ -11,6 +12,8 @@ export const poolAssets = {
   ETH: 'ETH',
   WBTC: 'WBTC',
 } as const
+
+export type PoolAsset = keyof typeof poolAssets
 
 export const poolAssetIcons = {
   DAI: <TokenDAI />,
@@ -47,3 +50,7 @@ export const poolAssetOptions = {
     icon: poolAssetIcons.WBTC,
   },
 } as const
+
+export function getPoolAssetIcon(val: string) {
+  return get(poolAssetIcons, val, null)
+}

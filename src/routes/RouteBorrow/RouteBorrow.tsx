@@ -1,20 +1,33 @@
-import { useCallback } from 'react'
-import { useForm } from 'react-hook-form'
+import { useCallback, useState } from 'react'
+import { useForm, useFormContext } from 'react-hook-form'
 
-import { Button } from 'shared/ui/controls/Button'
-import { TermsHint } from 'shared/ui/common/TermsHint'
 import { InputControl } from 'shared/ui/controls/Input'
 import { SelectControl } from 'shared/ui/controls/Select'
+import { FormSubmitter } from 'shared/ui/common/FormSubmitter'
+import { Form } from 'shared/ui/controls/Form'
 import {
   FormInfoFrame,
   FormInfoFramesList,
 } from 'shared/ui/common/FormInfoFrame'
-import { Form } from 'shared/ui/controls/Form'
+import {
+  FormLockedValue,
+  FormLockedValuesList,
+} from 'shared/ui/common/FormLockedValue'
 
 import * as formErrors from 'shared/constants/formErrors'
-import { poolAssetOptions } from 'modules/pools/constants/poolAssets'
+import {
+  poolAssetOptions,
+  getPoolAssetIcon,
+} from 'modules/pools/constants/poolAssets'
 import { createRoute } from 'modules/router/utils/createRoute'
+import { formatNumber } from 'shared/utils/formatNumber'
 // import s from './RouteBorrow.module.scss'
+
+const APR = 22
+const LTV = 15
+const REQUIRED_COLLATERAL = '1 ETH'
+const LIQ_THRESHOLD = '85%'
+const LIQ_PRICE = '1 ETH = 2547 USD'
 
 const borrowOptions = [
   poolAssetOptions.USDC,
@@ -30,15 +43,32 @@ const collateralOptions = [
   poolAssetOptions.WBTC,
 ]
 
-type FormData = {
+type FormValues = {
   borrowedAsset: string
   amount: string
   term: string
   collateralAsset: string
 }
 
+function AmountToRepay() {
+  const { watch } = useFormContext<FormValues>()
+  const amount = Number(watch('amount'))
+  const term = Number(watch('term'))
+  const asset = watch('borrowedAsset')
+  const earning = (amount * (1 + APR / 100) * (term * 30)) / 12
+  return (
+    <>
+      {formatNumber(earning, 2)} {asset}
+    </>
+  )
+}
+
 function RouteBorrow() {
-  const formMethods = useForm<FormData>({
+  const [isLocked, setLocked] = useState(false)
+  const handleUnlock = useCallback(() => setLocked(false), [])
+
+  const formMethods = useForm<FormValues>({
+    shouldUnregister: false,
     defaultValues: {
       borrowedAsset: '',
       amount: '',
@@ -47,74 +77,102 @@ function RouteBorrow() {
     },
   })
 
-  const submit = useCallback(formData => {
-    console.log(formData)
-  }, [])
+  const submit = useCallback(
+    formData => {
+      if (!isLocked) {
+        setLocked(true)
+      } else {
+        console.log(formData)
+      }
+    },
+    [isLocked],
+  )
 
   return (
     <Form formMethods={formMethods} onSubmit={submit}>
-      <SelectControl
-        name="borrowedAsset"
-        placeholder="Borrowed asset"
-        options={borrowOptions}
-        rules={{ required: formErrors.required }}
-      />
+      {!isLocked && (
+        <>
+          <SelectControl
+            name="borrowedAsset"
+            placeholder="Borrowed asset"
+            options={borrowOptions}
+            rules={{ required: formErrors.required }}
+          />
 
-      <InputControl
-        name="amount"
-        concat="bottom"
-        placeholder="Amount"
-        rules={{
-          required: formErrors.required,
-          validate: val =>
-            Number(val) < 0.01 ? 'Should not be less than 0.01' : false,
-        }}
-      />
+          <InputControl
+            name="amount"
+            concat="bottom"
+            placeholder="Amount"
+            rules={{
+              required: formErrors.required,
+              validate: val =>
+                Number(val) < 0.01 ? 'Should not be less than 0.01' : true,
+            }}
+          />
 
-      <SelectControl
-        name="term"
-        concat="top"
-        placeholder="Term"
-        rules={{ required: formErrors.required }}
-        options={[
-          { label: '30 days', value: '30' },
-          { label: '60 days', value: '60' },
-          { label: '90 days', value: '90' },
-        ]}
-      />
+          <SelectControl
+            name="term"
+            concat="top"
+            placeholder="Term"
+            rules={{ required: formErrors.required }}
+            options={[
+              { label: '30 days', value: '30' },
+              { label: '60 days', value: '60' },
+              { label: '90 days', value: '90' },
+            ]}
+          />
 
-      <SelectControl
-        name="collateralAsset"
-        placeholder="Collateral asset"
-        options={collateralOptions}
-        rules={{ required: formErrors.required }}
-      />
+          <SelectControl
+            name="collateralAsset"
+            placeholder="Collateral asset"
+            options={collateralOptions}
+            rules={{ required: formErrors.required }}
+          />
+        </>
+      )}
+
+      {isLocked && (
+        <FormLockedValuesList>
+          <FormLockedValue
+            label="Borrowed asset"
+            name="borrowedAsset"
+            getIcon={getPoolAssetIcon}
+          />
+          <FormLockedValue label="Amount" name="amount" />
+          <FormLockedValue
+            label="Collateral asset"
+            name="collateralAsset"
+            getIcon={getPoolAssetIcon}
+          />
+        </FormLockedValuesList>
+      )}
 
       <FormInfoFramesList>
         <FormInfoFrame
           info={[
-            { label: 'APR', value: '16%' },
-            { label: 'Amount to be repaid', value: '1130 DAI' },
+            { label: 'APR', value: `${APR}%` },
+            { label: 'Amount to be repaid', value: <AmountToRepay /> },
           ]}
         />
         <FormInfoFrame
           info={[
-            { label: 'LTV', value: '15%' },
-            { label: 'Required collateral', value: '1 ETH' },
+            { label: 'LTV', value: `${LTV}%` },
+            { label: 'Required collateral', value: REQUIRED_COLLATERAL },
           ]}
         />
         <FormInfoFrame
           info={[
-            { label: 'Liquidation Threshold', value: '85%' },
-            { label: 'Liquidation Price', value: '1 ETH = 2459 USD' },
+            { label: 'Liquidation Threshold', value: LIQ_THRESHOLD },
+            { label: 'Liquidation Price', value: LIQ_PRICE },
           ]}
         />
       </FormInfoFramesList>
 
-      <Button type="submit" fashion="secondary" isFullWidth>
-        Borrow
-      </Button>
-      <TermsHint />
+      <FormSubmitter
+        isLocked={isLocked}
+        firstStepText="Borrow"
+        onClickUnlock={handleUnlock}
+      />
     </Form>
   )
 }

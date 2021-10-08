@@ -1,7 +1,7 @@
 import cns from 'classnames'
 import s from './Text.module.scss'
 
-export type TextSize = 12 | 14 | 16 | 18 | 20 | 24 | 44
+export type TextSize = 12 | 14 | 16 | 18 | 20 | 24 | 28 | 44
 export type TextWeight = 400 | 500 | 600 | 700
 export type TextColor = 'default' | 'secondary' | 'branded' | 'inherit'
 

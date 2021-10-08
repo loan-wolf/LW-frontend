@@ -5,6 +5,9 @@ import cns from 'classnames'
 
 import s from './Input.module.scss'
 
+const trimLastDot = (val: string) =>
+  val[val.length + 1] === '.' ? val.slice(0, -1) : val
+
 type InputElement = HTMLInputElement | HTMLTextAreaElement
 
 type Props = {
@@ -26,6 +29,7 @@ type Props = {
   required?: boolean
   disabled?: boolean
   readonly?: boolean
+  onlyNumber?: boolean
   isAutosizable?: boolean
   withFloatingIcon?: boolean
 
@@ -49,6 +53,7 @@ function InputRaw(
     onChange,
     concat,
     error,
+    onlyNumber,
     ...restProps
   }: Props,
   ref: React.Ref<InputElement>,
@@ -79,13 +84,16 @@ function InputRaw(
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      if (onlyNumber && isNaN(Number(trimLastDot(e.target.value)))) {
+        return
+      }
       if (onChange) {
         onChange(e)
       } else {
         setValue(e.target.value)
       }
     },
-    [onChange],
+    [onChange, onlyNumber],
   )
 
   const fieldProps = {

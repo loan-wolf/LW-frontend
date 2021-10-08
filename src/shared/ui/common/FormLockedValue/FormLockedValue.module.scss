@@ -1,0 +1,22 @@
+.list {
+  margin-bottom: var(--fieldMargin);
+}
+
+.wrap {
+  padding: 16px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--colorBorder);
+  }
+}
+
+.icon {
+  svg {
+    display: block;
+    width: 40px;
+    height: 40px;
+  }
+}
