@@ -35,9 +35,13 @@ function DrawerLink({ link, icon, children }: DrawerLinkProps) {
   )
 }
 
-export function Drawer() {
+type Props = {
+  className?: string
+}
+
+export function Drawer({ className }: Props) {
   return (
-    <div>
+    <div className={className}>
       <Link to={links.home} className={s.drawerLogo}>
         <Logo />
       </Link>

@@ -1,184 +1,99 @@
-import { useCallback, useState } from 'react'
-import { useForm, useFormContext } from 'react-hook-form'
+import { useState } from 'react'
 
-import { InputControl } from 'shared/ui/controls/Input'
-import { SelectControl } from 'shared/ui/controls/Select'
-import { FormSubmitter } from 'shared/ui/common/FormSubmitter'
-import { Form } from 'shared/ui/controls/Form'
-import {
-  FormInfoFrame,
-  FormInfoFramesList,
-} from 'shared/ui/common/FormInfoFrame'
-import {
-  FormLockedValue,
-  FormLockedValuesList,
-} from 'shared/ui/common/FormLockedValue'
+import { Text } from 'shared/ui/common/Text'
+import { FormBorrow, SuccessData } from 'modules/pools/ui/FormBorrow'
+import { ContractSuccessTitle } from 'shared/ui/common/ContractSuccessTitle'
+import { ContractSuccessField } from 'shared/ui/common/ContractSuccessField'
+import { NarrowWrapper } from 'shared/ui/layout/NarrowWrapper'
 
-import * as formErrors from 'shared/constants/formErrors'
-import {
-  poolAssetOptions,
-  getPoolAssetIcon,
-} from 'modules/pools/constants/poolAssets'
+import { getPoolAssetIcon } from 'modules/pools/constants/poolAssets'
 import { createRoute } from 'modules/router/utils/createRoute'
-import { formatNumber } from 'shared/utils/formatNumber'
-// import s from './RouteBorrow.module.scss'
-
-const APR = 22
-const LTV = 15
-const REQUIRED_COLLATERAL = '1 ETH'
-const LIQ_THRESHOLD = '85%'
-const LIQ_PRICE = '1 ETH = 2547 USD'
-
-const borrowOptions = [
-  poolAssetOptions.USDC,
-  poolAssetOptions.USDT,
-  poolAssetOptions.DAI,
-]
-
-const collateralOptions = [
-  poolAssetOptions.DAI,
-  poolAssetOptions.USDC,
-  poolAssetOptions.USDT,
-  poolAssetOptions.ETH,
-  poolAssetOptions.WBTC,
-]
-
-type FormValues = {
-  borrowedAsset: string
-  amount: string
-  term: string
-  collateralAsset: string
-}
-
-function AmountToRepay() {
-  const { watch } = useFormContext<FormValues>()
-  const amount = Number(watch('amount'))
-  const term = Number(watch('term'))
-  const asset = watch('borrowedAsset')
-  const earning = (amount * (1 + APR / 100) * (term * 30)) / 12
-  return (
-    <>
-      {formatNumber(earning, 2)} {asset}
-    </>
-  )
-}
+import s from './RouteBorrow.module.scss'
 
 function RouteBorrow() {
-  const [isLocked, setLocked] = useState(false)
-  const handleUnlock = useCallback(() => setLocked(false), [])
+  const [successData, setSuccessData] = useState<SuccessData | null>(null)
 
-  const formMethods = useForm<FormValues>({
-    shouldUnregister: false,
-    defaultValues: {
-      borrowedAsset: '',
-      amount: '',
-      term: '',
-      collateralAsset: '',
-    },
-  })
-
-  const submit = useCallback(
-    formData => {
-      if (!isLocked) {
-        setLocked(true)
-      } else {
-        console.log(formData)
-      }
-    },
-    [isLocked],
-  )
+  if (!successData) {
+    return (
+      <NarrowWrapper>
+        <FormBorrow onSuccess={setSuccessData} />
+      </NarrowWrapper>
+    )
+  }
 
   return (
-    <Form formMethods={formMethods} onSubmit={submit}>
-      {!isLocked && (
-        <>
-          <SelectControl
-            name="borrowedAsset"
-            placeholder="Borrowed asset"
-            options={borrowOptions}
-            rules={{ required: formErrors.required }}
-          />
+    <>
+      <ContractSuccessTitle>Deposit Successful.</ContractSuccessTitle>
 
-          <InputControl
-            name="amount"
-            concat="bottom"
-            placeholder="Amount"
-            rules={{
-              required: formErrors.required,
-              validate: val =>
-                Number(val) < 0.01 ? 'Should not be less than 0.01' : true,
-            }}
+      <div className={s.successInfo}>
+        <div className={s.successInfoColumn}>
+          <ContractSuccessField
+            label="Asset"
+            value={
+              <>
+                {getPoolAssetIcon(successData.borrowedAsset)}{' '}
+                {successData.borrowedAsset}
+              </>
+            }
           />
+          <ContractSuccessField label="APR" value="13%" />
+        </div>
 
-          <SelectControl
-            name="term"
-            concat="top"
-            placeholder="Term"
-            rules={{ required: formErrors.required }}
-            options={[
-              { label: '30 days', value: '30' },
-              { label: '60 days', value: '60' },
-              { label: '90 days', value: '90' },
-            ]}
+        <div className={s.successInfoColumn}>
+          <ContractSuccessField
+            label="Total debt"
+            value={
+              <>
+                {successData.amount} {successData.borrowedAsset}&nbsp;
+                <Text tag="span" size={16} color="secondary">
+                  ({Number(successData.amount) * 23} USD)
+                </Text>
+              </>
+            }
           />
+          <div className={s.fieldsCouple}>
+            <ContractSuccessField
+              label="Principal"
+              value={
+                <>
+                  {successData.amount} {successData.borrowedAsset}
+                </>
+              }
+            />
+            <ContractSuccessField
+              label="Interest"
+              value={
+                <>
+                  {successData.amount} {successData.borrowedAsset}
+                </>
+              }
+            />
+          </div>
+        </div>
 
-          <SelectControl
-            name="collateralAsset"
-            placeholder="Collateral asset"
-            options={collateralOptions}
-            rules={{ required: formErrors.required }}
+        <div className={s.successInfoColumn}>
+          <ContractSuccessField
+            label="Collateral Amount"
+            value={
+              <>
+                {123} {successData.collateralAsset}
+              </>
+            }
           />
-        </>
-      )}
-
-      {isLocked && (
-        <FormLockedValuesList>
-          <FormLockedValue
-            label="Borrowed asset"
-            name="borrowedAsset"
-            getIcon={getPoolAssetIcon}
+          <ContractSuccessField
+            label="Maturity time "
+            value={<>2021-10-10 19:59:59</>}
           />
-          <FormLockedValue label="Amount" name="amount" />
-          <FormLockedValue
-            label="Collateral asset"
-            name="collateralAsset"
-            getIcon={getPoolAssetIcon}
-          />
-        </FormLockedValuesList>
-      )}
+        </div>
+      </div>
 
-      <FormInfoFramesList>
-        <FormInfoFrame
-          info={[
-            { label: 'APR', value: `${APR}%` },
-            { label: 'Amount to be repaid', value: <AmountToRepay /> },
-          ]}
-        />
-        <FormInfoFrame
-          info={[
-            { label: 'LTV', value: `${LTV}%` },
-            { label: 'Required collateral', value: REQUIRED_COLLATERAL },
-          ]}
-        />
-        <FormInfoFrame
-          info={[
-            { label: 'Liquidation Threshold', value: LIQ_THRESHOLD },
-            { label: 'Liquidation Price', value: LIQ_PRICE },
-          ]}
-        />
-      </FormInfoFramesList>
-
-      <FormSubmitter
-        isLocked={isLocked}
-        firstStepText="Borrow"
-        onClickUnlock={handleUnlock}
-      />
-    </Form>
+      <ContractSuccessField label="Loan Id" value={<>0xaqw11..98</>} />
+    </>
   )
 }
 
 export const routeBorrow = createRoute({
   headerTitle: 'Borrow',
-  layoutType: 'narrow',
+  layoutType: 'narrow-extended',
   component: RouteBorrow,
 })

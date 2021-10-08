@@ -1,0 +1,23 @@
+.successInfo {
+  margin-bottom: 65px;
+  display: flex;
+  justify-content: space-between;
+  padding-right: 60px;
+  width: 100%;
+}
+
+.successInfoColumn {
+  & > *:not(:last-child) {
+    margin-bottom: 32px;
+  }
+}
+
+.fieldsCouple {
+  display: flex;
+
+  & > *:last-child {
+    margin-left: 24px;
+    padding-left: 24px;
+    border-left: 1px solid var(--colorBorder);
+  }
+}

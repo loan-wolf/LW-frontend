@@ -1,0 +1,16 @@
+.label {
+  margin-bottom: 6px;
+}
+
+.value {
+  display: flex;
+  align-items: center;
+  height: 24px;
+
+  svg {
+    display: block;
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+  }
+}

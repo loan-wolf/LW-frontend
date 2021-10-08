@@ -1,0 +1,65 @@
+.wrap {
+  position: absolute;
+  top: 0;
+  right: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 50px;
+}
+
+.nfcs {
+  flex: 0 0 auto;
+  margin-right: 75px;
+}
+
+.connect {
+  display: flex;
+  align-items: center;
+}
+
+.network {
+  flex: 0 0 auto;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.networkBulb {
+  position: relative;
+  top: 1px;
+  margin-right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.wallet {
+  flex: 0 0 auto;
+}
+
+
+@media (max-width: 1360px) {
+  .nfcs {
+    margin-right: 20px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .wrap {
+    height: auto;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-start;
+  }
+
+  .nfcs {
+    margin-right: 0;
+    order: 2;
+  }
+
+  .connect {
+    margin-bottom: 30px;
+    order: 1;
+  }
+}

@@ -6,6 +6,7 @@ export type TextWeight = 400 | 500 | 600 | 700
 export type TextColor = 'default' | 'secondary' | 'branded' | 'inherit'
 
 type Props = {
+  tag?: 'div' | 'span'
   size: TextSize
   color?: TextColor
   weight?: TextWeight
@@ -17,6 +18,7 @@ type Props = {
 }
 
 export function Text({
+  tag = 'div',
   size,
   color = 'default',
   weight = 500,
@@ -26,10 +28,11 @@ export function Text({
   children,
   className,
 }: Props) {
+  const Tag = tag
   const isTruncateOne = truncateLines && truncateLines === 1
   const isTruncateMany = truncateLines && truncateLines > 1
   return (
-    <div
+    <Tag
       style={{
         ...(isTruncateMany ? { WebkitLineClamp: truncateLines } : {}),
       }}
@@ -48,6 +51,6 @@ export function Text({
       )}
     >
       {children}
-    </div>
+    </Tag>
   )
 }

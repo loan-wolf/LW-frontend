@@ -5,25 +5,21 @@ import { Text } from 'shared/ui/common/Text'
 import { HeaderNFCS } from 'modules/wallet/ui/HeaderNFCS'
 import { HeaderWallet } from 'modules/wallet/ui/HeaderWallet'
 
-import s from './Header.module.scss'
+import s from './HeaderActions.module.scss'
 import { getChainColor, getChainName } from 'modules/blockChain/chains'
 
 type Props = {
-  title: React.ReactNode
-  isNarrow: boolean
   className?: string
 }
 
-export function Header({ title, isNarrow, className }: Props) {
+export function HeaderActions({ className }: Props) {
   const currentChain = useCurrentChain()
 
   return (
-    <header className={cns(s.header, className, { [s.isNarrow]: isNarrow })}>
-      <div className={s.title}>{title}</div>
+    <div className={cns(s.wrap, className)}>
+      <HeaderNFCS className={s.nfcs} />
 
-      <div className={s.actions}>
-        <HeaderNFCS className={s.nfcs} />
-
+      <div className={s.connect}>
         <div className={s.network}>
           <div
             className={s.networkBulb}
@@ -33,9 +29,8 @@ export function Header({ title, isNarrow, className }: Props) {
             {getChainName(currentChain)}
           </Text>
         </div>
-
         <HeaderWallet className={s.wallet} />
       </div>
-    </header>
+    </div>
   )
 }

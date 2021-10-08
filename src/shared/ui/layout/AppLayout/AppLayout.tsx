@@ -1,8 +1,9 @@
 import cns from 'classnames'
 import { useLayoutMeta } from 'shared/hooks/useLayoutMeta'
 
-import { Header } from '../Header'
+import { Title } from 'shared/ui/common/Title'
 import { Drawer } from '../Drawer'
+import { HeaderActions } from '../HeaderActions'
 
 import s from './AppLayout.module.scss'
 
@@ -13,23 +14,22 @@ type Props = {
 export function AppLayout({ children }: Props) {
   const layoutMeta = useLayoutMeta()
   const isNarrow = layoutMeta?.layoutType === 'narrow'
+  const isNarrowExtended = layoutMeta?.layoutType === 'narrow-extended'
   const headerTitle = layoutMeta?.headerTitle
 
   return (
-    <div className={s.appWrap}>
+    <div
+      className={cns(s.appWrap, {
+        [s.isNarrow]: isNarrow,
+        [s.isNarrowExtended]: isNarrowExtended,
+      })}
+    >
       <div className={s.appInner}>
-        <div className={s.drawer}>
-          <Drawer />
-        </div>
-        <div className={cns(s.content, { [s.isNarrow]: isNarrow })}>
-          <Header
-            title={headerTitle}
-            isNarrow={isNarrow}
-            className={s.header}
-          />
-          <div className={s.contentInner}>
-            <div className={s.contentBox}>{children}</div>
-          </div>
+        <Drawer className={s.drawer} />
+        <HeaderActions />
+        <div className={s.content}>
+          <Title>{headerTitle}</Title>
+          {children}
         </div>
       </div>
     </div>
