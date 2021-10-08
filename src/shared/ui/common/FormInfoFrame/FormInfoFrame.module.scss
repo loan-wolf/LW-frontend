@@ -1,0 +1,24 @@
+.wrap {
+  display: flex;
+
+  &:not(:last-child) {
+    margin-bottom: 34px;
+  }
+}
+
+.column {
+  width: 100%;
+
+  &:first-child {
+    padding-right: 25px;
+    border-right: 1px solid var(--colorBorder);
+  }
+
+  &:last-child {
+    padding-left: 25px;
+  }
+}
+
+.list {
+  margin-bottom: var(--fieldMargin);
+}

@@ -1,6 +1,4 @@
 import cns from 'classnames'
-import { useMemo } from 'react'
-import { useCurrentMatch } from 'modules/router/hooks/useCurreentMatch'
 import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
 
 import { Text } from 'shared/ui/common/Text'
@@ -12,25 +10,20 @@ import { getChainColor, getChainName } from 'modules/blockChain/chains'
 
 type Props = {
   title: React.ReactNode
+  isNarrow: boolean
   className?: string
 }
 
-export function Header({ title, className }: Props) {
+export function Header({ title, isNarrow, className }: Props) {
   const currentChain = useCurrentChain()
-  const currentMatch = useCurrentMatch()
-
-  const headerTitle = useMemo(
-    () =>
-      currentMatch.find(m => Boolean(m.route.routeMeta?.headerTitle))?.route
-        .routeMeta.headerTitle,
-    [currentMatch],
-  )
 
   return (
-    <header className={cns(s.header, className)}>
-      <div className={s.title}>{headerTitle}</div>
+    <header className={cns(s.header, className, { [s.isNarrow]: isNarrow })}>
+      <div className={s.title}>{title}</div>
+
       <div className={s.actions}>
         <HeaderNFCS className={s.nfcs} />
+
         <div className={s.network}>
           <div
             className={s.networkBulb}
@@ -40,7 +33,8 @@ export function Header({ title, className }: Props) {
             {getChainName(currentChain)}
           </Text>
         </div>
-        <HeaderWallet />
+
+        <HeaderWallet className={s.wallet} />
       </div>
     </header>
   )

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import cns from 'classnames'
 import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
 import { useWalletModal } from 'modules/wallet/ui/WalletModal'
 import { useConnectWalletModal } from 'modules/wallet/ui/ConnectWalletModal'
@@ -11,7 +11,11 @@ import { ReactComponent as WalletSVG } from 'assets/wallet.svg'
 import { trimAddress } from 'modules/blockChain/utils/trimAddress'
 import s from './HeaderWallet.module.scss'
 
-export function HeaderWallet() {
+type Props = {
+  className?: string
+}
+
+export function HeaderWallet({ className }: Props) {
   const { isWalletConnected, walletAddress } = useWalletInfo()
   const walletModal = useWalletModal()
   const connectWalletModal = useConnectWalletModal()
@@ -30,7 +34,10 @@ export function HeaderWallet() {
   }
 
   return (
-    <span className={s.wrap} onClick={() => walletModal.open({})}>
+    <span
+      className={cns(s.wrap, className)}
+      onClick={() => walletModal.open({})}
+    >
       <Text size={16} weight={500} className={s.address}>
         {trimAddress(String(walletAddress), 3)}
       </Text>

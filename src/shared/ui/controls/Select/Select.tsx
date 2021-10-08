@@ -34,6 +34,7 @@ type Props = {
   options: Option[]
   isError?: boolean
   withFloatingIcon?: boolean
+  concat?: 'top' | 'bottom'
   onChange?: (value: Value) => void
   onFocus?: React.FocusEventHandler
   onBlur?: React.FocusEventHandler
@@ -51,6 +52,7 @@ function SelectRaw(props: Props, ref: React.Ref<HTMLInputElement>) {
     className,
     isError,
     withFloatingIcon,
+    concat,
     onFocus,
     onBlur,
   } = props
@@ -159,7 +161,13 @@ function SelectRaw(props: Props, ref: React.Ref<HTMLInputElement>) {
   }, [activeIdx, optsCount])
 
   return (
-    <div ref={rootRef} className={cns(s.root, className)}>
+    <div
+      ref={rootRef}
+      className={cns(s.root, className, {
+        [s.isConcatTop]: concat === 'top',
+        [s.isConcatBottom]: concat === 'bottom',
+      })}
+    >
       {/* Input emulates default form field behaviour */}
       <input
         ref={useMergeRefs([inputRef, ref])}

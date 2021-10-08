@@ -9,7 +9,8 @@
   overflow: hidden;
   border-radius: 16px;
   border: 1px solid var(--colorInputBorder);
-  background-color: var(--colorInputBg);
+  background-color: #1b102e;
+  // background-color: var(--colorInputBg);
   animation: optionsAppear 0.15s var(--easeOutCubic) 0s 1;
 
   :global(.theme-light) & {

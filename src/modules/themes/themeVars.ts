@@ -41,6 +41,14 @@ const themedSets = {
 }
 
 const shared = {
+  contentWidthNarrow: '400px',
+
+  headerActionsWidthDesktop: '400px',
+  headerActionsWidthTablet: '342px',
+
+  fieldMargin: '54px',
+  fieldMarginConcatted: '8px',
+
   colorWhite: '#ffffff',
 
   durFast: '100ms',

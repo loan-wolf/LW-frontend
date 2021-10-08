@@ -34,8 +34,42 @@
   flex: 0 0 auto;
   margin-right: 160px;
   display: flex;
+
+  @media (max-width: 1180px) {
+    margin-right: 40px;
+  }
 }
 
 .content {
   flex: 1 1 auto;
+
+}
+
+
+.contentInner {
+  width: 100%;
+
+  .content.isNarrow & {
+    display: flex;
+    align-items: center;
+
+    &:after {
+      content: '';
+      display: block;
+      width: var(--headerActionsWidthDesktop);
+
+      @media (max-width: 1180px) {
+        width: var(--headerActionsWidthTablet);
+      }
+    }
+  }
+}
+
+.contentBox {
+  width: 100%;
+
+  .content.isNarrow & {
+    margin: 0 auto;
+    max-width: var(--contentWidthNarrow);
+  }
 }

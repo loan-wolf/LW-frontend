@@ -4,4 +4,5 @@ export type MatchBranch = MatchedRoute<{}>[]
 
 export type RouteMeta = {
   headerTitle?: string
+  layoutType?: 'default' | 'narrow'
 }

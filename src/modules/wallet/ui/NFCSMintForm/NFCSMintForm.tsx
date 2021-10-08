@@ -4,6 +4,7 @@ import { useSimpleReducer } from 'shared/hooks/useSimpleReducer'
 import { usePermittedAddresses } from 'modules/wallet/hooks/usePermittedAddresses'
 
 import { Text } from 'shared/ui/common/Text'
+import { TermsHint } from 'shared/ui/common/TermsHint'
 import { Button } from 'shared/ui/controls/Button'
 import { Checkbox } from 'shared/ui/controls/Checkbox'
 import { AddressIcon } from 'modules/blockChain/ui/AddressIcon'
@@ -73,25 +74,10 @@ export function NFCSMintForm({ onSuccess }: Props) {
           </div>
         ))}
       </div>
-      <Button
-        size={72}
-        isFullWidth
-        className={s.createButton}
-        onClick={onSuccess}
-      >
+      <Button size={72} isFullWidth onClick={onSuccess}>
         Create NFCS
       </Button>
-      <Text isCentered size={14} weight={500} color="secondary">
-        by clicking this button you agree to the{' '}
-        <a
-          href="http://google.com"
-          target="_blank"
-          rel="noreferrer"
-          className={s.termsLink}
-        >
-          Terms of Use
-        </a>
-      </Text>
+      <TermsHint />
     </>
   )
 }

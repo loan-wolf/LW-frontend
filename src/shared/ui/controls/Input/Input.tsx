@@ -16,6 +16,7 @@ type Props = {
   autoComplete?: string
   maxLength?: number
   className?: string
+  concat?: 'top' | 'bottom'
   rows?: number
   minRows?: number
   maxRows?: number
@@ -46,6 +47,7 @@ function InputRaw(
     onBlur,
     value: valueProp,
     onChange,
+    concat,
     ...restProps
   }: Props,
   ref: React.Ref<InputElement>,
@@ -104,7 +106,12 @@ function InputRaw(
   // }
 
   return (
-    <div className={cns(s.wrap, className)}>
+    <div
+      className={cns(s.wrap, className, {
+        [s.isConcatTop]: concat === 'top',
+        [s.isConcatBottom]: concat === 'bottom',
+      })}
+    >
       <div
         className={cns(s.placeholder, {
           [s.isMoved]: isFocused || Boolean(value),

@@ -2,6 +2,11 @@
 
 .wrap {
   position: relative;
+  margin-bottom: var(--fieldMargin);
+
+  &.isConcatBottom {
+    margin-bottom: var(--fieldMarginConcatted);
+  }
 }
 
 .placeholder {
@@ -53,5 +58,15 @@
 
   &.withFloatingIcon {
     padding-left: 38px;
+  }
+
+  .isConcatTop & {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  .isConcatBottom & {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
   }
 }
