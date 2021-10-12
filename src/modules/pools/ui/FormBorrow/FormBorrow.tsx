@@ -109,6 +109,7 @@ export function FormBorrow({ onSuccess }: Props) {
             name="amount"
             concat="bottom"
             placeholder="Amount"
+            onlyNumber
             rules={{
               required: formErrors.required,
               validate: val =>

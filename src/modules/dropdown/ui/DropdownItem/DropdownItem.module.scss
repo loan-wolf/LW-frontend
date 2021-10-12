@@ -1,0 +1,63 @@
+@import '~shared/styles/index.global.scss';
+
+.root {
+  display: block;
+  position: relative;
+  padding: 10px 11px;
+  user-select: none;
+  text-decoration: none;
+  border-radius: 12px;
+  transition: background-color ease var(--durNorm);
+
+  &:not(:last-child) {
+    margin-bottom: 2px;
+  }
+
+  &.isDisabled {
+    opacity: .6;
+    cursor: not-allowed;
+  }
+
+  &.isInteractive {
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: none;
+      transition-duration: var(--durFast);
+    }
+
+    &.fashion--default {
+      &:hover {
+        background-color: var(--colorSelectOptionBgHover);
+      }
+      &:focus {
+        background-color: var(--colorSelectOptionBgPressed);
+      }
+    }
+
+    &.fashion--greenapple {
+      &:hover {
+        background-color: var(--colorGreenApple20);
+      }
+      &:focus {
+        background-color: var(--colorGreenApple20);
+      }
+    }
+  }
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: opacity ease var(--durNorm);
+}
+
+.icon {
+  margin-left: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

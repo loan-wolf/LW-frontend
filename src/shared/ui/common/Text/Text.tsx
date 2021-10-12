@@ -5,14 +5,17 @@ export type TextSize = 12 | 14 | 16 | 18 | 20 | 24 | 28 | 44
 export type TextWeight = 400 | 500 | 600 | 700
 export type TextColor = 'default' | 'secondary' | 'branded' | 'inherit'
 
-type Props = {
-  tag?: 'div' | 'span'
-  size: TextSize
-  color?: TextColor
+export type TextParams = {
+  size?: TextSize
   weight?: TextWeight
+  color?: TextColor
+  isUppercased?: boolean
+}
+
+type Props = TextParams & {
+  tag?: 'div' | 'span'
   truncateLines?: number
   isCentered?: boolean
-  isUppercased?: boolean
   children: React.ReactNode
   className?: string
 }

@@ -1,0 +1,55 @@
+@import '~shared/styles/index.global.scss';
+
+.root {
+  position: fixed;
+  top: 0;
+  left: 0;
+  flex-flow: column nowrap;
+  padding: 3px 3px;
+  border-radius: 16px;
+  cursor: default;
+  display: none;
+  backdrop-filter: blur(12px);
+
+  &.isShown {
+    display: flex;
+  }
+
+  &.isMeasuring {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &.isAnimInit {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+
+  &.isAnimPhase {
+    transition: opacity var(--easeOutCubic) var(--durFast),
+    transform var(--easeOutBack) var(--durNorm);
+  }
+
+  &.fashion--default {
+    background-color: var(--colorInputBg);
+    box-shadow: var(--boxShadowDropdown);
+    border: 1px solid var(--colorInputBorder);
+  }
+
+  &.fashion--greenapple {
+    background-color: var(--colorGreenApple20);
+    border: 1px solid var(--colorGreenApple40);
+    box-shadow: var(--boxShadowDropdown);
+  }
+}
+
+@keyframes optionsAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

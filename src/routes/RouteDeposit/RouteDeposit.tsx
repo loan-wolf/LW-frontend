@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { FormDeposit, SuccessData } from 'modules/pools/ui/FormDeposit'
 import { ContractSuccessTitle } from 'shared/ui/common/ContractSuccessTitle'
-import { ContractSuccessField } from 'shared/ui/common/ContractSuccessField'
+import { InfoFieldValue } from 'shared/ui/common/InfoFieldValue'
 import { NarrowWrapper } from 'shared/ui/layout/NarrowWrapper'
 
 import { getPoolAssetIcon } from 'modules/pools/constants/poolAssets'
@@ -17,7 +17,7 @@ function RouteDeposit() {
       <>
         <ContractSuccessTitle>Loan is disbursed.</ContractSuccessTitle>
         <div className={s.successInfo}>
-          <ContractSuccessField
+          <InfoFieldValue
             label="Asset"
             value={
               <>
@@ -26,7 +26,7 @@ function RouteDeposit() {
               </>
             }
           />
-          <ContractSuccessField
+          <InfoFieldValue
             label="Deposit"
             value={
               <>
@@ -34,8 +34,8 @@ function RouteDeposit() {
               </>
             }
           />
-          <ContractSuccessField label="APY" value={<>13%</>} />
-          <ContractSuccessField
+          <InfoFieldValue label="APY" value={<>13%</>} />
+          <InfoFieldValue
             label="Accrued interest"
             value={<>45 {successData.depositedAsset}</>}
           />

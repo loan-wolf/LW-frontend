@@ -5,12 +5,14 @@ const themedIndexes = [ThemesEnum.DARK, ThemesEnum.LIGHT]
 
 const themedSets = {
   colorBranded: ['#3DA2FF', ''],
+  colorGreenApple: ['#B7E82F', '#ffffff'],
+  colorGreenApple20: ['rgba(183, 232, 47, 0.2)', '#ffffff'],
+  colorGreenApple40: ['rgba(183, 232, 47, 0.4)', '#ffffff'],
 
   // Text
   colorText: ['#ffffff', '#000626'],
   colorTextContrast: ['#000626', '#ffffff'],
   colorTextSecondary: ['rgba(181, 190, 237, 0.5)', '#ffffff'],
-  colorTextActive: ['#B7E82F', '#ffffff'],
 
   // Background
   colorBgDeep: ['#070315', '#F9FAFE'],

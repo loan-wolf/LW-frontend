@@ -25,10 +25,10 @@
   }
 
   &.isActive {
-    color: var(--colorTextActive);
+    color: var(--colorGreenApple);
 
     & .linkIcon svg {
-      fill: var(--colorTextActive);
+      fill: var(--colorGreenApple);
     }
   }
 }

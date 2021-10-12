@@ -3,11 +3,18 @@ import cns from 'classnames'
 import s from './Button.module.scss'
 
 type ButtonSize = 24 | 30 | 40 | 56 | 60 | 72
+type ButtonFashion =
+  | 'default'
+  | 'secondary'
+  | 'glass'
+  | 'glass-branded'
+  | 'greenapple'
+  | 'greenapple-ghost'
 
 type Props = {
   size?: ButtonSize
   type?: 'button' | 'submit'
-  fashion?: 'default' | 'secondary' | 'glass' | 'glass-branded'
+  fashion?: ButtonFashion
   isSquare?: boolean
   isFullWidth?: boolean
   onClick?: React.MouseEventHandler

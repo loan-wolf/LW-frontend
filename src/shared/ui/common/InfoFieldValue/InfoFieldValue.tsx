@@ -1,12 +1,12 @@
 import { Text } from 'shared/ui/common/Text'
-import s from './ContractSuccessField.module.scss'
+import s from './InfoFieldValue.module.scss'
 
 type Props = {
   label?: React.ReactNode
   value?: React.ReactNode
 }
 
-export function ContractSuccessField({ label, value }: Props) {
+export function InfoFieldValue({ label, value }: Props) {
   return (
     <div>
       <Text

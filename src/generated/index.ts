@@ -3,6 +3,7 @@
 /* eslint-disable */
 export type { LoanWolfPool } from "./LoanWolfPool";
 export type { PoolFactory } from "./PoolFactory";
+export type { RociCreditToken } from "./RociCreditToken";
 export type { TestDai } from "./TestDai";
 export type { TestUsdt } from "./TestUsdt";
 export type { Token } from "./Token";
@@ -10,6 +11,7 @@ export type { TokenBar } from "./TokenBar";
 
 export { LoanWolfPool__factory } from "./factories/LoanWolfPool__factory";
 export { PoolFactory__factory } from "./factories/PoolFactory__factory";
+export { RociCreditToken__factory } from "./factories/RociCreditToken__factory";
 export { TestDai__factory } from "./factories/TestDai__factory";
 export { TestUsdt__factory } from "./factories/TestUsdt__factory";
 export { Token__factory } from "./factories/Token__factory";

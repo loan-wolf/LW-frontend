@@ -5,9 +5,6 @@ import cns from 'classnames'
 
 import s from './Input.module.scss'
 
-const trimLastDot = (val: string) =>
-  val[val.length + 1] === '.' ? val.slice(0, -1) : val
-
 type InputElement = HTMLInputElement | HTMLTextAreaElement
 
 type Props = {
@@ -84,7 +81,7 @@ function InputRaw(
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      if (onlyNumber && isNaN(Number(trimLastDot(e.target.value)))) {
+      if (onlyNumber && isNaN(Number(e.target.value))) {
         return
       }
       if (onChange) {

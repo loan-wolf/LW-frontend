@@ -10,7 +10,7 @@
   overflow: hidden;
   line-height: 1;
   transition: background-color ease var(--durNorm),
-    box-shadow ease var(--durNorm);
+    border-color ease var(--durNorm), box-shadow ease var(--durNorm);
 
   &:before {
     content: '';
@@ -34,6 +34,10 @@
   &:active {
     transform: translateY(1px);
     transition-duration: var(--durMed);
+  }
+
+  & svg {
+    display: block;
   }
 
   &.isFullWidth {
@@ -127,7 +131,6 @@
     }
 
     svg {
-      display: block;
       fill: var(--colorText);
     }
   }
@@ -142,7 +145,6 @@
     }
 
     svg {
-      display: block;
       fill: var(--colorText);
     }
   }
@@ -157,7 +159,6 @@
     }
 
     svg {
-      display: block;
       fill: var(--colorBranded);
     }
   }
@@ -182,8 +183,36 @@
     }
 
     svg {
-      display: block;
       fill: var(--colorText);
+    }
+  }
+
+  &.fashion--greenapple {
+    color: var(--colorGreenApple);
+    border: 1px solid var(--colorGreenApple40);
+    background-color: var(--colorGreenApple20);
+
+    &:hover {
+      border-color: var(--colorGreenApple);
+      background-color: var(--colorGreenApple40);
+    }
+
+    svg {
+      fill: var(--colorGreenApple);
+    }
+  }
+
+  &.fashion--greenapple-ghost {
+    color: var(--colorGreenApple);
+    border: 1px solid var(--colorGreenApple20);
+
+    &:hover {
+      border-color: var(--colorGreenApple40);
+      background-color: var(--colorGreenApple20);
+    }
+
+    svg {
+      fill: var(--colorGreenApple);
     }
   }
 }

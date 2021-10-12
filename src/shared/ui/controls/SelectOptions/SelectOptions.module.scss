@@ -10,7 +10,7 @@
   border-radius: 16px;
   border: 1px solid var(--colorInputBorder);
   background-color: var(--colorInputBg);
-  backdrop-filter: blur(24px);
+  backdrop-filter: blur(12px);
   animation: optionsAppear 0.15s var(--easeOutCubic) 0s 1;
 
   :global(.theme-light) & {
