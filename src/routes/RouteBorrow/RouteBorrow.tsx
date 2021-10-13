@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { NarrowWrapper } from 'shared/ui/layout/NarrowWrapper'
 import { FormBorrow, SuccessData } from 'modules/pools/ui/FormBorrow'
 import { ContractSuccessTitle } from 'shared/ui/common/ContractSuccessTitle'
-import { LoanInfoRow } from 'modules/pools/ui/LoanInfoRow'
+import { DashboardRowLoan } from 'modules/pools/ui/DashboardRowLoan'
 
 import { PoolAsset } from 'modules/pools/constants/poolAssets'
 import { createRoute } from 'modules/router/utils/createRoute'
@@ -23,7 +23,7 @@ function RouteBorrow() {
     <>
       <ContractSuccessTitle>Deposit Successful.</ContractSuccessTitle>
 
-      <LoanInfoRow
+      <DashboardRowLoan
         loan={{
           id: '0xaqw11..98',
           borrowedAmount: Number(successData.amount),

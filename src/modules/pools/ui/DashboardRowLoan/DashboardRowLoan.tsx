@@ -3,10 +3,11 @@ import { Button } from 'shared/ui/controls/Button'
 import { InfoFieldValue } from 'shared/ui/common/InfoFieldValue'
 import { InfoFieldValueCouple } from 'shared/ui/common/InfoFieldValueCouple'
 import { DropdownLoan } from '../DropdownLoan'
+import { DashboardRow } from 'shared/ui/common/DashboardRow'
 
 import { getPoolAssetIcon, PoolAsset } from 'modules/pools/constants/poolAssets'
 
-import s from './LoanInfoRow.module.scss'
+import s from './DashboardRowLoan.module.scss'
 
 export type LoanDataMock = {
   id: string
@@ -22,9 +23,10 @@ export type LoanDataMock = {
 
 type Props = {
   loan: LoanDataMock
+  className?: string
 }
 
-export function LoanInfoRow({ loan }: Props) {
+export function DashboardRowLoan({ loan, className }: Props) {
   const {
     id,
     borrowedAmount,
@@ -40,7 +42,7 @@ export function LoanInfoRow({ loan }: Props) {
   const borrowedAmountUSD = borrowedAmount * 23
 
   return (
-    <div className={s.wrap}>
+    <DashboardRow className={className}>
       <div className={s.column}>
         <InfoFieldValue
           label="Asset"
@@ -111,6 +113,6 @@ export function LoanInfoRow({ loan }: Props) {
         </div>
         <InfoFieldValue label="Loan Id" value={id} />
       </div>
-    </div>
+    </DashboardRow>
   )
 }

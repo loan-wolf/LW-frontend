@@ -4,11 +4,12 @@ import s from './InfoFieldValue.module.scss'
 type Props = {
   label?: React.ReactNode
   value?: React.ReactNode
+  className?: string
 }
 
-export function InfoFieldValue({ label, value }: Props) {
+export function InfoFieldValue({ label, value, className }: Props) {
   return (
-    <div>
+    <div className={className}>
       <Text
         size={12}
         weight={500}

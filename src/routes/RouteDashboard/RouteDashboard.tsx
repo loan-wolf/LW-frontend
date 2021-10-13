@@ -1,7 +1,35 @@
 import { Tabs, Tab } from 'shared/ui/common/Tabs'
-import { LoanInfoRow, LoanDataMock } from 'modules/pools/ui/LoanInfoRow'
+import {
+  DashboardRowLoan,
+  LoanDataMock,
+} from 'modules/pools/ui/DashboardRowLoan'
+import {
+  DashboardRowDeposit,
+  DepositDataMock,
+} from 'modules/pools/ui/DashboardRowDeposit'
 
 import { createRoute } from 'modules/router/utils/createRoute'
+
+const DEPOSITS_MOCK: DepositDataMock[] = [
+  {
+    depositedAsset: 'DAI',
+    amount: 121312,
+    apy: 12,
+    interest: 32,
+  },
+  {
+    depositedAsset: 'DAI',
+    amount: 121,
+    apy: 12,
+    interest: 32,
+  },
+  {
+    depositedAsset: 'ETH',
+    amount: 23,
+    apy: 32,
+    interest: 12,
+  },
+]
 
 const LOANS_MOCK: LoanDataMock[] = [
   {
@@ -52,7 +80,9 @@ function RouteDashboard() {
           </>
         }
       >
-        123
+        {DEPOSITS_MOCK.map((deposit, i) => (
+          <DashboardRowDeposit key={i} deposit={deposit} />
+        ))}
       </Tab>
 
       {/* Ongoing Loans */}
@@ -66,7 +96,7 @@ function RouteDashboard() {
         }
       >
         {LOANS_MOCK.map((loan, i) => (
-          <LoanInfoRow key={i} loan={loan} />
+          <DashboardRowLoan key={i} loan={loan} />
         ))}
       </Tab>
 

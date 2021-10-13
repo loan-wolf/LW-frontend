@@ -1,4 +1,4 @@
-.wrap {
+.dashboardRow {
   position: relative;
   padding: 32px 0;
   display: flex;
@@ -37,29 +37,5 @@
     &:after {
       bottom: 0;
     }
-  }
-}
-
-.column {
-  &:nth-child(2) {
-    width: 25%;
-  }
-
-  &:nth-child(3) {
-    width: 20%;
-  }
-
-  & > *:not(:last-child) {
-    margin-bottom: 32px;
-  }
-}
-
-.actions {
-  display: flex;
-}
-
-.action {
-  &:not(:last-child) {
-    margin-right: 12px;
   }
 }
