@@ -17,6 +17,11 @@ export const ContractTestUsdt = createContractHelpers({
   address: addresses.TestUsdt,
 })
 
+export const ContractRociCreditToken = createContractHelpers({
+  factory: generated.RociCreditToken__factory,
+  address: addresses.RociCreditToken,
+})
+
 export const getContractLoanWolfPool = (address: Address) =>
   createContractHelpers({
     factory: generated.LoanWolfPool__factory,
