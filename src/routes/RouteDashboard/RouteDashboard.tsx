@@ -7,6 +7,10 @@ import {
   DashboardRowDeposit,
   DepositDataMock,
 } from 'modules/pools/ui/DashboardRowDeposit'
+import {
+  DashboardRowCollateral,
+  CollateralDataMock,
+} from 'modules/pools/ui/DashboardRowCollateral'
 
 import { createRoute } from 'modules/router/utils/createRoute'
 
@@ -67,6 +71,24 @@ const LOANS_MOCK: LoanDataMock[] = [
   },
 ]
 
+const COLLATERALS_MOCK: CollateralDataMock[] = [
+  {
+    collateralAsset: 'ETH',
+    amount: 123,
+    unlockDate: '2021-10-10 19:59:59',
+  },
+  {
+    collateralAsset: 'USDC',
+    amount: 32,
+    unlockDate: '2021-10-10 19:59:59',
+  },
+  {
+    collateralAsset: 'DAI',
+    amount: 42323,
+    unlockDate: '2021-10-10 19:59:59',
+  },
+]
+
 function RouteDashboard() {
   return (
     <Tabs>
@@ -110,7 +132,9 @@ function RouteDashboard() {
           </>
         }
       >
-        12
+        {COLLATERALS_MOCK.map((collateral, i) => (
+          <DashboardRowCollateral key={i} collateral={collateral} />
+        ))}
       </Tab>
 
       {/* Old deposits */}
