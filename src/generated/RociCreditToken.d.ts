@@ -30,7 +30,7 @@ interface RociCreditTokenInterface extends ethers.utils.Interface {
     "getBundle(uint256)": FunctionFragment;
     "initialize()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "mintToken(address,address[])": FunctionFragment;
+    "mintToken(address[])": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
@@ -39,7 +39,6 @@ interface RociCreditTokenInterface extends ethers.utils.Interface {
     "renounceOwnership()": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
-    "storeBundle(uint256,address[])": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
@@ -77,10 +76,7 @@ interface RociCreditTokenInterface extends ethers.utils.Interface {
     functionFragment: "isApprovedForAll",
     values: [string, string]
   ): string;
-  encodeFunctionData(
-    functionFragment: "mintToken",
-    values: [string, string[]]
-  ): string;
+  encodeFunctionData(functionFragment: "mintToken", values: [string[]]): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -100,10 +96,6 @@ interface RociCreditTokenInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "setApprovalForAll",
     values: [string, boolean]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "storeBundle",
-    values: [BigNumberish, string[]]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
@@ -160,10 +152,6 @@ interface RociCreditTokenInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setApprovalForAll",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "storeBundle",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -296,7 +284,6 @@ export class RociCreditToken extends BaseContract {
     ): Promise<[boolean]>;
 
     mintToken(
-      to: string,
       bundle: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -338,12 +325,6 @@ export class RociCreditToken extends BaseContract {
     setApprovalForAll(
       arg0: string,
       arg1: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    storeBundle(
-      tokenId: BigNumberish,
-      bundle: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -425,7 +406,6 @@ export class RociCreditToken extends BaseContract {
   ): Promise<boolean>;
 
   mintToken(
-    to: string,
     bundle: string[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -464,12 +444,6 @@ export class RociCreditToken extends BaseContract {
   setApprovalForAll(
     arg0: string,
     arg1: boolean,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  storeBundle(
-    tokenId: BigNumberish,
-    bundle: string[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -539,11 +513,7 @@ export class RociCreditToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    mintToken(
-      to: string,
-      bundle: string[],
-      overrides?: CallOverrides
-    ): Promise<void>;
+    mintToken(bundle: string[], overrides?: CallOverrides): Promise<void>;
 
     name(overrides?: CallOverrides): Promise<string>;
 
@@ -575,12 +545,6 @@ export class RociCreditToken extends BaseContract {
     setApprovalForAll(
       arg0: string,
       arg1: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    storeBundle(
-      tokenId: BigNumberish,
-      bundle: string[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -726,7 +690,6 @@ export class RociCreditToken extends BaseContract {
     ): Promise<BigNumber>;
 
     mintToken(
-      to: string,
       bundle: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -768,12 +731,6 @@ export class RociCreditToken extends BaseContract {
     setApprovalForAll(
       arg0: string,
       arg1: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    storeBundle(
-      tokenId: BigNumberish,
-      bundle: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -862,7 +819,6 @@ export class RociCreditToken extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     mintToken(
-      to: string,
       bundle: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -904,12 +860,6 @@ export class RociCreditToken extends BaseContract {
     setApprovalForAll(
       arg0: string,
       arg1: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    storeBundle(
-      tokenId: BigNumberish,
-      bundle: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -1,4 +1,5 @@
 import cns from 'classnames'
+import { ReactComponent as LoaderSVG } from 'assets/loader.svg'
 // eslint-disable-next-line css-modules/no-unused-class
 import s from './Button.module.scss'
 
@@ -17,6 +18,7 @@ type Props = {
   fashion?: ButtonFashion
   isSquare?: boolean
   isFullWidth?: boolean
+  isLoading?: boolean
   onClick?: React.MouseEventHandler
   children?: React.ReactNode
   className?: string
@@ -29,13 +31,14 @@ export function Button({
   onClick,
   isSquare,
   isFullWidth,
+  isLoading,
   children,
   className,
 }: Props) {
   return (
     <button
       type={type}
-      onClick={onClick}
+      onClick={!isLoading ? onClick : undefined}
       className={cns(
         s.button,
         className,
@@ -44,10 +47,16 @@ export function Button({
         {
           [s.isSquare]: isSquare,
           [s.isFullWidth]: isFullWidth,
+          [s.isLoading]: isLoading,
         },
       )}
     >
       <span className={s.content}>{children}</span>
+      {isLoading && (
+        <span className={s.loader}>
+          <LoaderSVG />
+        </span>
+      )}
     </button>
   )
 }

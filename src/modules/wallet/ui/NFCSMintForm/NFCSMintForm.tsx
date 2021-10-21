@@ -1,5 +1,5 @@
 import { noop } from 'lodash'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { useSimpleReducer } from 'shared/hooks/useSimpleReducer'
 import { usePermittedAddresses } from 'modules/wallet/hooks/usePermittedAddresses'
 
@@ -10,6 +10,7 @@ import { Checkbox } from 'shared/ui/controls/Checkbox'
 import { AddressIcon } from 'modules/blockChain/ui/AddressIcon'
 
 import { trimAddress } from 'modules/blockChain/utils/trimAddress'
+import { ContractRociCreditToken } from 'modules/contracts/contracts'
 import s from './NFCSMintForm.module.scss'
 
 type Props = {
@@ -18,15 +19,32 @@ type Props = {
 
 export function NFCSMintForm({ onSuccess }: Props) {
   const addresses = usePermittedAddresses()
-  const [checkedAddresses, setCheckedAddress] = useSimpleReducer<
+  const contractRociCreditToken = ContractRociCreditToken.useContractWeb3()
+  const [isLoading, setLoading] = useState(false)
+  const [uncheckedAddresses, setUncheckedAddress] = useSimpleReducer<
     Record<string, boolean>
   >({})
 
+  const handleMint = useCallback(async () => {
+    if (!addresses.data) return
+    try {
+      setLoading(true)
+      const resultAddresses = addresses.data.filter(
+        address => !uncheckedAddresses[address],
+      )
+      await contractRociCreditToken.mintToken(resultAddresses)
+      onSuccess?.()
+    } catch (e) {
+      console.error(e)
+      setLoading(false)
+    }
+  }, [addresses, uncheckedAddresses, contractRociCreditToken, onSuccess])
+
   const handleToggleAddress = useCallback(
     address => {
-      setCheckedAddress({ [address]: !checkedAddresses[address] })
+      setUncheckedAddress({ [address]: !uncheckedAddresses[address] })
     },
-    [checkedAddresses, setCheckedAddress],
+    [uncheckedAddresses, setUncheckedAddress],
   )
 
   return (
@@ -67,14 +85,14 @@ export function NFCSMintForm({ onSuccess }: Props) {
               {trimAddress(address, 6)}
             </Text>
             <Checkbox
-              isChecked={Boolean(checkedAddresses[address])}
+              isChecked={!Boolean(uncheckedAddresses[address])}
               onChange={noop}
               className={s.addressCheckbox}
             />
           </div>
         ))}
       </div>
-      <Button size={72} isFullWidth onClick={onSuccess}>
+      <Button size={72} isFullWidth onClick={handleMint} isLoading={isLoading}>
         Create NFCS
       </Button>
       <TermsHint />

@@ -23,7 +23,7 @@
     transition: opacity ease var(--durNorm);
   }
 
-  &:hover {
+  &:not(.isLoading):hover {
     transition-duration: var(--durMed);
 
     &:before {
@@ -31,7 +31,7 @@
     }
   }
 
-  &:active {
+  &:not(.isLoading):active {
     transform: translateY(1px);
     transition-duration: var(--durMed);
   }
@@ -122,7 +122,7 @@
       opacity: 0;
     }
 
-    &:hover {
+    &:not(.isLoading):hover {
       box-shadow: 0px 12px 80px rgba(108, 72, 251, 0.8);
 
       &:before {
@@ -140,7 +140,7 @@
     background-color: var(--colorControlBg);
     border: 1px solid var(--colorControlBorder);
 
-    &:hover {
+    &:not(.isLoading):hover {
       background-color: var(--colorControlBgHover);
     }
 
@@ -154,7 +154,7 @@
     background-color: rgba(61, 162, 255, 0.12);
     border: 1px solid var(--colorBranded);
 
-    &:hover {
+    &:not(.isLoading):hover {
       background-color: rgba(61, 162, 255, 0.3);
     }
 
@@ -176,7 +176,7 @@
       opacity: 0.4;
     }
 
-    &:hover {
+    &:not(.isLoading):hover {
       &:before {
         opacity: 1;
       }
@@ -192,7 +192,7 @@
     border: 1px solid var(--colorGreenApple40);
     background-color: var(--colorGreenApple20);
 
-    &:hover {
+    &:not(.isLoading):hover {
       border-color: var(--colorGreenApple);
       background-color: var(--colorGreenApple40);
     }
@@ -206,7 +206,7 @@
     color: var(--colorGreenApple);
     border: 1px solid var(--colorGreenApple20);
 
-    &:hover {
+    &:not(.isLoading):hover {
       border-color: var(--colorGreenApple40);
       background-color: var(--colorGreenApple20);
     }
@@ -215,10 +215,34 @@
       fill: var(--colorGreenApple);
     }
   }
+
+  &.isLoading {
+    cursor: default;
+
+    .content {
+      opacity: 0;
+    }
+  }
 }
 
 .content {
   position: relative;
+}
+
+.loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  svg {
+    display: block;
+    height: 100%;
+  }
 }
 
 // background: radial-gradient(66.67% 2992.67% at 50% 70%, rgba(179, 110, 253, 1.0) 0%, rgba(72, 118, 251, 0) 100%);
