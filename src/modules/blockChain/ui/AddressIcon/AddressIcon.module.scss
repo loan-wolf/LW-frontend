@@ -5,8 +5,8 @@
   border-radius: 16px;
   border: 1px solid var(--colorControlBorder);
   overflow: hidden;
+}
 
-  &button {
-    cursor: pointer;
-  }
+button.icon {
+  cursor: pointer;
 }
