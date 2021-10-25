@@ -11,6 +11,7 @@ import {
   DashboardRowCollateral,
   CollateralDataMock,
 } from 'modules/pools/ui/DashboardRowCollateral'
+import { withWalletConnectCheck } from 'modules/wallet/hocs/withWalletConnectCheck'
 
 import { createRoute } from 'modules/router/utils/createRoute'
 
@@ -166,7 +167,9 @@ function RouteDashboard() {
   )
 }
 
+const RouteDashboardChecked = withWalletConnectCheck(RouteDashboard)
+
 export const routeDashboard = createRoute({
   headerTitle: 'Dashboard',
-  component: RouteDashboard,
+  component: RouteDashboardChecked,
 })

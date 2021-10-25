@@ -47,6 +47,7 @@ const shared = {
   contentWidthNarrow: '400px',
 
   fieldMargin: '54px',
+  fieldHeight: '60px',
   fieldMarginConcatted: '8px',
 
   colorWhite: '#ffffff',

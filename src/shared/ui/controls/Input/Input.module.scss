@@ -1,11 +1,55 @@
 @import '~shared/styles/index.global.scss';
 
 .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
-  margin-bottom: var(--fieldMargin);
+  @include inputBase();
+
+  &:not(.isTextarea) {
+    &,
+    & .field {
+      height: var(--fieldHeight);
+    }
+  }
+
+  &.withMargin {
+    margin-bottom: var(--fieldMargin);
+
+    &.isConcatBottom {
+      margin-bottom: var(--fieldMarginConcatted);
+    }
+  }
+
+  &:hover {
+    @include inputHover();
+  }
+
+  &.isFocused {
+    @include inputFocus();
+  }
+
+  &.isError {
+    @include inputError();
+
+    &:focus {
+      @include inputErrorFocus();
+    }
+  }
+
+  &.isConcatTop {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
 
   &.isConcatBottom {
-    margin-bottom: var(--fieldMarginConcatted);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  &.isDisabled {
+    @include inputDisabled();
   }
 }
 
@@ -18,60 +62,22 @@
 }
 
 .field {
-  @include inputBase();
   display: block;
   padding: 20px 24px 0;
   width: 100%;
-
-  &:not(.isTextarea) {
-    height: 60px;
-  }
-
-  &.isTextarea {
-    resize: none;
-    min-height: 60px;
-    line-height: 20px;
-    padding-top: 9px;
-    padding-bottom: 9px;
-  }
-
-  &:hover {
-    @include inputHover();
-  }
-
-  &:focus {
-    @include inputFocus();
-  }
-
-  &.isError {
-    @include inputError();
-    padding-right: 40px;
-
-    &:focus {
-      @include inputErrorFocus();
-    }
-  }
-
-  &:disabled {
-    @include inputDisabled();
-  }
-
-  &.withFloatingIcon {
-    padding-left: 38px;
-  }
-
-  .isConcatTop & {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-  }
-
-  .isConcatBottom & {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-  }
+  background: none;
+  border: none;
+  @include inputFont();
 }
 
 .wrap:hover .error,
 .wrap.isFocused .error {
   @include inputErrorMessageOpened();
+}
+
+.actionWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-right: 16px;
 }

@@ -15,18 +15,23 @@
   &:-webkit-autofill:hover,
   &:-webkit-autofill:focus,
   &:-webkit-autofill:active {
-    transition: background-color 9999999s ease-in-out 0s, color 5000s ease-in-out 0s;
+    transition: background-color 9999999s ease-in-out 0s,
+      color 5000s ease-in-out 0s;
   }
 }
 
-@mixin inputBase() {
+@mixin inputFont() {
   color: var(--colorText);
   font-size: 16px;
   font-weight: 500;
+}
+
+@mixin inputBase() {
   border-radius: 16px;
   border: 1px solid var(--colorInputBorder);
   background-color: var(--colorInputBg);
   transition: border-color ease var(--durNorm), box-shadow ease var(--durNorm);
+  @include inputFont();
   @include inputPlaceholder(var(--colorInputPlaceholder));
 }
 

@@ -1,9 +1,14 @@
 import cns from 'classnames'
 import s from './Text.module.scss'
 
-export type TextSize = 12 | 14 | 16 | 18 | 20 | 24 | 28 | 44
+export type TextSize = 12 | 14 | 16 | 18 | 20 | 24 | 28 | 36 | 44
 export type TextWeight = 400 | 500 | 600 | 700
-export type TextColor = 'default' | 'secondary' | 'branded' | 'inherit'
+export type TextColor =
+  | 'default'
+  | 'secondary'
+  | 'branded'
+  | 'greenapple'
+  | 'inherit'
 
 export type TextParams = {
   size?: TextSize
@@ -17,6 +22,7 @@ type Props = TextParams & {
   truncateLines?: number
   isCentered?: boolean
   children: React.ReactNode
+  onClick?: React.MouseEventHandler
   className?: string
 }
 
@@ -29,6 +35,7 @@ export function Text({
   isCentered,
   isUppercased,
   children,
+  onClick,
   className,
 }: Props) {
   const Tag = tag
@@ -36,6 +43,7 @@ export function Text({
   const isTruncateMany = truncateLines && truncateLines > 1
   return (
     <Tag
+      onClick={onClick}
       style={{
         ...(isTruncateMany ? { WebkitLineClamp: truncateLines } : {}),
       }}

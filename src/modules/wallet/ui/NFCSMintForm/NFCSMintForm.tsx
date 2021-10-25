@@ -85,7 +85,7 @@ export function NFCSMintForm({ onSuccess }: Props) {
               {trimAddress(address, 6)}
             </Text>
             <Checkbox
-              isChecked={!Boolean(uncheckedAddresses[address])}
+              checked={!Boolean(uncheckedAddresses[address])}
               onChange={noop}
               className={s.addressCheckbox}
             />

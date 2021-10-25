@@ -38,6 +38,7 @@ export function withFormController<Props extends InjectedProps>(
             ref={args.field.ref}
             name={args.field.name}
             value={args.field.value}
+            checked={args.field.value}
             onBlur={args.field.onBlur}
             onChange={args.field.onChange}
             error={args.fieldState.error?.message}

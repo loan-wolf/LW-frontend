@@ -112,8 +112,7 @@ export function FormBorrow({ onSuccess }: Props) {
             onlyNumber
             rules={{
               required: formErrors.required,
-              validate: val =>
-                Number(val) < 0.01 ? 'Should not be less than 0.01' : true,
+              validate: val => formErrors.notLess(val, 0.01) || true,
             }}
           />
 

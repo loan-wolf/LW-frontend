@@ -33,7 +33,6 @@ type Props = {
   value?: Value
   defaultValue?: Value
   options: Option[]
-  withFloatingIcon?: boolean
   concat?: 'top' | 'bottom'
   error?: React.ReactNode
   onChange?: (value: Value) => void
@@ -51,7 +50,6 @@ function SelectRaw(props: Props, ref: React.Ref<HTMLInputElement>) {
     placeholder,
     onChange,
     className,
-    withFloatingIcon,
     concat,
     onFocus,
     onBlur,
@@ -186,7 +184,6 @@ function SelectRaw(props: Props, ref: React.Ref<HTMLInputElement>) {
         className={cns(s.box, {
           [s.isFocused]: isFocused,
           [s.isError]: Boolean(error),
-          [s.withFloatingIcon]: withFloatingIcon,
         })}
         onClick={handleClickBox}
       >

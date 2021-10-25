@@ -22,13 +22,14 @@ type Props = {
   minRows?: number
   maxRows?: number
   error?: React.ReactNode
+  action?: React.ReactNode
 
   required?: boolean
   disabled?: boolean
   readonly?: boolean
   onlyNumber?: boolean
   isAutosizable?: boolean
-  withFloatingIcon?: boolean
+  withMargin?: boolean
 
   onChange?: React.ChangeEventHandler<InputElement>
   onKeyDown?: React.KeyboardEventHandler<InputElement>
@@ -43,13 +44,14 @@ function InputRaw(
     isAutosizable,
     placeholder,
     type = 'text',
-    withFloatingIcon,
+    withMargin = true,
     onFocus,
     onBlur,
     value: valueProp,
     onChange,
     concat,
     error,
+    action,
     onlyNumber,
     ...restProps
   }: Props,
@@ -100,11 +102,7 @@ function InputRaw(
     onBlur: handleBlur,
     onChange: handleChange,
     value,
-    className: cns(s.field, {
-      [s.isError]: Boolean(error),
-      [s.isTextarea]: isTextarea || isAutosizable,
-      [s.withFloatingIcon]: withFloatingIcon,
-    }),
+    className: s.field,
   }
 
   // if (isAutosizable) {
@@ -114,9 +112,13 @@ function InputRaw(
   return (
     <div
       className={cns(s.wrap, className, {
+        [s.isError]: Boolean(error),
         [s.isFocused]: isFocused,
+        [s.isDisabled]: restProps.disabled,
+        [s.withMargin]: withMargin,
         [s.isConcatTop]: concat === 'top',
         [s.isConcatBottom]: concat === 'bottom',
+        // [s.isTextarea]: isTextarea || isAutosizable,
       })}
     >
       <div
@@ -127,6 +129,7 @@ function InputRaw(
         {placeholder}
       </div>
       <Tag {...fieldProps} ref={ref as any} type={type} />
+      {action && <div className={s.actionWrap}>{action}</div>}
       {error && <FieldError className={s.error}>{error}</FieldError>}
     </div>
   )

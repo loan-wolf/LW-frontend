@@ -1,23 +1,23 @@
 import { forwardRef, useCallback, useState } from 'react'
 import cns from 'classnames'
 
-import { ReactComponent as Icon } from 'assets/check.svg'
+import { Text } from 'shared/ui/common/Text'
 
-import s from './Checkbox.module.scss'
+import s from './Toggle.module.scss'
 
 type Props = {
   name?: string
   label?: React.ReactNode
   value?: string
 
-  disabled?: boolean
   checked?: boolean
+  disabled?: boolean
 
   className?: string
   onChange?: React.ChangeEventHandler<HTMLInputElement>
 }
 
-export function CheckboxRaw(props: Props, ref: React.Ref<HTMLInputElement>) {
+export function ToggleRaw(props: Props, ref: React.Ref<HTMLInputElement>) {
   const {
     name,
     label,
@@ -59,12 +59,14 @@ export function CheckboxRaw(props: Props, ref: React.Ref<HTMLInputElement>) {
         onChange={handleChange}
         type="checkbox"
       />
-      <div className={s.iconWrap}>
-        <Icon className={s.icon} />
+      <Text size={12} weight={500} isUppercased>
+        {label}
+      </Text>
+      <div className={s.dotWrap}>
+        <div className={s.dot} />
       </div>
-      {label}
     </label>
   )
 }
 
-export const Checkbox = forwardRef(CheckboxRaw)
+export const Toggle = forwardRef(ToggleRaw)

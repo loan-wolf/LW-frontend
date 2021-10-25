@@ -40,7 +40,7 @@
 .item {
   display: flex;
   align-items: center;
-  height: 60px;
+  height: var(--fieldHeight);
   padding: 0 24px;
   border: 1px solid var(--colorInputBg);
   user-select: none;

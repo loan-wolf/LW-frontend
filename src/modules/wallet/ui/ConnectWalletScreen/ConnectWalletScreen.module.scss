@@ -1,0 +1,43 @@
+.wrap {
+  position: relative;
+}
+
+.title {
+  margin-bottom: 50px;
+}
+
+.button {
+  margin: 0 auto;
+  display: block;
+  position: relative;
+  width: 365px;
+  height: 365px;
+  border-radius: 50%;
+  border: 1px solid rgba(217, 218, 255, 0.24);
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    rgba(123, 115, 252, 0) 0%,
+    rgba(157, 78, 241, 0.2) 100%
+  );
+  cursor: pointer;
+
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 420px;
+    height: 420px;
+    border-radius: 50%;
+    border: 1px solid rgba(217, 218, 255, 0.24);
+    transform: translate(-50%, -50%);
+  }
+}
+
+.buttonMainText {
+  margin-top: 18px;
+  margin-bottom: 18px;
+  color: #c969eb;
+  text-shadow: 0px 2px 42px #c464ff;
+}
