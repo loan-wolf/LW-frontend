@@ -1,0 +1,50 @@
+.badge {
+  padding: 0 14px 0 8px;
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  font-weight: 500;
+  font-size: 12px;
+  text-transform: uppercase;
+  height: 36px;
+  border: 1px solid var(--colorBorder);
+  border-radius: 18px;
+
+
+  & svg {
+    display: block;
+    margin-right: 6px;
+    width: 20px;
+    height: 20px;
+  }
+
+  &.isPending {
+    color: var(--colorGreenApple);
+    border-color: var(--colorGreenApple20);
+    background-color: var(--colorGreenApple10);
+
+    & svg {
+      fill: var(--colorGreenApple);
+    }
+  }
+
+  &.isFailed {
+    color: var(--colorError);
+    border-color: var(--colorError20);
+    background-color: var(--colorError10);
+
+    & svg {
+      fill: var(--colorError);
+    }
+  }
+
+  &.isConfirmed {
+    color: var(--colorBranded);
+    border-color: var(--colorBranded20);
+    background-color: var(--colorBranded10);
+
+    & svg {
+      fill: var(--colorBranded);
+    }
+  }
+}

@@ -156,6 +156,7 @@ export function FormRepayment({ onSuccess }: Props) {
             <FormLockedValue
               label="Amount of collateral"
               name="collateralAmount"
+              subvalue="323 USD"
             />
           )}
         </FormLockedValuesList>

@@ -5,6 +5,7 @@ import s from './FormLockedValue.module.scss'
 
 type PlainProps = {
   label: React.ReactNode
+  subvalue?: React.ReactNode
   name: string
   getIcon?: (val: string) => React.ReactNode
   formatValue?: (val: string) => React.ReactNode
@@ -14,6 +15,7 @@ type PlainProps = {
 
 export function FormLockedValue({
   label,
+  subvalue,
   name,
   getIcon,
   formatValue,
@@ -47,9 +49,14 @@ export function FormLockedValue({
   return (
     <div className={cns(s.wrap, className)}>
       {labelEl}
-      <Text size={valueSize || 28} weight={500}>
-        {formattedValue}
-      </Text>
+      <div>
+        <Text size={valueSize || 28} weight={500} className={s.value}>
+          {formattedValue}
+        </Text>
+        <Text size={12} weight={500} color="secondary" className={s.subvalue}>
+          {subvalue}
+        </Text>
+      </div>
     </div>
   )
 }
