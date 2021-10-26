@@ -5,9 +5,17 @@ const themedIndexes = [ThemesEnum.DARK, ThemesEnum.LIGHT]
 
 const themedSets = {
   colorBranded: ['#3DA2FF', ''],
+  colorBranded10: ['rgba(61, 162, 255, 0.1)', ''],
+  colorBranded20: ['rgba(61, 162, 255, 0.2)', ''],
+
   colorGreenApple: ['#B7E82F', '#ffffff'],
+  colorGreenApple10: ['rgba(183, 232, 47, 0.1)', '#ffffff'],
   colorGreenApple20: ['rgba(183, 232, 47, 0.2)', '#ffffff'],
   colorGreenApple40: ['rgba(183, 232, 47, 0.4)', '#ffffff'],
+
+  colorError10: ['rgba(255, 61, 107, 0.1)', '#ffffff'],
+  colorError20: ['rgba(255, 61, 107, 0.2)', '#ffffff'],
+  colorError: ['rgba(255, 61, 107, 1)', '#ffffff'],
 
   // Text
   colorText: ['#ffffff', '#000626'],
