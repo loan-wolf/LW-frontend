@@ -1,4 +1,5 @@
-import { noop } from 'lodash'
+import { noop, toPairs } from 'lodash'
+import { utils as ethersUtils, BytesLike } from 'ethers'
 import { useCallback, useState } from 'react'
 import { useSimpleReducer } from 'shared/hooks/useSimpleReducer'
 import { usePermittedAddresses } from 'modules/wallet/hooks/usePermittedAddresses'
@@ -13,6 +14,8 @@ import { trimAddress } from 'modules/blockChain/utils/trimAddress'
 import { ContractRociCreditToken } from 'modules/contracts/contracts'
 import s from './NFCSMintForm.module.scss'
 
+const SIGN_MSG_NONCE = ['TEST', 1] as const
+
 type Props = {
   onSuccess?: () => void
 }
@@ -20,31 +23,52 @@ type Props = {
 export function NFCSMintForm({ onSuccess }: Props) {
   const addresses = usePermittedAddresses()
   const contractRociCreditToken = ContractRociCreditToken.useContractWeb3()
+
   const [isLoading, setLoading] = useState(false)
-  const [uncheckedAddresses, setUncheckedAddress] = useSimpleReducer<
-    Record<string, boolean>
+  const [signs, setSigns] = useSimpleReducer<
+    Record<string, string | undefined>
   >({})
 
   const handleMint = useCallback(async () => {
     if (!addresses.data) return
     try {
       setLoading(true)
-      const resultAddresses = addresses.data.filter(
-        address => !uncheckedAddresses[address],
+      const addressSignPairs = toPairs(signs).filter(pair => Boolean(pair[1]))
+      const resultAddresses = addressSignPairs.map(pair => pair[0])
+      const resultSigns = addressSignPairs.map(pair => pair[1])
+
+      await contractRociCreditToken.mintToken(
+        resultAddresses,
+        resultSigns as BytesLike[],
+        ...SIGN_MSG_NONCE,
+        {
+          gasLimit: 100000,
+        },
       )
-      await contractRociCreditToken.mintToken(resultAddresses)
       onSuccess?.()
     } catch (e) {
       console.error(e)
       setLoading(false)
     }
-  }, [addresses, uncheckedAddresses, contractRociCreditToken, onSuccess])
+  }, [addresses, signs, contractRociCreditToken, onSuccess])
 
-  const handleToggleAddress = useCallback(
-    address => {
-      setUncheckedAddress({ [address]: !uncheckedAddresses[address] })
+  const handleToggleSignAddress = useCallback(
+    async address => {
+      if (!signs[address]) {
+        const messageHash = ethersUtils.solidityKeccak256(
+          ['string', 'uint256'],
+          SIGN_MSG_NONCE,
+        )
+
+        const signer = contractRociCreditToken.signer
+        const sign = await signer.signMessage(ethersUtils.arrayify(messageHash))
+
+        setSigns({ [address]: sign })
+      } else {
+        setSigns({ [address]: undefined })
+      }
     },
-    [uncheckedAddresses, setUncheckedAddress],
+    [contractRociCreditToken.signer, signs, setSigns],
   )
 
   return (
@@ -78,14 +102,14 @@ export function NFCSMintForm({ onSuccess }: Props) {
           <div
             key={address}
             className={s.addressRow}
-            onClick={() => handleToggleAddress(address)}
+            onClick={() => handleToggleSignAddress(address)}
           >
             <AddressIcon address={address} className={s.addressIcon} />
             <Text size={16} weight={500} className={s.addressLabel}>
               {trimAddress(address, 6)}
             </Text>
             <Checkbox
-              checked={!Boolean(uncheckedAddresses[address])}
+              checked={Boolean(signs[address])}
               onChange={noop}
               className={s.addressCheckbox}
             />
