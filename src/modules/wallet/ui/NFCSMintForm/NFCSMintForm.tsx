@@ -51,7 +51,7 @@ export function NFCSMintForm({ onSuccess }: Props) {
         resultSigns,
         ...SIGN_MSG_NONCE,
         {
-          gasLimit: 100000,
+          gasLimit: 500000,
         },
       )
 
