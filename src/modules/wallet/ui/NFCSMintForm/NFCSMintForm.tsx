@@ -46,7 +46,7 @@ export function NFCSMintForm({ onSuccess }: Props) {
       const resultAddresses = addressSignPairs.map(pair => pair[0])
       const resultSigns = addressSignPairs.map(pair => pair[1] as string)
 
-      await contractRociCreditToken.mintToken(
+      const res = await contractRociCreditToken.mintToken(
         resultAddresses,
         resultSigns,
         ...SIGN_MSG_NONCE,
@@ -54,6 +54,9 @@ export function NFCSMintForm({ onSuccess }: Props) {
           gasLimit: 100000,
         },
       )
+
+      console.log('Minting transaction submitted: ', res)
+
       onSuccess?.()
     } catch (e) {
       console.error(e)
