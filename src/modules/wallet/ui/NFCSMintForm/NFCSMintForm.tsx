@@ -1,5 +1,5 @@
 import { toPairs } from 'lodash'
-import { utils as ethersUtils, BytesLike } from 'ethers'
+import { utils as ethersUtils } from 'ethers'
 import { useCallback, useMemo, useState } from 'react'
 import { useSimpleReducer } from 'shared/hooks/useSimpleReducer'
 import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
@@ -44,11 +44,11 @@ export function NFCSMintForm({ onSuccess }: Props) {
       setLoading(true)
       const addressSignPairs = toPairs(signs).filter(pair => Boolean(pair[1]))
       const resultAddresses = addressSignPairs.map(pair => pair[0])
-      const resultSigns = addressSignPairs.map(pair => pair[1])
+      const resultSigns = addressSignPairs.map(pair => pair[1] as string)
 
       await contractRociCreditToken.mintToken(
         resultAddresses,
-        resultSigns as BytesLike[],
+        resultSigns,
         ...SIGN_MSG_NONCE,
         {
           gasLimit: 100000,
