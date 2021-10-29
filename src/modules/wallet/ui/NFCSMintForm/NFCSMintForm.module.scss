@@ -26,7 +26,6 @@
 .addressRow {
   display: flex;
   align-items: center;
-  cursor: pointer;
 
   &:not(:last-child) {
     margin-bottom: 50px;
@@ -41,8 +40,20 @@
   margin-right: 16px;
 }
 
-.addressCheckbox {
+.addressControl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-left: auto;
   margin-right: 0;
-  pointer-events: none;
+  cursor: pointer;
+
+  & svg {
+    display: block;
+    fill: var(--colorText);
+  }
+}
+
+.addAddress {
+  margin-bottom: 20px;
 }

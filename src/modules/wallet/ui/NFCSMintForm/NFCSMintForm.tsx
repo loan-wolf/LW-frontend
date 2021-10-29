@@ -1,14 +1,14 @@
-import { noop, toPairs } from 'lodash'
+import { toPairs } from 'lodash'
 import { utils as ethersUtils, BytesLike } from 'ethers'
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useSimpleReducer } from 'shared/hooks/useSimpleReducer'
-import { usePermittedAddresses } from 'modules/wallet/hooks/usePermittedAddresses'
+import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
 
 import { Text } from 'shared/ui/common/Text'
 import { TermsHint } from 'shared/ui/common/TermsHint'
 import { Button } from 'shared/ui/controls/Button'
-import { Checkbox } from 'shared/ui/controls/Checkbox'
 import { AddressIcon } from 'modules/blockChain/ui/AddressIcon'
+import { ReactComponent as CrossSVG } from 'assets/close.svg'
 
 import { trimAddress } from 'modules/blockChain/utils/trimAddress'
 import { ContractRociCreditToken } from 'modules/contracts/contracts'
@@ -21,7 +21,7 @@ type Props = {
 }
 
 export function NFCSMintForm({ onSuccess }: Props) {
-  const addresses = usePermittedAddresses()
+  const { walletAddress } = useWalletInfo()
   const contractRociCreditToken = ContractRociCreditToken.useContractWeb3()
 
   const [isLoading, setLoading] = useState(false)
@@ -29,8 +29,17 @@ export function NFCSMintForm({ onSuccess }: Props) {
     Record<string, string | undefined>
   >({})
 
+  const signedAddresses = useMemo(
+    () => Object.keys(signs).filter(address => Boolean(signs[address])),
+    [signs],
+  )
+
+  const isCurrentAddressSigned = signedAddresses.includes(
+    walletAddress as string,
+  )
+
   const handleMint = useCallback(async () => {
-    if (!addresses.data) return
+    if (signedAddresses.length === 0) return
     try {
       setLoading(true)
       const addressSignPairs = toPairs(signs).filter(pair => Boolean(pair[1]))
@@ -50,25 +59,27 @@ export function NFCSMintForm({ onSuccess }: Props) {
       console.error(e)
       setLoading(false)
     }
-  }, [addresses, signs, contractRociCreditToken, onSuccess])
+  }, [signedAddresses.length, signs, contractRociCreditToken, onSuccess])
 
-  const handleToggleSignAddress = useCallback(
-    async address => {
-      if (!signs[address]) {
-        const messageHash = ethersUtils.solidityKeccak256(
-          ['string', 'uint256'],
-          SIGN_MSG_NONCE,
-        )
+  const handleAddAddress = useCallback(async () => {
+    if (!walletAddress) return
 
-        const signer = contractRociCreditToken.signer
-        const sign = await signer.signMessage(ethersUtils.arrayify(messageHash))
+    const messageHash = ethersUtils.solidityKeccak256(
+      ['string', 'uint256'],
+      SIGN_MSG_NONCE,
+    )
 
-        setSigns({ [address]: sign })
-      } else {
-        setSigns({ [address]: undefined })
-      }
+    const signer = contractRociCreditToken.signer
+    const sign = await signer.signMessage(ethersUtils.arrayify(messageHash))
+
+    setSigns({ [walletAddress]: sign })
+  }, [contractRociCreditToken.signer, setSigns, walletAddress])
+
+  const handleRemoveAddress = useCallback(
+    (address: string) => {
+      setSigns({ [address]: undefined })
     },
-    [contractRociCreditToken.signer, signs, setSigns],
+    [setSigns],
   )
 
   return (
@@ -98,25 +109,51 @@ export function NFCSMintForm({ onSuccess }: Props) {
         </div>
       </Text>
       <div className={s.addresses}>
-        {addresses.data?.map(address => (
-          <div
-            key={address}
-            className={s.addressRow}
-            onClick={() => handleToggleSignAddress(address)}
-          >
+        {signedAddresses.map(address => (
+          <div key={address} className={s.addressRow}>
             <AddressIcon address={address} className={s.addressIcon} />
-            <Text size={16} weight={500} className={s.addressLabel}>
+            <Text
+              color="secondary"
+              size={16}
+              weight={500}
+              className={s.addressLabel}
+            >
               {trimAddress(address, 6)}
             </Text>
-            <Checkbox
-              checked={Boolean(signs[address])}
-              onChange={noop}
-              className={s.addressCheckbox}
-            />
+            {walletAddress === address && (
+              <Text size={16} weight={500} className={s.addressLabel}>
+                Primary
+              </Text>
+            )}
+            <button
+              type="button"
+              className={s.addressControl}
+              onClick={() => handleRemoveAddress(address)}
+            >
+              <CrossSVG />
+            </button>
           </div>
         ))}
       </div>
-      <Button size={72} isFullWidth onClick={handleMint} isLoading={isLoading}>
+      <Button
+        fashion="secondary"
+        size={72}
+        isFullWidth
+        onClick={handleAddAddress}
+        className={s.addAddress}
+        isDisabled={isCurrentAddressSigned}
+      >
+        {isCurrentAddressSigned
+          ? 'Current address already signed'
+          : 'Sign current address to bundle'}
+      </Button>
+      <Button
+        size={72}
+        isFullWidth
+        onClick={handleMint}
+        isLoading={isLoading}
+        isDisabled={signedAddresses.length === 0}
+      >
         Create NFCS
       </Button>
       <TermsHint />

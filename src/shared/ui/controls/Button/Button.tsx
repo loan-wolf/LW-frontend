@@ -19,6 +19,7 @@ type Props = {
   isSquare?: boolean
   isFullWidth?: boolean
   isLoading?: boolean
+  isDisabled?: boolean
   onClick?: React.MouseEventHandler
   children?: React.ReactNode
   className?: string
@@ -32,13 +33,14 @@ export function Button({
   isSquare,
   isFullWidth,
   isLoading,
+  isDisabled,
   children,
   className,
 }: Props) {
   return (
     <button
       type={type}
-      onClick={!isLoading ? onClick : undefined}
+      onClick={!isLoading && !isDisabled ? onClick : undefined}
       className={cns(
         s.button,
         className,
@@ -48,6 +50,7 @@ export function Button({
           [s.isSquare]: isSquare,
           [s.isFullWidth]: isFullWidth,
           [s.isLoading]: isLoading,
+          [s.isDisabled]: isDisabled,
         },
       )}
     >
