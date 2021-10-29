@@ -50,6 +50,11 @@
     opacity: 0.5;
   }
 
+  &.isCentered {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   &.size--24 {
     padding: 0 10px;
     height: 24px;

@@ -1,6 +1,6 @@
 import { toPairs } from 'lodash'
 import { utils as ethersUtils } from 'ethers'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useEffect } from 'react'
 import { useSimpleReducer } from 'shared/hooks/useSimpleReducer'
 import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
 
@@ -13,18 +13,17 @@ import { ReactComponent as CrossSVG } from 'assets/close.svg'
 import { trimAddress } from 'modules/blockChain/utils/trimAddress'
 import { ContractRociCreditToken } from 'modules/contracts/contracts'
 import s from './NFCSMintForm.module.scss'
+import { useTransactionSender } from 'modules/blockChain/hooks/useTransactionSender'
 
 const SIGN_MSG_NONCE = ['TEST', 1] as const
 
 type Props = {
-  onSuccess?: () => void
+  onTxSubmit?: (txHash: string) => void
 }
 
-export function NFCSMintForm({ onSuccess }: Props) {
+export function NFCSMintForm({ onTxSubmit }: Props) {
   const { walletAddress } = useWalletInfo()
   const contractRociCreditToken = ContractRociCreditToken.useContractWeb3()
-
-  const [isLoading, setLoading] = useState(false)
   const [signs, setSigns] = useSimpleReducer<
     Record<string, string | undefined>
   >({})
@@ -38,15 +37,13 @@ export function NFCSMintForm({ onSuccess }: Props) {
     walletAddress as string,
   )
 
-  const handleMint = useCallback(async () => {
-    if (signedAddresses.length === 0) return
-    try {
-      setLoading(true)
-      const addressSignPairs = toPairs(signs).filter(pair => Boolean(pair[1]))
-      const resultAddresses = addressSignPairs.map(pair => pair[0])
-      const resultSigns = addressSignPairs.map(pair => pair[1] as string)
+  const populateMintTx = async () => {
+    const addressSignPairs = toPairs(signs).filter(pair => Boolean(pair[1]))
+    const resultAddresses = addressSignPairs.map(pair => pair[0])
+    const resultSigns = addressSignPairs.map(pair => pair[1] as string)
 
-      const res = await contractRociCreditToken.mintToken(
+    const populatedTx =
+      await contractRociCreditToken.populateTransaction.mintToken(
         resultAddresses,
         resultSigns,
         ...SIGN_MSG_NONCE,
@@ -55,14 +52,15 @@ export function NFCSMintForm({ onSuccess }: Props) {
         },
       )
 
-      console.log('Minting transaction submitted: ', res)
+    return populatedTx
+  }
+  const mintTx = useTransactionSender(populateMintTx)
 
-      onSuccess?.()
-    } catch (e) {
-      console.error(e)
-      setLoading(false)
+  useEffect(() => {
+    if (mintTx.isPending && mintTx.tx) {
+      onTxSubmit?.(mintTx.tx.hash)
     }
-  }, [signedAddresses.length, signs, contractRociCreditToken, onSuccess])
+  }, [mintTx.isPending, mintTx.tx, onTxSubmit])
 
   const handleAddAddress = useCallback(async () => {
     if (!walletAddress) return
@@ -153,8 +151,8 @@ export function NFCSMintForm({ onSuccess }: Props) {
       <Button
         size={72}
         isFullWidth
-        onClick={handleMint}
-        isLoading={isLoading}
+        onClick={mintTx.send}
+        isLoading={mintTx.isSigning}
         isDisabled={signedAddresses.length === 0}
       >
         Create NFCS

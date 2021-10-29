@@ -2,7 +2,7 @@ import cns from 'classnames'
 import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
 
 import { Text } from 'shared/ui/common/Text'
-import { HeaderNFCS } from 'modules/wallet/ui/HeaderNFCS'
+import { HeaderNFCS } from 'modules/nfcs/ui/HeaderNFCS'
 import { HeaderWallet } from 'modules/wallet/ui/HeaderWallet'
 
 import s from './HeaderActions.module.scss'

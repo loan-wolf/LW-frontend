@@ -1,8 +1,8 @@
 import cns from 'classnames'
 
-import { useNFCSModal } from 'modules/wallet/ui/NFCSModal/useNFCSModal'
+import { useNFCSModal } from 'modules/nfcs/ui/NFCSModal/useNFCSModal'
 import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
-import { useNFCSStateMock } from 'modules/wallet/hooks/useNFCSStateMock'
+import { useNFCSStateMock } from 'modules/nfcs/hooks/useNFCSStateMock'
 
 import { Text } from 'shared/ui/common/Text'
 import { Button } from 'shared/ui/controls/Button'
@@ -62,6 +62,19 @@ export function HeaderNFCS({ className }: Props) {
         </Button>
         <Text size={12} weight={500} isUppercased color="branded">
           Generating...
+        </Text>
+      </div>
+    )
+  }
+
+  if (stateMock.status === 'failed') {
+    return (
+      <div
+        className={cns(s.wrap, s.generateWrap, className)}
+        onClick={modalNFCS.open}
+      >
+        <Text size={12} weight={500} isUppercased color="branded">
+          Generating failed
         </Text>
       </div>
     )

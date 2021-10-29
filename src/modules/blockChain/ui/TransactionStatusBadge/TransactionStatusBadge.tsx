@@ -1,9 +1,10 @@
 import cns from 'classnames'
 import { ReactComponent as TimeSVG } from 'assets/time.svg'
+import { TxStatus } from 'modules/blockChain/types'
 import s from './TransactionStatusBadge.module.scss'
 
 type Props = {
-  status: 'pending' | 'failed' | 'confirmed'
+  status: TxStatus
 }
 
 export function TransactionStatusBadge({ status }: Props) {
@@ -23,9 +24,13 @@ export function TransactionStatusBadge({ status }: Props) {
     )
   }
 
-  return (
-    <div className={cns(s.badge, s.isConfirmed)}>
-      <TimeSVG /> Confirmed
-    </div>
-  )
+  if (status === 'success') {
+    return (
+      <div className={cns(s.badge, s.isConfirmed)}>
+        <TimeSVG /> Confirmed
+      </div>
+    )
+  }
+
+  return null
 }

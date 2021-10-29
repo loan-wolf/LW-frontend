@@ -20,6 +20,7 @@ type Props = {
   isFullWidth?: boolean
   isLoading?: boolean
   isDisabled?: boolean
+  isCentered?: boolean
   onClick?: React.MouseEventHandler
   children?: React.ReactNode
   className?: string
@@ -34,6 +35,7 @@ export function Button({
   isFullWidth,
   isLoading,
   isDisabled,
+  isCentered,
   children,
   className,
 }: Props) {
@@ -51,6 +53,7 @@ export function Button({
           [s.isFullWidth]: isFullWidth,
           [s.isLoading]: isLoading,
           [s.isDisabled]: isDisabled,
+          [s.isCentered]: isCentered,
         },
       )}
     >
