@@ -1,5 +1,5 @@
 import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
-import { useNFCSModal } from '../NFCSModal/useNFCSModal'
+import { useNFCSModal } from '../../../nfcs/ui/NFCSModal/useNFCSModal'
 
 import { Text } from 'shared/ui/common/Text'
 import { Modal, ModalProps } from 'modules/modal/ui/Modal'

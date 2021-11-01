@@ -1,4 +1,4 @@
-import { useNFCSStateMock } from 'modules/wallet/hooks/useNFCSStateMock'
+import { useNFCSStateMock } from 'modules/nfcs/hooks/useNFCSStateMock'
 
 import { Text } from 'shared/ui/common/Text'
 import { Button } from 'shared/ui/controls/Button'

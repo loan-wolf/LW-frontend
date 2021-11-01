@@ -28,17 +28,21 @@ interface RociCreditTokenInterface extends ethers.utils.Interface {
     "burnToken(uint256)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getBundle(uint256)": FunctionFragment;
+    "getEthSignedMessageHash(bytes32)": FunctionFragment;
+    "getMessageHash(string,uint256)": FunctionFragment;
     "initialize()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "mintToken(address[])": FunctionFragment;
+    "mintToken(address[],bytes[],string,uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
     "pause()": FunctionFragment;
     "paused()": FunctionFragment;
+    "recoverSigner(bytes32,bytes)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
+    "splitSignature(bytes)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
@@ -47,6 +51,7 @@ interface RociCreditTokenInterface extends ethers.utils.Interface {
     "unpause()": FunctionFragment;
     "upgradeTo(address)": FunctionFragment;
     "upgradeToAndCall(address,bytes)": FunctionFragment;
+    "verify(address,string,uint256,bytes)": FunctionFragment;
     "version()": FunctionFragment;
   };
 
@@ -69,6 +74,14 @@ interface RociCreditTokenInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getEthSignedMessageHash",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getMessageHash",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "initialize",
     values?: undefined
   ): string;
@@ -76,7 +89,10 @@ interface RociCreditTokenInterface extends ethers.utils.Interface {
     functionFragment: "isApprovedForAll",
     values: [string, string]
   ): string;
-  encodeFunctionData(functionFragment: "mintToken", values: [string[]]): string;
+  encodeFunctionData(
+    functionFragment: "mintToken",
+    values: [string[], BytesLike[], string, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -85,6 +101,10 @@ interface RociCreditTokenInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "pause", values?: undefined): string;
   encodeFunctionData(functionFragment: "paused", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "recoverSigner",
+    values: [BytesLike, BytesLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
@@ -96,6 +116,10 @@ interface RociCreditTokenInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "setApprovalForAll",
     values: [string, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "splitSignature",
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
@@ -120,6 +144,10 @@ interface RociCreditTokenInterface extends ethers.utils.Interface {
     functionFragment: "upgradeToAndCall",
     values: [string, BytesLike]
   ): string;
+  encodeFunctionData(
+    functionFragment: "verify",
+    values: [string, string, BigNumberish, BytesLike]
+  ): string;
   encodeFunctionData(functionFragment: "version", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
@@ -131,6 +159,14 @@ interface RociCreditTokenInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getBundle", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getEthSignedMessageHash",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getMessageHash",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
@@ -143,6 +179,10 @@ interface RociCreditTokenInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "recoverSigner",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
@@ -152,6 +192,10 @@ interface RociCreditTokenInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setApprovalForAll",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "splitSignature",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -174,6 +218,7 @@ interface RociCreditTokenInterface extends ethers.utils.Interface {
     functionFragment: "upgradeToAndCall",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "verify", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
 
   events: {
@@ -273,6 +318,17 @@ export class RociCreditToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string[]]>;
 
+    getEthSignedMessageHash(
+      _messageHash: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
+    getMessageHash(
+      _message: string,
+      _nonce: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
     initialize(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -285,6 +341,9 @@ export class RociCreditToken extends BaseContract {
 
     mintToken(
       bundle: string[],
+      signatures: BytesLike[],
+      _message: string,
+      _nonce: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -302,6 +361,12 @@ export class RociCreditToken extends BaseContract {
     ): Promise<ContractTransaction>;
 
     paused(overrides?: CallOverrides): Promise<[boolean]>;
+
+    recoverSigner(
+      _ethSignedMessageHash: BytesLike,
+      _SIG: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -327,6 +392,11 @@ export class RociCreditToken extends BaseContract {
       arg1: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    splitSignature(
+      sig: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[string, string, number] & { r: string; s: string; v: number }>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -367,6 +437,14 @@ export class RociCreditToken extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    verify(
+      _SIGNER: string,
+      _message: string,
+      _nonce: BigNumberish,
+      _SIG: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
     version(overrides?: CallOverrides): Promise<[string]>;
   };
 
@@ -395,6 +473,17 @@ export class RociCreditToken extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string[]>;
 
+  getEthSignedMessageHash(
+    _messageHash: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  getMessageHash(
+    _message: string,
+    _nonce: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   initialize(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -407,6 +496,9 @@ export class RociCreditToken extends BaseContract {
 
   mintToken(
     bundle: string[],
+    signatures: BytesLike[],
+    _message: string,
+    _nonce: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -421,6 +513,12 @@ export class RociCreditToken extends BaseContract {
   ): Promise<ContractTransaction>;
 
   paused(overrides?: CallOverrides): Promise<boolean>;
+
+  recoverSigner(
+    _ethSignedMessageHash: BytesLike,
+    _SIG: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   renounceOwnership(
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -446,6 +544,11 @@ export class RociCreditToken extends BaseContract {
     arg1: boolean,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  splitSignature(
+    sig: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<[string, string, number] & { r: string; s: string; v: number }>;
 
   supportsInterface(
     interfaceId: BytesLike,
@@ -483,6 +586,14 @@ export class RociCreditToken extends BaseContract {
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  verify(
+    _SIGNER: string,
+    _message: string,
+    _nonce: BigNumberish,
+    _SIG: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   version(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
@@ -505,6 +616,17 @@ export class RociCreditToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string[]>;
 
+    getEthSignedMessageHash(
+      _messageHash: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    getMessageHash(
+      _message: string,
+      _nonce: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     initialize(overrides?: CallOverrides): Promise<void>;
 
     isApprovedForAll(
@@ -513,7 +635,13 @@ export class RociCreditToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    mintToken(bundle: string[], overrides?: CallOverrides): Promise<void>;
+    mintToken(
+      bundle: string[],
+      signatures: BytesLike[],
+      _message: string,
+      _nonce: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     name(overrides?: CallOverrides): Promise<string>;
 
@@ -524,6 +652,12 @@ export class RociCreditToken extends BaseContract {
     pause(overrides?: CallOverrides): Promise<void>;
 
     paused(overrides?: CallOverrides): Promise<boolean>;
+
+    recoverSigner(
+      _ethSignedMessageHash: BytesLike,
+      _SIG: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
@@ -547,6 +681,11 @@ export class RociCreditToken extends BaseContract {
       arg1: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    splitSignature(
+      sig: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[string, string, number] & { r: string; s: string; v: number }>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -581,6 +720,14 @@ export class RociCreditToken extends BaseContract {
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    verify(
+      _SIGNER: string,
+      _message: string,
+      _nonce: BigNumberish,
+      _SIG: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     version(overrides?: CallOverrides): Promise<string>;
   };
@@ -679,6 +826,17 @@ export class RociCreditToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getEthSignedMessageHash(
+      _messageHash: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getMessageHash(
+      _message: string,
+      _nonce: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     initialize(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -691,6 +849,9 @@ export class RociCreditToken extends BaseContract {
 
     mintToken(
       bundle: string[],
+      signatures: BytesLike[],
+      _message: string,
+      _nonce: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -708,6 +869,12 @@ export class RociCreditToken extends BaseContract {
     ): Promise<BigNumber>;
 
     paused(overrides?: CallOverrides): Promise<BigNumber>;
+
+    recoverSigner(
+      _ethSignedMessageHash: BytesLike,
+      _SIG: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -732,6 +899,11 @@ export class RociCreditToken extends BaseContract {
       arg0: string,
       arg1: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    splitSignature(
+      sig: BytesLike,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     supportsInterface(
@@ -773,6 +945,14 @@ export class RociCreditToken extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    verify(
+      _SIGNER: string,
+      _message: string,
+      _nonce: BigNumberish,
+      _SIG: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     version(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
@@ -808,6 +988,17 @@ export class RociCreditToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getEthSignedMessageHash(
+      _messageHash: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getMessageHash(
+      _message: string,
+      _nonce: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     initialize(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -820,6 +1011,9 @@ export class RociCreditToken extends BaseContract {
 
     mintToken(
       bundle: string[],
+      signatures: BytesLike[],
+      _message: string,
+      _nonce: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -837,6 +1031,12 @@ export class RociCreditToken extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    recoverSigner(
+      _ethSignedMessageHash: BytesLike,
+      _SIG: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -861,6 +1061,11 @@ export class RociCreditToken extends BaseContract {
       arg0: string,
       arg1: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    splitSignature(
+      sig: BytesLike,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     supportsInterface(
@@ -900,6 +1105,14 @@ export class RociCreditToken extends BaseContract {
       newImplementation: string,
       data: BytesLike,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    verify(
+      _SIGNER: string,
+      _message: string,
+      _nonce: BigNumberish,
+      _SIG: BytesLike,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     version(overrides?: CallOverrides): Promise<PopulatedTransaction>;

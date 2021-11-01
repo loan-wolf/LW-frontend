@@ -1,4 +1,5 @@
-import { useKeyPressEvent, useLockBodyScroll } from 'react-use'
+import { useKeyPressEvent } from 'react-use'
+import { useScrollLock } from 'shared/hooks/useScrollLock'
 import { Button } from 'shared/ui/controls/Button'
 import { ReactComponent as CloseSVG } from 'assets/close.svg'
 import s from './Modal.module.scss'
@@ -13,19 +14,21 @@ type Props = ModalProps & {
 }
 
 export function Modal({ width, children, onClose }: Props) {
-  useLockBodyScroll()
+  useScrollLock()
   useKeyPressEvent('Escape', onClose)
   return (
     <div className={s.wrap}>
-      <div className={s.overlay} onClick={onClose} />
-      <Button isSquare fashion="glass" className={s.close} onClick={onClose}>
-        <CloseSVG />
-      </Button>
-      <div
-        className={s.body}
-        style={width ? { maxWidth: width, width: '100%' } : undefined}
-        children={children}
-      />
+      <div className={s.scrollWrap}>
+        <div className={s.overlay} onClick={onClose} />
+        <Button isSquare fashion="glass" className={s.close} onClick={onClose}>
+          <CloseSVG />
+        </Button>
+        <div
+          className={s.body}
+          style={width ? { maxWidth: width, width: '100%' } : undefined}
+          children={children}
+        />
+      </div>
     </div>
   )
 }
