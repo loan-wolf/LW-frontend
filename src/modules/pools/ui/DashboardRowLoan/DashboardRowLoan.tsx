@@ -7,6 +7,7 @@ import { DashboardRow } from 'shared/ui/common/DashboardRow'
 
 import { getPoolAssetIcon, PoolAsset } from 'modules/pools/constants/poolAssets'
 
+import * as links from 'modules/router/links'
 import s from './DashboardRowLoan.module.scss'
 
 export type LoanDataMock = {
@@ -101,7 +102,12 @@ export function DashboardRowLoan({ loan, className }: Props) {
 
       <div className={s.column}>
         <div className={s.actions}>
-          <Button className={s.action} fashion="greenapple-ghost" size={40}>
+          <Button
+            link={links.repayment}
+            className={s.action}
+            fashion="greenapple-ghost"
+            size={40}
+          >
             REPAY
           </Button>
           <DropdownLoan
