@@ -1,14 +1,11 @@
 import { useCallback, useState } from 'react'
-import { useForm, useFormContext } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 
 import { InputControl } from 'shared/ui/controls/Input'
 import { SelectControl } from 'shared/ui/controls/Select'
+import { InputMaxAction } from 'shared/ui/controls/InputMaxAction'
 import { FormSubmitter } from 'shared/ui/common/FormSubmitter'
 import { Form } from 'shared/ui/controls/Form'
-import {
-  FormInfoFrame,
-  FormInfoFramesList,
-} from 'shared/ui/common/FormInfoFrame'
 import {
   FormLockedValue,
   FormLockedValuesList,
@@ -23,10 +20,6 @@ import {
   targetRiskOptions,
   getTargetRiskLabel,
 } from 'modules/pools/constants/riskOptions'
-import { formatNumber } from 'shared/utils/formatNumber'
-
-const APY = 0.15
-const POOL_SHARE = 0.58
 
 const depositOptions = [
   poolAssetOptions.USDC,
@@ -34,17 +27,18 @@ const depositOptions = [
   poolAssetOptions.DAI,
 ]
 
-type FormValues = {
-  depositedAsset: string
-  amount: string
-  targetRiskPool: string
+const MAX_AMOUNT = 3333
+
+const rulesAmount = {
+  required: formErrors.required,
+  validate: (val: string) =>
+    formErrors.notLess(val, 1) || formErrors.notMore(val, MAX_AMOUNT) || true,
 }
 
-function EstimatedEarning() {
-  const { watch } = useFormContext<FormValues>()
-  const amount = watch('amount')
-  const earning = (Number(amount) * APY) / 30
-  return <>{formatNumber(earning, 2)}</>
+type FormValues = {
+  asset: string
+  amount: string
+  risk: string
 }
 
 // TODO: Update with actual response type after contract integration
@@ -54,16 +48,16 @@ type Props = {
   onSuccess: (successData: SuccessData) => void
 }
 
-export function FormDeposit({ onSuccess }: Props) {
+export function FormWithdrawal({ onSuccess }: Props) {
   const [isLocked, setLocked] = useState(false)
   const handleUnlock = useCallback(() => setLocked(false), [])
 
   const formMethods = useForm<FormValues>({
     shouldUnregister: false,
     defaultValues: {
-      depositedAsset: '',
+      asset: '',
       amount: '',
-      targetRiskPool: '',
+      risk: '',
     },
   })
 
@@ -79,13 +73,17 @@ export function FormDeposit({ onSuccess }: Props) {
     [isLocked, onSuccess],
   )
 
+  const handleClickMaxAmount = useCallback(() => {
+    formMethods.setValue('amount', String(MAX_AMOUNT))
+  }, [formMethods])
+
   return (
     <Form formMethods={formMethods} onSubmit={submit}>
       {!isLocked && (
         <>
           <SelectControl
-            name="depositedAsset"
-            placeholder="Deposited asset"
+            name="asset"
+            placeholder="Asset"
             options={depositOptions}
             rules={{ required: formErrors.required }}
           />
@@ -95,18 +93,16 @@ export function FormDeposit({ onSuccess }: Props) {
             concat="bottom"
             placeholder="Amount"
             onlyNumber
-            rules={{
-              required: formErrors.required,
-              validate: val => formErrors.notLess(val, 0.01) || true,
-            }}
+            rules={rulesAmount}
+            action={<InputMaxAction onClick={handleClickMaxAmount} />}
           />
 
           <SelectControl
-            name="targetRiskPool"
+            name="risk"
             concat="top"
-            placeholder="Target risk pool"
-            rules={{ required: formErrors.required }}
+            placeholder="Risk Pool / APY"
             options={targetRiskOptions}
+            rules={{ required: formErrors.required }}
           />
         </>
       )}
@@ -115,53 +111,22 @@ export function FormDeposit({ onSuccess }: Props) {
         <FormLockedValuesList>
           <FormLockedValue
             label="Deposited asset"
-            name="depositedAsset"
+            name="asset"
             getIcon={getPoolAssetIcon}
           />
           <FormLockedValue label="Amount" name="amount" />
           <FormLockedValue
             label="Target risk pool"
-            name="targetRiskPool"
+            name="risk"
             valueSize={16}
             formatValue={getTargetRiskLabel}
           />
         </FormLockedValuesList>
       )}
 
-      <FormInfoFramesList>
-        <FormInfoFrame
-          info={[
-            {
-              label: (
-                <>
-                  Estimated
-                  <br />
-                  earned per 30 days
-                </>
-              ),
-              value: (
-                <>
-                  <EstimatedEarning /> USD
-                </>
-              ),
-            },
-            {
-              label: (
-                <>
-                  Your share
-                  <br />
-                  of the pool
-                </>
-              ),
-              value: `${POOL_SHARE}%`,
-            },
-          ]}
-        />
-      </FormInfoFramesList>
-
       <FormSubmitter
         isLocked={isLocked}
-        firstStepText="Deposit"
+        firstStepText="Withdrawal"
         onClickUnlock={handleUnlock}
       />
     </Form>

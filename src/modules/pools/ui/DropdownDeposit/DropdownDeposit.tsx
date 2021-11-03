@@ -1,18 +1,18 @@
 import { DropdownBurger, DropdownItem } from 'modules/dropdown'
+import * as links from 'modules/router/links'
 
 type Props = {
   className?: string
   onAddMore: () => void
-  onWithdraw: () => void
 }
 
-export function DropdownDeposit({ onAddMore, onWithdraw, className }: Props) {
+export function DropdownDeposit({ onAddMore, className }: Props) {
   return (
     <DropdownBurger className={className}>
       <DropdownItem onClick={onAddMore} isUppercased>
         Deposit more
       </DropdownItem>
-      <DropdownItem onClick={onWithdraw} isUppercased>
+      <DropdownItem link={links.withdrawal} isUppercased>
         Withdraw
       </DropdownItem>
     </DropdownBurger>

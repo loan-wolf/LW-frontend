@@ -6,6 +6,7 @@ import { routeDeposit } from 'routes/RouteDeposit'
 import { routeBorrow } from 'routes/RouteBorrow'
 import { routeDashboard } from 'routes/RouteDashboard'
 import { routeRepayment } from 'routes/RouteRepayment'
+import { routeWithdrawal } from 'routes/RouteWithdrawal'
 
 import { AppLayout } from 'shared/ui/layout/AppLayout'
 
@@ -39,6 +40,10 @@ export const routes: RouteConfig[] = [
       {
         path: links.repayment,
         ...routeRepayment,
+      },
+      {
+        path: links.withdrawal,
+        ...routeWithdrawal,
       },
     ],
   },
