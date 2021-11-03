@@ -1,4 +1,5 @@
 import cns from 'classnames'
+import { Link } from 'react-router-dom'
 import { ReactComponent as LoaderSVG } from 'assets/loader.svg'
 // eslint-disable-next-line css-modules/no-unused-class
 import s from './Button.module.scss'
@@ -13,6 +14,7 @@ type ButtonFashion =
   | 'greenapple-ghost'
 
 type Props = {
+  link?: string
   size?: ButtonSize
   type?: 'button' | 'submit'
   fashion?: ButtonFashion
@@ -27,6 +29,7 @@ type Props = {
 }
 
 export function Button({
+  link,
   size = 60,
   type = 'button',
   fashion = 'default',
@@ -39,30 +42,36 @@ export function Button({
   children,
   className,
 }: Props) {
-  return (
-    <button
-      type={type}
-      onClick={!isLoading && !isDisabled ? onClick : undefined}
-      className={cns(
-        s.button,
-        className,
-        s[`size--${size}`],
-        s[`fashion--${fashion}`],
-        {
-          [s.isSquare]: isSquare,
-          [s.isFullWidth]: isFullWidth,
-          [s.isLoading]: isLoading,
-          [s.isDisabled]: isDisabled,
-          [s.isCentered]: isCentered,
-        },
-      )}
-    >
-      <span className={s.content}>{children}</span>
-      {isLoading && (
-        <span className={s.loader}>
-          <LoaderSVG />
-        </span>
-      )}
-    </button>
-  )
+  const props = {
+    onClick: !isLoading && !isDisabled ? onClick : undefined,
+    className: cns(
+      s.button,
+      className,
+      s[`size--${size}`],
+      s[`fashion--${fashion}`],
+      {
+        [s.isSquare]: isSquare,
+        [s.isFullWidth]: isFullWidth,
+        [s.isLoading]: isLoading,
+        [s.isDisabled]: isDisabled,
+        [s.isCentered]: isCentered,
+      },
+    ),
+    children: (
+      <>
+        <span className={s.content}>{children}</span>
+        {isLoading && (
+          <span className={s.loader}>
+            <LoaderSVG />
+          </span>
+        )}
+      </>
+    ),
+  }
+
+  if (link) {
+    return <Link to={link} {...props} />
+  }
+
+  return <button type={type} {...props} />
 }
