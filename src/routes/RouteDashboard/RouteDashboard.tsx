@@ -11,9 +11,11 @@ import {
   DashboardRowCollateral,
   CollateralDataMock,
 } from 'modules/pools/ui/DashboardRowCollateral'
+import { DashboardEmptyCTA } from 'modules/pools/ui/DashboardEmptyCTA'
 import { withWalletConnectCheck } from 'modules/wallet/hocs/withWalletConnectCheck'
 
 import { createRoute } from 'modules/router/utils/createRoute'
+import * as links from 'modules/router/links'
 
 const DEPOSITS_MOCK: DepositDataMock[] = [
   {
@@ -136,6 +138,12 @@ function RouteDashboard() {
         {COLLATERALS_MOCK.map((collateral, i) => (
           <DashboardRowCollateral key={i} collateral={collateral} />
         ))}
+        {/* <DashboardEmptyCTA
+          link={links.deposit}
+          fashion="green"
+          entityName="stakes"
+          actionText="Stake"
+        /> */}
       </Tab>
 
       {/* Old deposits */}
@@ -148,7 +156,13 @@ function RouteDashboard() {
           </>
         }
       >
-        12
+        <DashboardEmptyCTA
+          link={links.deposit}
+          fashion="blue"
+          timeText="old"
+          entityName="deposits"
+          actionText="Deposit"
+        />
       </Tab>
 
       {/* Old loans */}
@@ -161,7 +175,13 @@ function RouteDashboard() {
           </>
         }
       >
-        12
+        <DashboardEmptyCTA
+          link={links.borrow}
+          fashion="purple"
+          timeText="old"
+          entityName="loans"
+          actionText="Borrow"
+        />
       </Tab>
     </Tabs>
   )
