@@ -3,14 +3,14 @@
     "static/js/0.5db95d5d.chunk.js": "/LW-frontend/static/js/0.5db95d5d.chunk.js",
     "static/js/0.5db95d5d.chunk.js.map": "/LW-frontend/static/js/0.5db95d5d.chunk.js.map",
     "main.css": "/LW-frontend/static/css/main.24285b84.chunk.css",
-    "main.js": "/LW-frontend/static/js/main.1b6def3d.chunk.js",
-    "main.js.map": "/LW-frontend/static/js/main.1b6def3d.chunk.js.map",
-    "runtime-main.js": "/LW-frontend/static/js/runtime-main.c7cfa819.js",
-    "runtime-main.js.map": "/LW-frontend/static/js/runtime-main.c7cfa819.js.map",
-    "static/js/3.fdd1beca.chunk.js": "/LW-frontend/static/js/3.fdd1beca.chunk.js",
-    "static/js/3.fdd1beca.chunk.js.map": "/LW-frontend/static/js/3.fdd1beca.chunk.js.map",
-    "static/js/4.bfbd5eac.chunk.js": "/LW-frontend/static/js/4.bfbd5eac.chunk.js",
-    "static/js/4.bfbd5eac.chunk.js.map": "/LW-frontend/static/js/4.bfbd5eac.chunk.js.map",
+    "main.js": "/LW-frontend/static/js/main.cbc8e2ac.chunk.js",
+    "main.js.map": "/LW-frontend/static/js/main.cbc8e2ac.chunk.js.map",
+    "runtime-main.js": "/LW-frontend/static/js/runtime-main.5df63c20.js",
+    "runtime-main.js.map": "/LW-frontend/static/js/runtime-main.5df63c20.js.map",
+    "static/js/3.3b45a9d7.chunk.js": "/LW-frontend/static/js/3.3b45a9d7.chunk.js",
+    "static/js/3.3b45a9d7.chunk.js.map": "/LW-frontend/static/js/3.3b45a9d7.chunk.js.map",
+    "static/js/4.81d1d933.chunk.js": "/LW-frontend/static/js/4.81d1d933.chunk.js",
+    "static/js/4.81d1d933.chunk.js.map": "/LW-frontend/static/js/4.81d1d933.chunk.js.map",
     "static/js/5.ceac448a.chunk.js": "/LW-frontend/static/js/5.ceac448a.chunk.js",
     "static/js/5.ceac448a.chunk.js.map": "/LW-frontend/static/js/5.ceac448a.chunk.js.map",
     "static/js/6.8f9eb715.chunk.js": "/LW-frontend/static/js/6.8f9eb715.chunk.js",
@@ -20,8 +20,8 @@
     "index.html": "/LW-frontend/index.html",
     "static/css/main.24285b84.chunk.css.map": "/LW-frontend/static/css/main.24285b84.chunk.css.map",
     "static/js/0.5db95d5d.chunk.js.LICENSE.txt": "/LW-frontend/static/js/0.5db95d5d.chunk.js.LICENSE.txt",
-    "static/js/3.fdd1beca.chunk.js.LICENSE.txt": "/LW-frontend/static/js/3.fdd1beca.chunk.js.LICENSE.txt",
-    "static/js/4.bfbd5eac.chunk.js.LICENSE.txt": "/LW-frontend/static/js/4.bfbd5eac.chunk.js.LICENSE.txt",
+    "static/js/3.3b45a9d7.chunk.js.LICENSE.txt": "/LW-frontend/static/js/3.3b45a9d7.chunk.js.LICENSE.txt",
+    "static/js/4.81d1d933.chunk.js.LICENSE.txt": "/LW-frontend/static/js/4.81d1d933.chunk.js.LICENSE.txt",
     "static/js/5.ceac448a.chunk.js.LICENSE.txt": "/LW-frontend/static/js/5.ceac448a.chunk.js.LICENSE.txt",
     "static/media/fonts.scss": "/LW-frontend/static/media/Poppins-SemiBold.daed8dfe.otf",
     "static/media/analytics.56a69dfe.svg": "/LW-frontend/static/media/analytics.56a69dfe.svg",
@@ -47,9 +47,9 @@
     "static/media/walletconnect.8f082b77.svg": "/LW-frontend/static/media/walletconnect.8f082b77.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.c7cfa819.js",
-    "static/js/4.bfbd5eac.chunk.js",
+    "static/js/runtime-main.5df63c20.js",
+    "static/js/4.81d1d933.chunk.js",
     "static/css/main.24285b84.chunk.css",
-    "static/js/main.1b6def3d.chunk.js"
+    "static/js/main.cbc8e2ac.chunk.js"
   ]
 }
