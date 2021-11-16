@@ -1,10 +1,8 @@
-import * as ethers from 'ethers'
 import { useCallback, useState } from 'react'
 import { useForm, useFormContext } from 'react-hook-form'
-import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
-import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
-import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
+import { useBorrowSubmit } from './useBorrowSubmit'
 
+import { Text } from 'shared/ui/common/Text'
 import { InputControl } from 'shared/ui/controls/Input'
 import { SelectControl } from 'shared/ui/controls/Select'
 import { FormSubmitter } from 'shared/ui/common/FormSubmitter'
@@ -17,25 +15,23 @@ import {
   FormLockedValue,
   FormLockedValuesList,
 } from 'shared/ui/common/FormLockedValue'
+import { TransactionStatusBadge } from 'modules/blockChain/ui/TransactionStatusBadge'
 
-import { ContractInvestor } from 'modules/contracts/contracts'
 import * as formErrors from 'shared/constants/formErrors'
 import {
-  PoolAsset,
   poolAssets,
   poolAssetOptions,
   getPoolAssetIcon,
-  getPoolAssetAddress,
-  getPoolAssetContract,
 } from 'modules/pools/constants/poolAssets'
 import { formatNumber } from 'shared/utils/formatNumber'
-import { CollateralManager } from 'modules/contracts/contractAddresses'
+import type { FormValues, SuccessData } from './types'
+
+import s from './FormBorrow.module.scss'
 
 const APR = 22
 const LTV = 85
 const LIQ_THRESHOLD = '85%'
 const LIQ_PRICE = '1 ETH = 2547 USD'
-const NCFSID = 1 // Oracle return hardcoded scores for now
 const COLLATERAL_PRICE = {
   [poolAssets.DAI]: 1,
   [poolAssets.USDC]: 1,
@@ -58,13 +54,6 @@ const collateralOptions = [
   poolAssetOptions.WBTC,
 ]
 
-type FormValues = {
-  borrowedAsset: PoolAsset | ''
-  amount: string
-  term: string
-  collateralAsset: PoolAsset | ''
-}
-
 function AmountToRepay() {
   const { watch } = useFormContext<FormValues>()
   const amount = Number(watch('amount'))
@@ -78,22 +67,13 @@ function AmountToRepay() {
   )
 }
 
-export type SuccessData = {
-  tx: ethers.ContractTransaction
-  formValues: FormValues
-}
-
 type Props = {
   onSuccess: (successData: SuccessData) => void
 }
 
 export function FormBorrow({ onSuccess }: Props) {
-  const chainId = useCurrentChain()
-  const { library } = useWeb3()
   const [isLocked, setLocked] = useState(false)
-  const { walletAddress } = useWalletInfo()
   const handleUnlock = useCallback(() => setLocked(false), [])
-  const contractInvestor = ContractInvestor.useContractWeb3()
 
   const formMethods = useForm<FormValues>({
     shouldUnregister: false,
@@ -112,105 +92,18 @@ export function FormBorrow({ onSuccess }: Props) {
       ? (amount / ((LTV / 100) * COLLATERAL_PRICE[collateralAsset])).toFixed(18)
       : '0'
 
-  const submit = useCallback(
-    async (formValues: FormValues) => {
-      if (!walletAddress || !formValues.collateralAsset || !library) {
-        return
-      }
+  const { submit, txAllowance, txBorrow } = useBorrowSubmit({
+    isLocked,
+    setLocked,
+    onSuccess,
+    collateralAmount,
+  })
 
-      if (!isLocked) {
-        setLocked(true)
-      } else {
-        /**
-         * Prepare necessary data
-         */
-        const amountWei = ethers.utils.parseEther(formValues.amount)
-        const numberOfLoans = await contractInvestor.getNumberOfLoans(
-          walletAddress,
-        )
-        const loanId = await contractInvestor.getId(
-          walletAddress,
-          numberOfLoans,
-        )
-
-        /**
-         * Get collateral asset address
-         */
-        const collateralAddress = getPoolAssetAddress(
-          formValues.collateralAsset,
-          chainId,
-        )
-
-        if (!collateralAddress) {
-          throw new Error('Address does not defined for this collateral asset')
-        }
-
-        /**
-         * Approve token spending
-         */
-        const CollateralAssetContract = getPoolAssetContract(
-          formValues.collateralAsset,
-        )
-
-        if (!CollateralAssetContract) {
-          throw new Error('Contract does not defined for this collateral asset')
-        }
-
-        const collateralAssetContract = CollateralAssetContract.connectWeb3({
-          chainId,
-          library: library.getSigner(),
-        })
-
-        const txApprove = await collateralAssetContract.approve(
-          CollateralManager[chainId],
-          amountWei,
-        )
-
-        await txApprove.wait()
-
-        const hash = ethers.utils.keccak256(
-          ethers.utils.defaultAbiCoder.encode(
-            ['address', 'uint256'],
-            [contractInvestor.address, loanId],
-          ),
-        )
-
-        /**
-         * Get sig
-         */
-        const signature = await contractInvestor.signer.signMessage(
-          ethers.utils.arrayify(hash),
-        )
-
-        /**
-         * Send transaction
-         */
-        const tx = await contractInvestor.borrow(
-          amountWei,
-          Number(formValues.term),
-          NCFSID,
-          ethers.utils.parseEther(collateralAmount),
-          collateralAddress,
-          hash,
-          signature,
-          {
-            gasLimit: 1000000,
-          },
-        )
-
-        onSuccess({ tx, formValues })
-      }
-    },
-    [
-      library,
-      walletAddress,
-      isLocked,
-      chainId,
-      contractInvestor,
-      collateralAmount,
-      onSuccess,
-    ],
-  )
+  const isSubmitting =
+    txAllowance.isSigning ||
+    txAllowance.isPending ||
+    txBorrow.isSigning ||
+    txBorrow.isPending
 
   return (
     <Form formMethods={formMethods} onSubmit={submit}>
@@ -281,7 +174,11 @@ export function FormBorrow({ onSuccess }: Props) {
         <FormInfoFrame
           info={[
             { label: 'LTV', value: `${LTV}%` },
-            { label: 'Required collateral', value: collateralAmount },
+            {
+              label: 'Required collateral',
+              value: collateralAmount,
+              isTooltiped: true,
+            },
           ]}
         />
         <FormInfoFrame
@@ -292,8 +189,23 @@ export function FormBorrow({ onSuccess }: Props) {
         />
       </FormInfoFramesList>
 
+      {isLocked && (
+        <div className={s.allowanceInfo}>
+          <Text size={14}>Token spending approving: </Text>
+          <TransactionStatusBadge
+            status={txAllowance.status}
+            onOpen={
+              !txAllowance.isEmpty && !txAllowance.isSigning
+                ? txAllowance.open
+                : undefined
+            }
+          />
+        </div>
+      )}
+
       <FormSubmitter
         isLocked={isLocked}
+        isSubmitting={isSubmitting}
         firstStepText="Borrow"
         onClickUnlock={handleUnlock}
       />

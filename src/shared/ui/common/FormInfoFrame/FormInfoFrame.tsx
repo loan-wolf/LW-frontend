@@ -1,11 +1,14 @@
 import cns from 'classnames'
+
 import { Text } from 'shared/ui/common/Text'
+import { Tooltip } from 'shared/ui/common/Tooltip'
 
 import s from './FormInfoFrame.module.scss'
 
 type InfoItem = {
   label: React.ReactNode
   value: React.ReactNode
+  isTooltiped?: boolean
 }
 
 type Props = {
@@ -16,16 +19,26 @@ type Props = {
 export function FormInfoFrame({ info, className }: Props) {
   return (
     <div className={cns(s.wrap, className)}>
-      {info.map((item, i) => (
-        <div key={i} className={s.column}>
-          <Text size={14} weight={500} color="secondary">
-            {item.label}
-          </Text>
-          <Text size={20} weight={500}>
+      {info.map((item, i) => {
+        let valueEl = (
+          <Text size={20} weight={500} truncateLines={1}>
             {item.value}
           </Text>
-        </div>
-      ))}
+        )
+
+        if (item.isTooltiped) {
+          valueEl = <Tooltip tooltip={item.value}>{valueEl}</Tooltip>
+        }
+
+        return (
+          <div key={i} className={s.column}>
+            <Text size={14} weight={500} color="secondary">
+              {item.label}
+            </Text>
+            {valueEl}
+          </div>
+        )
+      })}
     </div>
   )
 }

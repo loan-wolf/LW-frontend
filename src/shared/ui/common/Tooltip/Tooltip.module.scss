@@ -1,0 +1,73 @@
+@import '~shared/styles/index.global.scss';
+
+.wrap {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.body {
+  z-index: 1;
+  position: absolute;
+  padding: 9px 12px;
+  opacity: 0;
+  width: max-content;
+  border-radius: 8px;
+  background-color: var(--colorInputBg);
+  border: 1px solid var(--colorBorder);
+  pointer-events: none;
+  transform: scale(0.6);
+  backdrop-filter: blur(12px);
+  transition: opacity ease var(--durFast),
+    transform var(--easeOutBack) var(--durNorm);
+
+  .wrap:hover & {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: initial;
+  }
+
+  &.position--bottom {
+    top: calc(100% + 6px);
+    transform-origin: 50% -6px;
+  }
+
+  &.position--top {
+    bottom: calc(100% + 6px);
+    transform-origin: 50% calc(100% - 6px);
+  }
+
+  &.position--top,
+  &.position--bottom {
+    left: 50%;
+    transform: translateX(-50%) scale(0.6);
+
+    .wrap:hover & {
+      transform: translateX(-50%) scale(1);
+    }
+  }
+
+  &.position--top-left {
+    left: 0;
+    bottom: calc(100% + 6px);
+    transform-origin: 0 calc(100% - 6px);
+  }
+
+  &.position--top-right {
+    right: 0;
+    bottom: calc(100% + 6px);
+    transform-origin: 100% calc(100% - 6px);
+  }
+
+  &.position--bottom-left {
+    left: 0;
+    top: calc(100% + 6px);
+    transform-origin: 0% -6px;
+  }
+
+  &.position--bottom-right {
+    right: 0;
+    top: calc(100% + 6px);
+    transform-origin: 100% -6px;
+  }
+}

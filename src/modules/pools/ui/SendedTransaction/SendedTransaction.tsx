@@ -54,7 +54,10 @@ export function SendedTransaction({ tx, transactionType }: Props) {
           className={s.column}
         />
         <div className={s.column}>
-          <TransactionStatusBadge status={txStatus.status} />
+          <TransactionStatusBadge
+            status={txStatus.status}
+            onOpen={handleOpen}
+          />
         </div>
       </div>
       <Button size={40} fashion="glass" onClick={handleOpen}>
