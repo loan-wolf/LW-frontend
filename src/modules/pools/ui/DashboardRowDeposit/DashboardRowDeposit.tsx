@@ -50,10 +50,7 @@ export function DashboardRowDeposit({ deposit, className }: Props) {
         className={s.column}
       />
       <div className={s.column}>
-        <DropdownDeposit
-          onAddMore={() => console.log('onAddMore')}
-          onWithdraw={() => console.log('onWithdraw')}
-        />
+        <DropdownDeposit onAddMore={() => console.log('onAddMore')} />
       </div>
     </DashboardRow>
   )
