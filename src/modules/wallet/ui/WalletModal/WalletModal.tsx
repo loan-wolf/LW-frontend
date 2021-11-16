@@ -9,7 +9,7 @@ import { Text } from 'shared/ui/common/Text'
 import { Button } from 'shared/ui/controls/Button'
 import { Modal, ModalProps } from 'modules/modal/ui/Modal'
 
-import { ContractTestDai } from 'modules/contracts/contracts'
+import { ContractTestDAI } from 'modules/contracts/contracts'
 import { formatBalance } from 'modules/blockChain/utils/formatBalance'
 import s from './WalletModal.module.scss'
 
@@ -19,8 +19,8 @@ export function WalletModal(props: ModalProps) {
   const [connector] = useWalletConnectorStorage()
   const disconnect = useWalletDisconnect()
 
-  const totalSupply = ContractTestDai.useSwrWeb3('totalSupply')
-  const daiBalance = ContractTestDai.useSwrWeb3(
+  const totalSupply = ContractTestDAI.useSwrWeb3('totalSupply')
+  const daiBalance = ContractTestDAI.useSwrWeb3(
     address ? 'balanceOf' : null,
     String(address),
   )

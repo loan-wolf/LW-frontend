@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3 } from './useWeb3'
 import { useTransactionStatus } from './useTransactionStatus'
 
 import { toastError, toastInfo } from 'modules/toasts'
@@ -13,7 +13,7 @@ type PopulateFn =
   | (() => Promise<PopulatedTransaction>)
 
 export function useTransactionSender(populateTx: PopulateFn) {
-  const { library } = useWeb3React()
+  const { library } = useWeb3()
   const [isSigning, setSigning] = useState(false)
   const [resultTx, setResultTx] = useState<ResultTx | null>(null)
   const open = useEtherscanOpener(resultTx?.hash, 'tx')
@@ -22,12 +22,16 @@ export function useTransactionSender(populateTx: PopulateFn) {
   })
 
   const send = useCallback(async () => {
+    if (!library) return
+
     try {
       setResultTx(null)
       setSigning(true)
 
       const signer = library.getSigner()
-      const walletName = getWalletNameFromProvider(signer.provider?.provider)
+      const walletName = getWalletNameFromProvider(
+        (signer.provider as any).provider,
+      )
       const populatedTx = await populateTx()
 
       toastInfo(`Confirm transaction with ${walletName}`)
