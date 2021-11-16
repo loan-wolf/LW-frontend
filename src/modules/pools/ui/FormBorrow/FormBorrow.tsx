@@ -161,10 +161,12 @@ export function FormBorrow({ onSuccess }: Props) {
           library: library.getSigner(),
         })
 
-        await collateralAssetContract.approve(
+        const txApprove = await collateralAssetContract.approve(
           CollateralManager[chainId],
           amountWei,
         )
+
+        await txApprove.wait()
 
         const hash = ethers.utils.keccak256(
           ethers.utils.defaultAbiCoder.encode(
@@ -192,7 +194,7 @@ export function FormBorrow({ onSuccess }: Props) {
           hash,
           signature,
           {
-            gasLimit: 500000,
+            gasLimit: 1000000,
           },
         )
 
