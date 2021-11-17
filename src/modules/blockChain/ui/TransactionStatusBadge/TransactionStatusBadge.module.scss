@@ -9,7 +9,22 @@
   height: 36px;
   border: 1px solid var(--colorBorder);
   border-radius: 18px;
+  user-select: none;
+  transition: background-color ease var(--durNorm),
+    border-color ease var(--durNorm);
 
+  &.isInteractable {
+    cursor: pointer;
+
+    &:hover {
+      transition-duration: var(--durMed);
+    }
+
+    &:active {
+      transform: translateY(1px);
+      transition-duration: var(--durMed);
+    }
+  }
 
   & svg {
     display: block;

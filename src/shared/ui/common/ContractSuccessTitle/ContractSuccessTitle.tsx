@@ -11,8 +11,8 @@ export function ContractSuccessTitle({ children }: Props) {
   return (
     <Text size={16} weight={600} isUppercased className={s.title}>
       {children}{' '}
-      <Link className={s.link} to={links.dashboard}>
-        view it in dashboard
+      <Link className={s.link} to={links.transactions}>
+        view it in transaction screen
       </Link>
     </Text>
   )

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { FormRepayment, SuccessData } from 'modules/pools/ui/FormRepayment'
-import { RepaymentSuccessRow } from 'modules/pools/ui/RepaymentSuccessRow'
+// import { SendedTransaction } from 'modules/pools/ui/SendedTransaction'
 import { ContractSuccessTitle } from 'shared/ui/common/ContractSuccessTitle'
 import { NarrowWrapper } from 'shared/ui/layout/NarrowWrapper'
 
@@ -14,7 +14,7 @@ function RouteRepayment() {
     return (
       <>
         <ContractSuccessTitle>Repayment is in progress.</ContractSuccessTitle>
-        <RepaymentSuccessRow />
+        {/* <SendedTransaction transactionType="Repayment" /> */}
       </>
     )
   }

@@ -1,9 +1,12 @@
 import { get } from 'lodash'
+import { Chains } from 'modules/blockChain/chains'
 import { ReactComponent as TokenDAI } from 'assets/token-dai.svg'
 import { ReactComponent as TokenUSDC } from 'assets/token-usdc.svg'
 import { ReactComponent as TokenUSDT } from 'assets/token-usdt.svg'
 import { ReactComponent as TokenETH } from 'assets/token-eth.svg'
 import { ReactComponent as TokenWBTC } from 'assets/token-wbtc.svg'
+import * as addresses from 'modules/contracts/contractAddresses'
+import * as contracts from 'modules/contracts/contracts'
 
 export const poolAssets = {
   DAI: 'DAI',
@@ -12,7 +15,6 @@ export const poolAssets = {
   ETH: 'ETH',
   WBTC: 'WBTC',
 } as const
-
 export type PoolAsset = keyof typeof poolAssets
 
 export const poolAssetIcons = {
@@ -22,6 +24,28 @@ export const poolAssetIcons = {
   ETH: <TokenETH />,
   WBTC: <TokenWBTC />,
 } as const
+
+export function getPoolAssetIcon(asset: string) {
+  return get(poolAssetIcons, asset, null) as React.ReactNode | null
+}
+
+export const poolAssetAddresses = {
+  [poolAssets.DAI]: addresses.TestDAI,
+  [poolAssets.USDC]: {
+    [Chains.Kovan]: '',
+  },
+  [poolAssets.USDT]: {
+    [Chains.Kovan]: '',
+  },
+  [poolAssets.ETH]: addresses.TestETH,
+  [poolAssets.WBTC]: {
+    [Chains.Kovan]: '',
+  },
+} as const
+
+export function getPoolAssetAddress(asset: PoolAsset, chain: Chains) {
+  return get(poolAssetAddresses, [asset, chain], null) as string | null
+}
 
 export const poolAssetOptions = {
   [poolAssets.DAI]: {
@@ -51,6 +75,14 @@ export const poolAssetOptions = {
   },
 } as const
 
-export function getPoolAssetIcon(val: string) {
-  return get(poolAssetIcons, val, null)
+export const poolAssetContracts = {
+  [poolAssets.DAI]: contracts.ContractTestDAI,
+  [poolAssets.USDC]: null,
+  [poolAssets.USDT]: null,
+  [poolAssets.ETH]: contracts.ContractTestETH,
+  [poolAssets.WBTC]: null,
+} as const
+
+export function getPoolAssetContract(asset: PoolAsset) {
+  return poolAssetContracts[asset]
 }

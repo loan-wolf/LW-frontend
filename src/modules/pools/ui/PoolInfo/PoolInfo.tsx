@@ -10,7 +10,7 @@ import { PoolDataRow } from '../PoolDataRow'
 import { PoolLoan } from '../PoolLoan'
 
 import {
-  ContractTestDai,
+  ContractTestDAI,
   ContractLoanWolfPoolType,
 } from 'modules/contracts/contracts'
 import { formatBalance } from 'modules/blockChain/utils/formatBalance'
@@ -25,11 +25,11 @@ export function PoolInfo({ ContractLoanWolfPool }: Props) {
   const promptModal = usePropmptModal()
 
   const contractLoanWolfPool = ContractLoanWolfPool.useContractWeb3()
-  const contractTestDai = ContractTestDai.useContractWeb3()
+  const contractTestDAI = ContractTestDAI.useContractWeb3()
   const poolAddress = contractLoanWolfPool.address
 
   const symbol = ContractLoanWolfPool.useSwrWeb3('symbol')
-  const allowance = ContractTestDai.useSwrWeb3(
+  const allowance = ContractTestDAI.useSwrWeb3(
     'allowance',
     userAddress,
     poolAddress,
@@ -60,13 +60,13 @@ export function PoolInfo({ ContractLoanWolfPool }: Props) {
     promptModal.open({
       title: 'Enter allowance amount',
       onSubmit: value => {
-        contractTestDai.approve(poolAddress, parseEther(value), {
+        contractTestDAI.approve(poolAddress, parseEther(value), {
           gasLimit: 500000,
         })
         promptModal.close()
       },
     })
-  }, [contractTestDai, promptModal, poolAddress])
+  }, [contractTestDAI, promptModal, poolAddress])
 
   // Borrow
   const handleBorrow = useCallback(() => {

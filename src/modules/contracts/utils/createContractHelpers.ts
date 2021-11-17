@@ -1,4 +1,4 @@
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
 import { useGlobalMemo } from 'shared/hooks/useGlobalMemo'
 import { useContractSwr } from '../hooks/useContractSwr'
@@ -9,7 +9,7 @@ import { getRpcUrl } from 'modules/blockChain/utils/getRpcUrls'
 import { Chains, getChainName } from 'modules/blockChain/chains'
 import { FilterMethods } from 'shared/utils/utilTypes'
 
-type Library = Signer | providers.Provider
+type Library = Signer | providers.Provider | undefined
 
 interface Factory {
   name: string
@@ -25,48 +25,55 @@ type CreatorArgs<F> = {
   address: Address
 }
 
-type CallArgs = {
-  chainId: Chains
-  library: Library
-}
-
 export function createContractHelpers<F extends Factory>({
   address,
   factory,
 }: CreatorArgs<F>) {
   type Instance = ReturnType<F['connect']>
 
-  function connect({ chainId, library }: CallArgs) {
+  function getAddressByChain(chainId: Chains) {
     if (!address.hasOwnProperty(chainId)) {
       const chainName = getChainName(chainId)
       throw new Error(
         `Contract ${factory.name} does not support chain ${chainName}`,
       )
     }
+    return address[chainId] as string
+  }
 
-    return factory.connect(address[chainId] as string, library) as Instance
+  function connectRpc({ chainId }: { chainId: Chains }) {
+    return factory.connect(
+      getAddressByChain(chainId),
+      new JsonRpcProvider(getRpcUrl(chainId), chainId),
+    ) as Instance
+  }
+
+  function connectWeb3({
+    chainId,
+    library,
+  }: {
+    chainId: Chains
+    library: Library
+  }) {
+    return factory.connect(getAddressByChain(chainId), library) as Instance
   }
 
   function useContractRpc() {
     const chainId = useCurrentChain()
 
     return useGlobalMemo(
-      () =>
-        connect({
-          chainId,
-          library: new JsonRpcProvider(getRpcUrl(chainId), chainId),
-        }),
+      () => connectRpc({ chainId }),
       `contract-rpc-${address[chainId]}`,
     )
   }
 
   function useContractWeb3() {
-    const { library, active, account } = useWeb3React()
+    const { library, active, account } = useWeb3()
     const chainId = useCurrentChain()
 
     return useGlobalMemo(
       () =>
-        connect({
+        connectWeb3({
           chainId,
           library: library?.getSigner(),
         }),
@@ -97,7 +104,8 @@ export function createContractHelpers<F extends Factory>({
   return {
     address,
     factory,
-    connect,
+    connectRpc,
+    connectWeb3,
     useContractRpc,
     useContractWeb3,
     useSwrWeb3,
