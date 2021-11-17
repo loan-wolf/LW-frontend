@@ -1,4 +1,5 @@
 import cns from 'classnames'
+import { memo, useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 
 import { Link } from 'shared/ui/controls/Link'
@@ -15,18 +16,24 @@ import * as links from 'modules/router/links'
 
 type DrawerLinkProps = {
   link: string
+  matchLinks?: string[]
   icon: React.ReactNode
   children: React.ReactNode
 }
 
-function DrawerLink({ link, icon, children }: DrawerLinkProps) {
-  const location = useLocation()
+function DrawerLinkRaw({ link, matchLinks, icon, children }: DrawerLinkProps) {
+  const { pathname } = useLocation()
+
+  const isActive = useMemo(
+    () => pathname === link || matchLinks?.includes(pathname),
+    [link, matchLinks, pathname],
+  )
 
   return (
     <Link
       to={link}
       className={cns(s.drawerLink, {
-        [s.isActive]: location.pathname === link,
+        [s.isActive]: isActive,
       })}
     >
       <span className={s.linkIcon}>{icon}</span>
@@ -35,11 +42,23 @@ function DrawerLink({ link, icon, children }: DrawerLinkProps) {
   )
 }
 
+const DrawerLink = memo(DrawerLinkRaw)
+
+const MATCH_LINKS = {
+  DASHBOARD: [
+    links.dashboardCollateral,
+    links.dashboardDeposits,
+    links.dashboardLoans,
+    links.dashboardOldDeposits,
+    links.dashboardOldLoans,
+  ],
+}
+
 type Props = {
   className?: string
 }
 
-export function Drawer({ className }: Props) {
+function DrawerRaw({ className }: Props) {
   return (
     <div className={className}>
       <Link to={links.home} className={s.drawerLogo}>
@@ -51,6 +70,7 @@ export function Drawer({ className }: Props) {
       <DrawerLink link={links.borrow} icon={<Borrow />} children="Borrow" />
       <DrawerLink
         link={links.dashboard}
+        matchLinks={MATCH_LINKS.DASHBOARD}
         icon={<Dashboard />}
         children="Dashboard"
       />
@@ -68,3 +88,5 @@ export function Drawer({ className }: Props) {
     </div>
   )
 }
+
+export const Drawer = memo(DrawerRaw)
