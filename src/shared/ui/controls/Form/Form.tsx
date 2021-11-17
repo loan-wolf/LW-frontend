@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import {
   FormProvider,
   UseFormReturn,
@@ -17,10 +18,20 @@ export function Form<TFieldValues>({
   className,
   children,
 }: Props<TFieldValues>) {
+  const submit = useCallback(
+    async (...args: Parameters<typeof onSubmit>) => {
+      try {
+        await onSubmit(...args)
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    [onSubmit],
+  )
   return (
     <FormProvider {...formMethods}>
       <form
-        onSubmit={formMethods.handleSubmit(onSubmit)}
+        onSubmit={formMethods.handleSubmit(submit)}
         className={className}
         children={children}
       />

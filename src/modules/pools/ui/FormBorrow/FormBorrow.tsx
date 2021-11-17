@@ -1,6 +1,8 @@
 import { useCallback, useState } from 'react'
 import { useForm, useFormContext } from 'react-hook-form'
+import { useBorrowSubmit } from './useBorrowSubmit'
 
+import { Text } from 'shared/ui/common/Text'
 import { InputControl } from 'shared/ui/controls/Input'
 import { SelectControl } from 'shared/ui/controls/Select'
 import { FormSubmitter } from 'shared/ui/common/FormSubmitter'
@@ -13,19 +15,30 @@ import {
   FormLockedValue,
   FormLockedValuesList,
 } from 'shared/ui/common/FormLockedValue'
+import { TransactionStatusBadge } from 'modules/blockChain/ui/TransactionStatusBadge'
 
 import * as formErrors from 'shared/constants/formErrors'
 import {
+  poolAssets,
   poolAssetOptions,
   getPoolAssetIcon,
 } from 'modules/pools/constants/poolAssets'
 import { formatNumber } from 'shared/utils/formatNumber'
+import type { FormValues, SuccessData } from './types'
+
+import s from './FormBorrow.module.scss'
 
 const APR = 22
-const LTV = 15
-const REQUIRED_COLLATERAL = '1 ETH'
+const LTV = 85
 const LIQ_THRESHOLD = '85%'
 const LIQ_PRICE = '1 ETH = 2547 USD'
+const COLLATERAL_PRICE = {
+  [poolAssets.DAI]: 1,
+  [poolAssets.USDC]: 1,
+  [poolAssets.USDT]: 1,
+  [poolAssets.ETH]: 4765,
+  [poolAssets.WBTC]: 1,
+}
 
 const borrowOptions = [
   poolAssetOptions.USDC,
@@ -41,13 +54,6 @@ const collateralOptions = [
   poolAssetOptions.WBTC,
 ]
 
-type FormValues = {
-  borrowedAsset: string
-  amount: string
-  term: string
-  collateralAsset: string
-}
-
 function AmountToRepay() {
   const { watch } = useFormContext<FormValues>()
   const amount = Number(watch('amount'))
@@ -60,9 +66,6 @@ function AmountToRepay() {
     </>
   )
 }
-
-// TODO: Update with actual response type after contract integration
-export type SuccessData = FormValues
 
 type Props = {
   onSuccess: (successData: SuccessData) => void
@@ -82,17 +85,25 @@ export function FormBorrow({ onSuccess }: Props) {
     },
   })
 
-  const submit = useCallback(
-    formData => {
-      if (!isLocked) {
-        setLocked(true)
-      } else {
-        console.log(formData)
-        onSuccess(formData)
-      }
-    },
-    [isLocked, onSuccess],
-  )
+  const amount = Number(formMethods.watch('amount'))
+  const collateralAsset = formMethods.watch('collateralAsset')
+  const collateralAmount =
+    collateralAsset && amount
+      ? (amount / ((LTV / 100) * COLLATERAL_PRICE[collateralAsset])).toFixed(18)
+      : '0'
+
+  const { submit, txAllowance, txBorrow } = useBorrowSubmit({
+    isLocked,
+    setLocked,
+    onSuccess,
+    collateralAmount,
+  })
+
+  const isSubmitting =
+    txAllowance.isSigning ||
+    txAllowance.isPending ||
+    txBorrow.isSigning ||
+    txBorrow.isPending
 
   return (
     <Form formMethods={formMethods} onSubmit={submit}>
@@ -163,7 +174,11 @@ export function FormBorrow({ onSuccess }: Props) {
         <FormInfoFrame
           info={[
             { label: 'LTV', value: `${LTV}%` },
-            { label: 'Required collateral', value: REQUIRED_COLLATERAL },
+            {
+              label: 'Required collateral',
+              value: collateralAmount,
+              isTooltiped: true,
+            },
           ]}
         />
         <FormInfoFrame
@@ -174,8 +189,23 @@ export function FormBorrow({ onSuccess }: Props) {
         />
       </FormInfoFramesList>
 
+      {isLocked && (
+        <div className={s.allowanceInfo}>
+          <Text size={14}>Token spending approving: </Text>
+          <TransactionStatusBadge
+            status={txAllowance.status}
+            onOpen={
+              !txAllowance.isEmpty && !txAllowance.isSigning
+                ? txAllowance.open
+                : undefined
+            }
+          />
+        </div>
+      )}
+
       <FormSubmitter
         isLocked={isLocked}
+        isSubmitting={isSubmitting}
         firstStepText="Borrow"
         onClickUnlock={handleUnlock}
       />

@@ -1,4 +1,5 @@
 import cns from 'classnames'
+import { memo } from 'react'
 import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
 
 import { Text } from 'shared/ui/common/Text'
@@ -12,7 +13,7 @@ type Props = {
   className?: string
 }
 
-export function HeaderActions({ className }: Props) {
+function HeaderActionsRaw({ className }: Props) {
   const currentChain = useCurrentChain()
 
   return (
@@ -34,3 +35,5 @@ export function HeaderActions({ className }: Props) {
     </div>
   )
 }
+
+export const HeaderActions = memo(HeaderActionsRaw)
