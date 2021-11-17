@@ -4,6 +4,7 @@ import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
 // import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
 
 import { BrowserRouter } from 'react-router-dom'
+import { SingletonHooksContainer } from 'react-singleton-hook'
 
 import { RouterRoot } from 'modules/router/ui/RouterRoot'
 import { ContentBox } from 'shared/ui/layout/ContentBox'
@@ -55,6 +56,7 @@ export function AppRoot() {
         <WalletConnectorsProvider>
           <ThemeProvider>
             <BrowserRouter basename={BASE_URL}>
+              <SingletonHooksContainer />
               <ModalProvider>
                 <AppMemoized />
               </ModalProvider>

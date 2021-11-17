@@ -7,6 +7,7 @@ export type { Investor } from "./Investor";
 export type { LoanWolfPool } from "./LoanWolfPool";
 export type { PoolFactory } from "./PoolFactory";
 export type { RociCreditToken } from "./RociCreditToken";
+export type { ScoreDB } from "./ScoreDB";
 export type { Token } from "./Token";
 export type { TokenBar } from "./TokenBar";
 
@@ -16,5 +17,6 @@ export { Investor__factory } from "./factories/Investor__factory";
 export { LoanWolfPool__factory } from "./factories/LoanWolfPool__factory";
 export { PoolFactory__factory } from "./factories/PoolFactory__factory";
 export { RociCreditToken__factory } from "./factories/RociCreditToken__factory";
+export { ScoreDB__factory } from "./factories/ScoreDB__factory";
 export { Token__factory } from "./factories/Token__factory";
 export { TokenBar__factory } from "./factories/TokenBar__factory";

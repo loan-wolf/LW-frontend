@@ -1,4 +1,4 @@
-import { useNFCSStateMock } from 'modules/nfcs/hooks/useNFCSStateMock'
+import { useNFCSState } from 'modules/nfcs/hooks/useNFCSState'
 
 import { Text } from 'shared/ui/common/Text'
 import { Button } from 'shared/ui/controls/Button'
@@ -10,7 +10,7 @@ type Props = {
 }
 
 export function NFCSMintFinish({ onClose }: Props) {
-  const [{ nfcs }] = useNFCSStateMock()
+  const { nfcs } = useNFCSState()
   return (
     <>
       <Text
