@@ -15,7 +15,6 @@ type Props = {
   position?: Position
   tooltip?: React.ReactNode
   maxWidth?: number
-  isTruncated?: boolean
   className?: string
   children?: React.ReactNode
 }
@@ -24,16 +23,11 @@ export function Tooltip({
   position = 'top',
   tooltip,
   maxWidth,
-  isTruncated,
   className,
   children,
 }: Props) {
   return (
-    <div
-      className={cns(s.wrap, className, {
-        [s.isTruncated]: isTruncated,
-      })}
-    >
+    <div className={cns(s.wrap, className)}>
       {children}
       <div
         style={{ maxWidth }}

@@ -17,10 +17,6 @@ export function useTransactionStatus({ hash, defaultStatus = 'empty' }: Args) {
       return
     }
 
-    const unsub = () => {
-      library.off(hash)
-    }
-
     const checkTransaction = (e: any) => {
       if (!e) {
         setStatus('pending')
@@ -31,6 +27,10 @@ export function useTransactionStatus({ hash, defaultStatus = 'empty' }: Args) {
         setStatus('failed')
         unsub()
       }
+    }
+
+    const unsub = () => {
+      library.off(hash, checkTransaction)
     }
 
     library.getTransactionReceipt(hash).then(checkTransaction)

@@ -1,8 +1,7 @@
 import cns from 'classnames'
-
+import { useNFCSState } from 'modules/nfcs/hooks/useNFCSState'
 import { useNFCSModal } from 'modules/nfcs/ui/NFCSModal/useNFCSModal'
 import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
-import { useNFCSStateMock } from 'modules/nfcs/hooks/useNFCSStateMock'
 
 import { Text } from 'shared/ui/common/Text'
 import { Button } from 'shared/ui/controls/Button'
@@ -18,13 +17,31 @@ type Props = {
 export function HeaderNFCS({ className }: Props) {
   const modalNFCS = useNFCSModal()
   const { isWalletConnected } = useWalletInfo()
-  const [stateMock] = useNFCSStateMock()
+  const creditScoreState = useNFCSState()
 
   if (!isWalletConnected) {
     return null
   }
 
-  if (stateMock.status === 'not-generated') {
+  if (creditScoreState.status === 'loading') {
+    return (
+      <div className={cns(s.wrap, s.generateWrap, className)}>
+        <Button
+          size={40}
+          isSquare
+          fashion="glass-branded"
+          className={s.generateButton}
+        >
+          <TimeSVG />
+        </Button>
+        <Text size={12} weight={500} isUppercased color="branded">
+          Loading...
+        </Text>
+      </div>
+    )
+  }
+
+  if (creditScoreState.status === 'not-generated') {
     return (
       <div
         className={cns(s.wrap, s.generateWrap, className)}
@@ -46,7 +63,7 @@ export function HeaderNFCS({ className }: Props) {
     )
   }
 
-  if (stateMock.status === 'generating') {
+  if (creditScoreState.status === 'generating') {
     return (
       <div
         className={cns(s.wrap, s.generateWrap, className)}
@@ -67,21 +84,11 @@ export function HeaderNFCS({ className }: Props) {
     )
   }
 
-  if (stateMock.status === 'failed') {
-    return (
-      <div
-        className={cns(s.wrap, s.generateWrap, className)}
-        onClick={modalNFCS.open}
-      >
-        <Text size={12} weight={500} isUppercased color="branded">
-          Generating failed
-        </Text>
-      </div>
-    )
-  }
-
   return (
-    <div className={cns(s.wrap, s.generatedWrap, className)}>
+    <div
+      className={cns(s.wrap, s.generatedWrap, className)}
+      onClick={modalNFCS.open}
+    >
       <BoltSVG className={s.generatedBolt} />
       <Text size={12} weight={500} isUppercased>
         My credit <br />
@@ -89,7 +96,7 @@ export function HeaderNFCS({ className }: Props) {
       </Text>
       <div className={s.line} />
       <Text size={24} weight={500} isUppercased>
-        {stateMock.nfcs}
+        {creditScoreState.nfcs}
       </Text>
     </div>
   )
