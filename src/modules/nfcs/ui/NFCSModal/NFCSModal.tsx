@@ -1,4 +1,4 @@
-import { useNFCSState } from 'modules/nfcs/hooks/useNFCSState'
+import { useNFCSState, setNFCSTxHash } from 'modules/nfcs/hooks/useNFCSState'
 
 import { NFCSMintForm } from '../NFCSMintForm'
 import { NFCSMintProgress } from '../NFCSMintProgress'
@@ -15,9 +15,7 @@ export function NFCSModal(props: Props) {
   return (
     <Modal width={580} {...props}>
       {creditScoreState.status === 'not-generated' && (
-        <NFCSMintForm
-          onTxSubmit={txHash => creditScoreState.setTxHash(txHash)}
-        />
+        <NFCSMintForm onTxSubmit={txHash => setNFCSTxHash(txHash)} />
       )}
 
       {creditScoreState.status === 'generating' && creditScoreState.txHash && (
@@ -31,7 +29,7 @@ export function NFCSModal(props: Props) {
       {creditScoreState.status === 'failed' && (
         <NFCSMintFailed
           txHash={creditScoreState.txHash}
-          onRetry={() => creditScoreState.setTxHash(null)}
+          onRetry={() => setNFCSTxHash(null)}
         />
       )}
     </Modal>

@@ -109,13 +109,14 @@ function useNFCSStateImpl() {
 
   if (txStatus.isFailed) {
     status = 'failed'
-  } else if (tokenId.isLoading || score.isLoading) {
-    status = 'loading'
-  } else if (tokenId.data && (txStatus.isPending || score.data === undefined)) {
+  } else if (
+    (txStatus.isPending || txStatus.isSuccess) &&
+    score.data === undefined
+  ) {
     status = 'generating'
-  } else if (!tokenId.data) {
+  } else if (tokenId.data === undefined && score.data === undefined) {
     status = 'not-generated'
-  } else if (score.data !== undefined) {
+  } else if (tokenId.data !== undefined && score.data !== undefined) {
     status = 'generated'
   } else {
     status = 'loading'
