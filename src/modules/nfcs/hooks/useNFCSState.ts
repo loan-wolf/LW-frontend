@@ -118,12 +118,11 @@ function useNFCSStateImpl() {
     status = 'not-generated'
   } else if (tokenId.data !== undefined && score.data !== undefined) {
     status = 'generated'
-  } else {
-    status = 'loading'
   }
 
   return {
     nfcs: score.data ?? -1,
+    tokenId: tokenId.data ? Number(tokenId.data) : undefined,
     status: status,
     txHash,
     setTxHash: setNFCSTxHash,
@@ -132,6 +131,7 @@ function useNFCSStateImpl() {
 
 const init = {
   nfcs: -1,
+  tokenId: undefined as number | undefined,
   status: 'loading' as NFCSStatus,
   txHash: null as string | null,
   setTxHash: setNFCSTxHash,
