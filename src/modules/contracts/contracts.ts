@@ -22,7 +22,7 @@ export const ContractRociCreditToken = createContractHelpers({
   address: addresses.RociCreditToken,
 })
 
-export const CollateralManager = createContractHelpers({
+export const ContractCollateralManager = createContractHelpers({
   factory: generated.CollateralManager__factory,
   address: addresses.CollateralManager,
 })

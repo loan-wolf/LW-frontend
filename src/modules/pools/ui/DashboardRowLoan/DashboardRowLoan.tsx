@@ -1,46 +1,64 @@
+import * as ethers from 'ethers'
+import { useMemo } from 'react'
+import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
+
 import { Text } from 'shared/ui/common/Text'
 import { Button } from 'shared/ui/controls/Button'
 import { InfoFieldValue } from 'shared/ui/common/InfoFieldValue'
 import { InfoFieldValueCouple } from 'shared/ui/common/InfoFieldValueCouple'
 import { DropdownLoan } from '../DropdownLoan'
 import { DashboardRow } from 'shared/ui/common/DashboardRow'
+import { FormattedDate } from 'shared/ui/utils/FormattedDate'
 
-import { getPoolAssetIcon, PoolAsset } from 'modules/pools/constants/poolAssets'
+import {
+  getPoolAssetIcon,
+  getPoolAssetByAddress,
+} from 'modules/pools/constants/poolAssets'
 
+// import { ContractCollateralManager } from 'modules/contracts/contracts'
+import type { Loan } from 'modules/pools/types/Loan'
 import * as links from 'modules/router/links'
 import s from './DashboardRowLoan.module.scss'
 
-export type LoanDataMock = {
-  id: string
-  borrowedAmount: number
-  borrowedAsset: PoolAsset
-  collateralAmount: number
-  collateralAsset: PoolAsset
-  apr: number
-  time: string
-  principal: number
-  interest: number
-}
-
 type Props = {
-  loan: LoanDataMock
+  loan: Loan
+  loanId: number
+  investorAddress: string
   className?: string
 }
 
-export function DashboardRowLoan({ loan, className }: Props) {
+export function DashboardRowLoan({
+  loan,
+  loanId,
+  investorAddress,
+  className,
+}: Props) {
+  const chainId = useCurrentChain()
   const {
-    id,
-    borrowedAmount,
-    borrowedAsset,
-    collateralAmount,
-    collateralAsset,
-    apr,
-    time,
-    principal,
-    interest,
+    ERC20Address,
+    principal: principalRaw,
+    interestRate,
+    paymentDueDate,
   } = loan
 
-  const borrowedAmountUSD = borrowedAmount * 23
+  const borrowedAsset = useMemo(
+    () => getPoolAssetByAddress(ERC20Address, chainId),
+    [ERC20Address, chainId],
+  )
+
+  // const collateralAmount = ContractCollateralManager.useSwrWeb3(
+  //   'getCollateralLookup',
+  //   investorAddress,
+  //   loanId,
+  // )
+
+  const principal = Number(ethers.utils.formatEther(principalRaw))
+  const apr = Number(interestRate) / 100
+  const interest = principal / apr
+  const totalDebt = principal + interest
+  const totalDebtUSD = '—'
+  // const collateralAsset = collateralAmount.data[0]
+  // const collateralAmount = ethers.utils.formatEther(collateralAmount.data[1])
 
   return (
     <DashboardRow className={className}>
@@ -48,9 +66,13 @@ export function DashboardRowLoan({ loan, className }: Props) {
         <InfoFieldValue
           label="Asset"
           value={
-            <>
-              {getPoolAssetIcon(borrowedAsset)} {borrowedAsset}
-            </>
+            borrowedAsset ? (
+              <>
+                {getPoolAssetIcon(borrowedAsset)} {borrowedAsset}
+              </>
+            ) : (
+              'Unknown Asset'
+            )
           }
         />
         <InfoFieldValue label="APR" value={`${apr}%`} />
@@ -61,9 +83,9 @@ export function DashboardRowLoan({ loan, className }: Props) {
           label="Total debt"
           value={
             <div>
-              {borrowedAmount}&nbsp;{borrowedAsset}{' '}
+              {totalDebt}&nbsp;{borrowedAsset}{' '}
               <Text tag="span" size={16} color="secondary">
-                ({borrowedAmountUSD * 23}&nbsp;USD)
+                ({totalDebtUSD}&nbsp;USD)
               </Text>
             </div>
           }
@@ -93,11 +115,27 @@ export function DashboardRowLoan({ loan, className }: Props) {
           label="Collateral Amount"
           value={
             <>
-              {collateralAmount} {collateralAsset}
+              —
+              {/* {collateralAmount}{' '}
+              {collateralAsset} */}
             </>
           }
         />
-        <InfoFieldValue label="Maturity time " value={time} />
+        <InfoFieldValue
+          label="Maturity time "
+          value={
+            <>
+              <FormattedDate
+                format="DD–MMM–YYYY"
+                date={Number(paymentDueDate)}
+              />
+              &nbsp;
+              <Text tag="span" color="secondary">
+                <FormattedDate format="hh:mm a" date={Number(paymentDueDate)} />
+              </Text>
+            </>
+          }
+        />
       </div>
 
       <div className={s.column}>
@@ -117,7 +155,7 @@ export function DashboardRowLoan({ loan, className }: Props) {
             className={s.action}
           />
         </div>
-        <InfoFieldValue label="Loan Id" value={id} />
+        <InfoFieldValue label="Loan Id" value={loanId} />
       </div>
     </DashboardRow>
   )

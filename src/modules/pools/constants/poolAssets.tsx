@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import { get, getOr, toPairs, find, flow } from 'lodash/fp'
 import { Chains } from 'modules/blockChain/chains'
 import { ReactComponent as TokenDAI } from 'assets/token-dai.svg'
 import { ReactComponent as TokenUSDC } from 'assets/token-usdc.svg'
@@ -26,7 +26,7 @@ export const poolAssetIcons = {
 } as const
 
 export function getPoolAssetIcon(asset: string) {
-  return get(poolAssetIcons, asset, null) as React.ReactNode | null
+  return getOr(null, asset, poolAssetIcons) as React.ReactNode | null
 }
 
 export const poolAssetAddresses = {
@@ -44,7 +44,15 @@ export const poolAssetAddresses = {
 } as const
 
 export function getPoolAssetAddress(asset: PoolAsset, chain: Chains) {
-  return get(poolAssetAddresses, [asset, chain], null) as string | null
+  return getOr(null, [asset, chain], poolAssetAddresses) as string | null
+}
+
+export function getPoolAssetByAddress(address: string, chain: Chains) {
+  return flow(
+    toPairs,
+    find(([asset, poolAddress]) => address === get(chain, poolAddress)),
+    get(0),
+  )(poolAssetAddresses) as PoolAsset | undefined
 }
 
 export const poolAssetOptions = {
