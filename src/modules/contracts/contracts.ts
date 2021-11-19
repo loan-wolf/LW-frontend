@@ -1,6 +1,6 @@
 import * as generated from 'generated'
 import * as addresses from './contractAddresses'
-import type { ChainAddress } from './utils/BunchAddresses'
+import type { ChainAddress } from './utils/ChainAddress'
 import { createContractHelpers } from './utils/createContractHelpers'
 
 export const ContractTestDAI = createContractHelpers({

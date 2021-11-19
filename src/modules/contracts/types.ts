@@ -1,5 +1,6 @@
 import type { Chains } from 'modules/blockChain/chains'
 import type { Signer, providers } from 'ethers'
+import type { ChainAddress } from './utils/ChainAddress'
 
 export type Library = Signer | providers.Provider | undefined
 
@@ -33,7 +34,9 @@ export type ConnectWeb3Fn<F extends ContractFactoryAbstract> = (
   args: ConnectWeb3Args,
 ) => FactoryInstance<F>
 
-export type ContractConnectors<F extends ContractFactoryAbstract> = {
+export type ContractConnector<F extends ContractFactoryAbstract> = {
+  factory: F
+  chainAddress: ChainAddress
   connectRpc: ConnectRpcFn<F>
   connectWeb3: ConnectWeb3Fn<F>
 }

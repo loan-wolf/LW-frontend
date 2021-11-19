@@ -1,4 +1,4 @@
-import type { ChainAddress } from './BunchAddresses'
+import type { ChainAddress } from './ChainAddress'
 import type { ContractFactoryAbstract } from '../types'
 import { createContractConnectors } from './createContractConnectors'
 import { createContractHooks } from './createContractHooks'
@@ -12,20 +12,17 @@ export function createContractHelpers<F extends ContractFactoryAbstract>({
   factory,
   chainAddress,
 }: CreatorArgs<F>) {
-  const connectors = createContractConnectors({
-    chainAddress,
+  const connector = createContractConnectors({
     factory,
+    chainAddress,
   })
 
   const hooks = createContractHooks({
-    chainAddress,
-    connectors,
+    connector,
   })
 
   return {
-    factory,
-    chainAddress,
-    ...connectors,
+    ...connector,
     ...hooks,
   }
 }

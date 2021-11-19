@@ -1,5 +1,5 @@
 import { Chains } from 'modules/blockChain/chains'
-import { ChainAddress } from './utils/BunchAddresses'
+import { ChainAddress } from './utils/ChainAddress'
 
 export const addressTestDAI = new ChainAddress('TestDAI', {
   [Chains.Kovan]: '0x6b198422c97a805701a1cB53fee51F864f825dDA',

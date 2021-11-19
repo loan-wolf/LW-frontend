@@ -5,30 +5,27 @@ import {
 } from '../hooks/useContractInstance'
 
 import type { FilterMethods } from 'shared/utils/utilTypes'
-import type { ChainAddress } from './BunchAddresses'
 import type {
   FactoryInstance,
   ContractFactoryAbstract,
-  ContractConnectors,
+  ContractConnector,
 } from '../types'
 
 type Args<F extends ContractFactoryAbstract> = {
-  connectors: ContractConnectors<F>
-  chainAddress: ChainAddress
+  connector: ContractConnector<F>
 }
 
 export function createContractHooks<F extends ContractFactoryAbstract>({
-  connectors,
-  chainAddress,
+  connector,
 }: Args<F>) {
   type Instance = FactoryInstance<F>
 
   function useContractRpc() {
-    return useContractInstanceRpc(chainAddress, connectors.connectRpc)
+    return useContractInstanceRpc(connector)
   }
 
   function useContractWeb3() {
-    return useContractInstanceWeb3(chainAddress, connectors.connectWeb3)
+    return useContractInstanceWeb3(connector)
   }
 
   const getUseSwr = function (type: 'web3' | 'rpc') {

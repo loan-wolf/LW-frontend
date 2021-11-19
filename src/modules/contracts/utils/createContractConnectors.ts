@@ -1,13 +1,13 @@
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { getRpcUrl } from 'modules/blockChain/utils/getRpcUrls'
 
-import type { ChainAddress } from './BunchAddresses'
+import type { ChainAddress } from './ChainAddress'
 import type {
   FactoryInstance,
   ContractFactoryAbstract,
   ConnectRpcFn,
   ConnectWeb3Fn,
-  ContractConnectors,
+  ContractConnector,
 } from '../types'
 
 type Args<F> = {
@@ -18,7 +18,7 @@ type Args<F> = {
 export function createContractConnectors<F extends ContractFactoryAbstract>({
   factory,
   chainAddress,
-}: Args<F>): ContractConnectors<F> {
+}: Args<F>): ContractConnector<F> {
   type Instance = FactoryInstance<F>
 
   const connectRpc: ConnectRpcFn<F> = ({ chainId }) => {
@@ -33,6 +33,8 @@ export function createContractConnectors<F extends ContractFactoryAbstract>({
   }
 
   return {
+    factory,
+    chainAddress,
     connectRpc,
     connectWeb3,
   }
