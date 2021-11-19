@@ -37,6 +37,11 @@ export const ContractScoreDB = createContractHelpers({
   address: addresses.ScoreDB,
 })
 
+export const ContractPriceFeed = createContractHelpers({
+  factory: generated.PriceFeed__factory,
+  address: addresses.PriceFeed,
+})
+
 export const getContractLoanWolfPool = (address: Address) =>
   createContractHelpers({
     factory: generated.LoanWolfPool__factory,

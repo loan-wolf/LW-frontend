@@ -16,7 +16,10 @@ import {
   getPoolAssetByAddress,
 } from 'modules/pools/constants/poolAssets'
 
-import { ContractCollateralManager } from 'modules/contracts/contracts'
+import {
+  ContractCollateralManager,
+  ContractPriceFeed,
+} from 'modules/contracts/contracts'
 import type { Loan } from 'modules/pools/types/Loan'
 import * as links from 'modules/router/links'
 import { trimMiddleString } from 'shared/utils/trimMiddleString'
@@ -54,12 +57,18 @@ export function DashboardRowLoan({
     loanId,
   )
 
+  const { data: borrowedAssetPrice } = ContractPriceFeed.useSwrWeb3(
+    'getLatestPriceUSD',
+    ERC20Address,
+  )
+
   const maturityTime = Number(paymentDueDate)
   const principal = Number(ethers.utils.formatEther(principalRaw))
   const apr = Number(interestRate) / 100
   const interest = principal / apr
   const totalDebt = principal + interest
-  const totalDebtUSD = '—'
+  const totalDebtUSD =
+    borrowedAssetPrice && Number(borrowedAssetPrice) * totalDebt
 
   const collateralAsset = useMemo(
     () =>

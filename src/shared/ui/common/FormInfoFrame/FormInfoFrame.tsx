@@ -22,7 +22,7 @@ export function FormInfoFrame({ info, className }: Props) {
       {info.map((item, i) => {
         let valueEl = (
           <Text size={20} weight={500} truncateLines={1}>
-            {item.value}
+            {item.value || <>&nbsp;</>}
           </Text>
         )
 
