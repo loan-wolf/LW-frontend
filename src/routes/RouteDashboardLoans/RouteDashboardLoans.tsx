@@ -24,10 +24,10 @@ function RouteDashboardLoans() {
       const requests = Array.from(Array(Number(loansCount)))
         .map((_, i) => i)
         .reverse()
-        .map(async id => {
-          const loanId = await contractInvestor.loanIDs(walletAddress, id)
+        .map(async i => {
+          const loanId = await contractInvestor.loanIDs(walletAddress, i)
           const loanObj = await contractInvestor.loanLookup(loanId)
-          return { id, ...loanObj }
+          return { id: String(loanId), ...loanObj }
         })
 
       const res = await Promise.all(requests)

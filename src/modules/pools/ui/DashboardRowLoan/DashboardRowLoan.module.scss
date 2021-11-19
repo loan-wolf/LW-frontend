@@ -21,3 +21,20 @@
     margin-right: 12px;
   }
 }
+
+.collateralAmount {
+  display: inline-block;
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.collateralWrap {
+  display: flex;
+  align-items: center;
+}
+
+.loanIdTooltip {
+  max-width: 210px;
+  word-break: break-all;
+}

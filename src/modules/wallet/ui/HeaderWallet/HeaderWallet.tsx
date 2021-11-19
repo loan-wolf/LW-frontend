@@ -8,7 +8,7 @@ import { Button } from 'shared/ui/controls/Button'
 import { AddressIcon } from 'modules/blockChain/ui/AddressIcon'
 import { ReactComponent as WalletSVG } from 'assets/wallet.svg'
 
-import { trimAddress } from 'modules/blockChain/utils/trimAddress'
+import { trimMiddleString } from 'shared/utils/trimMiddleString'
 import s from './HeaderWallet.module.scss'
 
 type Props = {
@@ -39,7 +39,7 @@ export function HeaderWallet({ className }: Props) {
       onClick={() => walletModal.open({})}
     >
       <Text size={16} weight={500} className={s.address}>
-        {trimAddress(String(walletAddress), 3)}
+        {trimMiddleString(String(walletAddress), 3)}
       </Text>
       <AddressIcon address={walletAddress} />
     </span>

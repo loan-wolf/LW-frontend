@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
 
 import { Text } from 'shared/ui/common/Text'
+import { Tooltip } from 'shared/ui/common/Tooltip'
 import { Button } from 'shared/ui/controls/Button'
 import { InfoFieldValue } from 'shared/ui/common/InfoFieldValue'
 import { InfoFieldValueCouple } from 'shared/ui/common/InfoFieldValueCouple'
@@ -15,14 +16,15 @@ import {
   getPoolAssetByAddress,
 } from 'modules/pools/constants/poolAssets'
 
-// import { ContractCollateralManager } from 'modules/contracts/contracts'
+import { ContractCollateralManager } from 'modules/contracts/contracts'
 import type { Loan } from 'modules/pools/types/Loan'
 import * as links from 'modules/router/links'
+import { trimMiddleString } from 'shared/utils/trimMiddleString'
 import s from './DashboardRowLoan.module.scss'
 
 type Props = {
   loan: Loan
-  loanId: number
+  loanId: string
   investorAddress: string
   className?: string
 }
@@ -46,19 +48,28 @@ export function DashboardRowLoan({
     [ERC20Address, chainId],
   )
 
-  // const collateralAmount = ContractCollateralManager.useSwrWeb3(
-  //   'getCollateralLookup',
-  //   investorAddress,
-  //   loanId,
-  // )
+  const collateralInfo = ContractCollateralManager.useSwrWeb3(
+    'getCollateralLookup',
+    investorAddress,
+    loanId,
+  )
 
+  const maturityTime = Number(paymentDueDate)
   const principal = Number(ethers.utils.formatEther(principalRaw))
   const apr = Number(interestRate) / 100
   const interest = principal / apr
   const totalDebt = principal + interest
   const totalDebtUSD = '—'
-  // const collateralAsset = collateralAmount.data[0]
-  // const collateralAmount = ethers.utils.formatEther(collateralAmount.data[1])
+
+  const collateralAsset = useMemo(
+    () =>
+      collateralInfo.data &&
+      getPoolAssetByAddress(collateralInfo.data[0], chainId),
+    [collateralInfo.data, chainId],
+  )
+
+  const collateralAmount =
+    collateralInfo.data && ethers.utils.formatEther(collateralInfo.data[1])
 
   return (
     <DashboardRow className={className}>
@@ -114,24 +125,20 @@ export function DashboardRowLoan({
         <InfoFieldValue
           label="Collateral Amount"
           value={
-            <>
-              —
-              {/* {collateralAmount}{' '}
-              {collateralAsset} */}
-            </>
+            <Tooltip tooltip={collateralAmount} className={s.collateralWrap}>
+              <span className={s.collateralAmount}>{collateralAmount}</span>{' '}
+              <span>{collateralAsset}</span>
+            </Tooltip>
           }
         />
         <InfoFieldValue
           label="Maturity time "
           value={
             <>
-              <FormattedDate
-                format="DD–MMM–YYYY"
-                date={Number(paymentDueDate)}
-              />
+              <FormattedDate format="DD–MMM–YYYY" date={maturityTime} />
               &nbsp;
               <Text tag="span" color="secondary">
-                <FormattedDate format="hh:mm a" date={Number(paymentDueDate)} />
+                <FormattedDate format="hh:mm a" date={maturityTime} />
               </Text>
             </>
           }
@@ -155,7 +162,20 @@ export function DashboardRowLoan({
             className={s.action}
           />
         </div>
-        <InfoFieldValue label="Loan Id" value={loanId} />
+        <InfoFieldValue
+          label="Loan Id"
+          value={
+            <>
+              <Tooltip
+                position="top-right"
+                tooltip={loanId}
+                classNameBody={s.loanIdTooltip}
+              >
+                {trimMiddleString(loanId, 5)}
+              </Tooltip>
+            </>
+          }
+        />
       </div>
     </DashboardRow>
   )

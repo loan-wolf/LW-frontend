@@ -11,7 +11,7 @@ import { Button } from 'shared/ui/controls/Button'
 import { AddressIcon } from 'modules/blockChain/ui/AddressIcon'
 import { ReactComponent as CrossSVG } from 'assets/close.svg'
 
-import { trimAddress } from 'modules/blockChain/utils/trimAddress'
+import { trimMiddleString } from 'shared/utils/trimMiddleString'
 import { ContractRociCreditToken } from 'modules/contracts/contracts'
 import s from './NFCSMintForm.module.scss'
 import { useTransactionSender } from 'modules/blockChain/hooks/useTransactionSender'
@@ -120,7 +120,7 @@ export function NFCSMintForm({ onTxSubmit }: Props) {
               weight={500}
               className={s.addressLabel}
             >
-              {trimAddress(address, 6)}
+              {trimMiddleString(address, 6)}
             </Text>
             {walletAddress === address && (
               <Text size={16} weight={500} className={s.addressLabel}>
