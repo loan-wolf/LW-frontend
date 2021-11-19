@@ -30,14 +30,14 @@ export function getPoolAssetIcon(asset: string) {
 }
 
 export const poolAssetAddresses = {
-  [poolAssets.DAI]: addresses.TestDAI,
+  [poolAssets.DAI]: addresses.addressTestDAI,
   [poolAssets.USDC]: {
     [Chains.Kovan]: '',
   },
   [poolAssets.USDT]: {
     [Chains.Kovan]: '',
   },
-  [poolAssets.ETH]: addresses.TestETH,
+  [poolAssets.ETH]: addresses.addressTestETH,
   [poolAssets.WBTC]: {
     [Chains.Kovan]: '',
   },
@@ -92,5 +92,7 @@ export const poolAssetContracts = {
 } as const
 
 export function getPoolAssetContract(asset: PoolAsset) {
-  return poolAssetContracts[asset]
+  const contract = poolAssetContracts[asset]
+  if (!contract) throw new Error(`Contract for asset ${asset} not defined`)
+  return contract
 }

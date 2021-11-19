@@ -11,7 +11,7 @@ import {
   getPoolAssetContract,
 } from 'modules/pools/constants/poolAssets'
 import { ContractInvestor } from 'modules/contracts/contracts'
-import { CollateralManager } from 'modules/contracts/contractAddresses'
+import { addressCollateralManager } from 'modules/contracts/contractAddresses'
 import type { FormValues, SuccessData } from './types'
 
 const NCFSID = 1 // Oracle return hardcoded scores for now
@@ -65,7 +65,7 @@ export function useBorrowSubmit({
 
       const populated =
         await collateralAssetContract.populateTransaction.approve(
-          CollateralManager[chainId],
+          addressCollateralManager.get(chainId),
           amountWei,
         )
 

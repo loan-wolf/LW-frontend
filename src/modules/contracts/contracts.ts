@@ -1,51 +1,47 @@
-import { createContractHelpers, Address } from './utils/createContractHelpers'
 import * as generated from 'generated'
 import * as addresses from './contractAddresses'
-
-export const ContractPoolFactory = createContractHelpers({
-  factory: generated.PoolFactory__factory,
-  address: addresses.PoolFactory,
-})
+import type { ChainAddress } from './utils/BunchAddresses'
+import { createContractHelpers } from './utils/createContractHelpers'
 
 export const ContractTestDAI = createContractHelpers({
   factory: generated.IERC20__factory,
-  address: addresses.TestDAI,
+  chainAddress: addresses.addressTestDAI,
 })
 
 export const ContractTestETH = createContractHelpers({
   factory: generated.IERC20__factory,
-  address: addresses.TestETH,
+  chainAddress: addresses.addressTestETH,
 })
 
 export const ContractRociCreditToken = createContractHelpers({
   factory: generated.RociCreditToken__factory,
-  address: addresses.RociCreditToken,
+  chainAddress: addresses.addressRociCreditToken,
 })
 
 export const ContractCollateralManager = createContractHelpers({
   factory: generated.CollateralManager__factory,
-  address: addresses.CollateralManager,
+  chainAddress: addresses.addressCollateralManager,
 })
 
 export const ContractInvestor = createContractHelpers({
   factory: generated.Investor__factory,
-  address: addresses.Investor,
+  chainAddress: addresses.addressInvestor,
 })
 
 export const ContractScoreDB = createContractHelpers({
   factory: generated.ScoreDB__factory,
-  address: addresses.ScoreDB,
+  chainAddress: addresses.addressScoreDB,
 })
 
 export const ContractPriceFeed = createContractHelpers({
   factory: generated.PriceFeed__factory,
-  address: addresses.PriceFeed,
+  chainAddress: addresses.addressPriceFeed,
 })
 
-export const getContractLoanWolfPool = (address: Address) =>
+export const getContractLoanWolfPool = (chainAddress: ChainAddress) =>
   createContractHelpers({
     factory: generated.LoanWolfPool__factory,
-    address,
+    chainAddress,
   })
 
 export type ContractLoanWolfPoolType = ReturnType<

@@ -1,6 +1,6 @@
 import * as ethers from 'ethers'
 import { useCallback, useState } from 'react'
-import { useForm, useFormContext } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
 import { useBorrowSubmit } from './useBorrowSubmit'
 
@@ -60,19 +60,6 @@ const collateralOptions = [
   poolAssetOptions.WBTC,
 ]
 
-function AmountToRepay({ apr }: { apr: number }) {
-  const { watch } = useFormContext<FormValues>()
-  const amount = Number(watch('amount'))
-  const term = Number(watch('term'))
-  const asset = watch('borrowedAsset')
-  const earning = (amount * (1 + apr / 100) * (term * 30)) / 12
-  return (
-    <>
-      {formatNumber(earning, 2)} {asset}
-    </>
-  )
-}
-
 type Props = {
   onSuccess: (successData: SuccessData) => void
 }
@@ -92,9 +79,13 @@ export function FormBorrow({ onSuccess }: Props) {
     },
   })
 
-  const amount = Number(formMethods.watch('amount'))
-  const borrowedAsset = formMethods.watch('borrowedAsset')
-  const collateralAsset = formMethods.watch('collateralAsset')
+  const { watch } = formMethods
+
+  const amount = Number(watch('amount'))
+  const borrowedAsset = watch('borrowedAsset')
+  const collateralAsset = watch('collateralAsset')
+  const term = Number(watch('term'))
+
   const collateralAmount =
     collateralAsset && amount
       ? (amount / ((LTV / 100) * COLLATERAL_PRICE[collateralAsset])).toFixed(18)
@@ -103,6 +94,7 @@ export function FormBorrow({ onSuccess }: Props) {
   // TODO: Must depends on `borrowedAsset`
   const { data: aprData } = ContractInvestor.useSwrWeb3('interestRate')
   const apr = aprData && Number(aprData) / 100
+  const earning = apr && (amount * (1 + apr / 100) * (term * 30)) / 12
 
   const borrowedAddress =
     borrowedAsset && getPoolAssetAddress(borrowedAsset, chainId)
@@ -206,7 +198,7 @@ export function FormBorrow({ onSuccess }: Props) {
             { label: 'APR', value: apr && `${apr}%` },
             {
               label: 'Amount to be repaid',
-              value: apr && <AmountToRepay apr={apr} />,
+              value: earning && `${formatNumber(earning, 2)} ${borrowedAsset}`,
             },
           ]}
         />
