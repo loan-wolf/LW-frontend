@@ -1,17 +1,20 @@
 import * as ethers from 'ethers'
 
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
 import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
 import { useTransactionSender } from 'modules/blockChain/hooks/useTransactionSender'
 
 import {
+  PoolAsset,
   getPoolAssetAddress,
   getPoolAssetContract,
 } from 'modules/pools/constants/poolAssets'
-import { ContractInvestor } from 'modules/contracts/contracts'
-import { addressCollateralManager } from 'modules/contracts/contractAddresses'
+import {
+  ContractInvestor,
+  ContractCollateralManager,
+} from 'modules/contracts/contracts'
 import type { FormValues, SuccessData } from './types'
 
 const NCFSID = 1 // Oracle return hardcoded scores for now
@@ -40,38 +43,36 @@ export function useBorrowSubmit({
   const { library } = useWeb3()
   const { walletAddress } = useWalletInfo()
   const contractInvestor = ContractInvestor.useContractWeb3()
+  const [isSubmitting, setSubmitting] = useState(false)
+
+  const getAssetContract = useCallback(
+    (asset: PoolAsset) => {
+      if (!library) throw new Error(errors.library)
+      const CollateralAssetContract = getPoolAssetContract(asset)
+      const collateralAssetContract = CollateralAssetContract.connectWeb3({
+        chainId,
+        library: library.getSigner(),
+      })
+      return collateralAssetContract
+    },
+    [chainId, library],
+  )
 
   /**
    * Allow token spending tx
    */
   const populateAllowance = useCallback(
-    async (formValues: FormValues) => {
-      const { amount, collateralAsset } = formValues
-
-      if (!library) throw new Error(errors.library)
-      if (!collateralAsset) throw new Error(errors.collateralAsset)
-
-      const amountWei = ethers.utils.parseEther(amount)
-      const CollateralAssetContract = getPoolAssetContract(collateralAsset)
-
-      if (!CollateralAssetContract) {
-        throw new Error('Contract does not defined for this collateral asset')
-      }
-
-      const collateralAssetContract = CollateralAssetContract.connectWeb3({
-        chainId,
-        library: library.getSigner(),
-      })
-
+    async (amountWei: ethers.BigNumberish, collateralAsset: PoolAsset) => {
+      const collateralAssetContract = getAssetContract(collateralAsset)
       const populated =
         await collateralAssetContract.populateTransaction.approve(
-          addressCollateralManager.get(chainId),
+          ContractCollateralManager.chainAddress.get(chainId),
           amountWei,
         )
 
       return populated
     },
-    [chainId, library],
+    [chainId, getAssetContract],
   )
   const txAllowance = useTransactionSender(populateAllowance)
 
@@ -132,18 +133,56 @@ export function useBorrowSubmit({
       if (!isLocked) {
         setLocked(true)
       } else {
-        const txAllowanceRes = await sendAllowance(formValues)
-        await txAllowanceRes.wait()
-        const txBorrowRes = await sendBorrow(formValues)
-        onSuccess({ tx: txBorrowRes, formValues })
+        try {
+          const { amount, collateralAsset } = formValues
+
+          if (!walletAddress) throw new Error(errors.wallet)
+          if (!collateralAsset) throw new Error(errors.collateralAsset)
+
+          setSubmitting(true)
+
+          const collateralAssetContract = getAssetContract(collateralAsset)
+          const allowance = await collateralAssetContract.allowance(
+            walletAddress,
+            ContractCollateralManager.chainAddress.get(chainId),
+          )
+
+          const amountWei = ethers.utils.parseEther(amount)
+
+          if (allowance.lt(amountWei)) {
+            const txAllowanceRes = await sendAllowance(
+              amountWei,
+              collateralAsset,
+            )
+            await txAllowanceRes.wait()
+          }
+
+          const txBorrowRes = await sendBorrow(formValues)
+
+          setSubmitting(false)
+          onSuccess({ tx: txBorrowRes, formValues })
+        } catch (err) {
+          setSubmitting(false)
+          throw err
+        }
       }
     },
-    [isLocked, setLocked, sendAllowance, sendBorrow, onSuccess],
+    [
+      isLocked,
+      setLocked,
+      getAssetContract,
+      walletAddress,
+      chainId,
+      sendAllowance,
+      sendBorrow,
+      onSuccess,
+    ],
   )
 
   return {
     submit,
     txAllowance,
     txBorrow,
+    isSubmitting,
   }
 }

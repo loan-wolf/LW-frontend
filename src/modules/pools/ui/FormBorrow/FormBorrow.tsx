@@ -54,10 +54,10 @@ const borrowOptions = [
 
 const collateralOptions = [
   poolAssetOptions.DAI,
-  poolAssetOptions.USDC,
-  poolAssetOptions.USDT,
+  // poolAssetOptions.USDC,
+  // poolAssetOptions.USDT,
   poolAssetOptions.ETH,
-  poolAssetOptions.WBTC,
+  // poolAssetOptions.WBTC,
 ]
 
 type Props = {
@@ -120,18 +120,12 @@ export function FormBorrow({ onSuccess }: Props) {
     collateralPrice && ethers.utils.formatEther(collateralPrice),
   )
 
-  const { submit, txAllowance, txBorrow } = useBorrowSubmit({
+  const { submit, txAllowance, isSubmitting } = useBorrowSubmit({
     isLocked,
     setLocked,
     onSuccess,
     collateralAmount,
   })
-
-  const isSubmitting =
-    txAllowance.isSigning ||
-    txAllowance.isPending ||
-    txBorrow.isSigning ||
-    txBorrow.isPending
 
   return (
     <Form formMethods={formMethods} onSubmit={submit}>

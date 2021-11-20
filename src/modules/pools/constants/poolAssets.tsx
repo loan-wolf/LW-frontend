@@ -31,26 +31,21 @@ export function getPoolAssetIcon(asset: string) {
 
 export const poolAssetAddresses = {
   [poolAssets.DAI]: addresses.addressTestDAI,
-  [poolAssets.USDC]: {
-    [Chains.Kovan]: '',
-  },
-  [poolAssets.USDT]: {
-    [Chains.Kovan]: '',
-  },
+  [poolAssets.USDC]: null,
+  [poolAssets.USDT]: null,
   [poolAssets.ETH]: addresses.addressTestETH,
-  [poolAssets.WBTC]: {
-    [Chains.Kovan]: '',
-  },
+  [poolAssets.WBTC]: null,
 } as const
 
 export function getPoolAssetAddress(asset: PoolAsset, chain: Chains) {
-  return getOr(null, [asset, chain], poolAssetAddresses) as string | null
+  const addr = poolAssetAddresses[asset]
+  return addr?.get(chain)
 }
 
 export function getPoolAssetByAddress(address: string, chain: Chains) {
   return flow(
     toPairs,
-    find(([asset, poolAddress]) => address === get(chain, poolAddress)),
+    find(([asset, poolAddress]) => address === poolAddress?.get(chain)),
     get(0),
   )(poolAssetAddresses) as PoolAsset | undefined
 }
