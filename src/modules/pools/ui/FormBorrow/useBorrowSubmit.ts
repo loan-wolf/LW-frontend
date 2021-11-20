@@ -80,20 +80,19 @@ export function useBorrowSubmit({
    * Borrow tx
    */
   const populateBorrow = useCallback(
-    async (formValues: FormValues) => {
-      const { amount, collateralAsset } = formValues
-
-      if (!walletAddress) throw new Error(errors.wallet)
-      if (!collateralAsset) throw new Error(errors.collateralAsset)
-
-      const collateralAddress = getPoolAssetAddress(collateralAsset, chainId)
-      if (!collateralAddress) throw new Error(errors.collateralAddress)
-
-      const amountWei = ethers.utils.parseEther(amount)
-      const numberOfLoans = await contractInvestor.getNumberOfLoans(
-        walletAddress,
-      )
-      const loanId = await contractInvestor.getId(walletAddress, numberOfLoans)
+    async ({
+      amountWei,
+      collateralAddress,
+      address,
+      term,
+    }: {
+      amountWei: ethers.BigNumberish
+      collateralAddress: string
+      address: string
+      term: number
+    }) => {
+      const numberOfLoans = await contractInvestor.getNumberOfLoans(address)
+      const loanId = await contractInvestor.getId(address, numberOfLoans)
 
       const hash = ethers.utils.keccak256(
         ethers.utils.defaultAbiCoder.encode(
@@ -108,7 +107,7 @@ export function useBorrowSubmit({
 
       const populated = await contractInvestor.populateTransaction.borrow(
         amountWei,
-        Number(formValues.term),
+        term,
         NCFSID,
         ethers.utils.parseEther(collateralAmount),
         collateralAddress,
@@ -121,7 +120,7 @@ export function useBorrowSubmit({
 
       return populated
     },
-    [chainId, collateralAmount, contractInvestor, walletAddress],
+    [collateralAmount, contractInvestor],
   )
   const txBorrow = useTransactionSender(populateBorrow)
 
@@ -138,6 +137,13 @@ export function useBorrowSubmit({
 
           if (!walletAddress) throw new Error(errors.wallet)
           if (!collateralAsset) throw new Error(errors.collateralAsset)
+
+          const collateralAddress = getPoolAssetAddress(
+            collateralAsset,
+            chainId,
+          )
+
+          if (!collateralAddress) throw new Error(errors.collateralAddress)
 
           setSubmitting(true)
 
@@ -157,7 +163,12 @@ export function useBorrowSubmit({
             await txAllowanceRes.wait()
           }
 
-          const txBorrowRes = await sendBorrow(formValues)
+          const txBorrowRes = await sendBorrow({
+            amountWei,
+            collateralAddress,
+            term: Number(formValues.term),
+            address: walletAddress,
+          })
 
           setSubmitting(false)
           onSuccess({ tx: txBorrowRes, formValues })
