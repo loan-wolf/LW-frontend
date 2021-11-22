@@ -1,50 +1,61 @@
-import {
-  DashboardRowLoan,
-  LoanDataMock,
-} from 'modules/pools/ui/DashboardRowLoan'
-import { createRoute } from 'modules/router/utils/createRoute'
+import { useSWR } from 'modules/network/hooks/useSwr'
+import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
+import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
 
-const LOANS_MOCK: LoanDataMock[] = [
-  {
-    id: '0xaqw11..98',
-    borrowedAmount: 23,
-    borrowedAsset: 'DAI',
-    collateralAmount: 123,
-    collateralAsset: 'ETH',
-    apr: 14,
-    time: '2021-10-10 19:59:59',
-    principal: 13,
-    interest: 23,
-  },
-  {
-    id: '0xaqw11..98',
-    borrowedAmount: 42323,
-    borrowedAsset: 'DAI',
-    collateralAmount: 123,
-    collateralAsset: 'ETH',
-    apr: 14,
-    time: '2021-10-10 19:59:59',
-    principal: 13,
-    interest: 23,
-  },
-  {
-    id: '0xaqw11..98',
-    borrowedAmount: 32,
-    borrowedAsset: 'DAI',
-    collateralAmount: 232332,
-    collateralAsset: 'ETH',
-    apr: 14,
-    time: '2021-10-10 19:59:59',
-    principal: 13,
-    interest: 23,
-  },
-]
+import { DashboardRowLoan } from 'modules/pools/ui/DashboardRowLoan'
+import { ReactComponent as LoaderSVG } from 'assets/loader.svg'
+
+import { ContractInvestor } from 'modules/contracts/contracts'
+import { createRoute } from 'modules/router/utils/createRoute'
+import s from './RouteDashboardLoans.module.scss'
 
 function RouteDashboardLoans() {
+  const chainId = useCurrentChain()
+  const { walletAddress } = useWalletInfo()
+  const contractInvestor = ContractInvestor.useContractWeb3()
+
+  const loans = useSWR(
+    walletAddress ? `loans-${chainId}-${walletAddress}` : null,
+    async () => {
+      if (!walletAddress) return
+
+      const loansCount = await contractInvestor.getNumberOfLoans(walletAddress)
+
+      const requests = Array.from(Array(Number(loansCount)))
+        .map((_, i) => i)
+        .reverse()
+        .map(async i => {
+          const loanId = await contractInvestor.loanIDs(walletAddress, i)
+          const loanObj = await contractInvestor.loanLookup(loanId)
+          return { id: String(loanId), ...loanObj }
+        })
+
+      const res = await Promise.all(requests)
+
+      return res
+    },
+  )
+
+  if (loans.isLoading) {
+    return (
+      <div className={s.contentLoader}>
+        <LoaderSVG />
+      </div>
+    )
+  }
+
+  if (!loans.data || loans.data.length === 0) {
+  }
+
   return (
     <>
-      {LOANS_MOCK.map((loan, i) => (
-        <DashboardRowLoan key={i} loan={loan} />
+      {loans.data?.map(loan => (
+        <DashboardRowLoan
+          key={loan.id}
+          loan={loan}
+          loanId={loan.id}
+          investorAddress={contractInvestor.address}
+        />
       ))}
     </>
   )

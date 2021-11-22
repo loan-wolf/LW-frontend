@@ -15,7 +15,6 @@
   border-radius: 8px;
   background-color: var(--colorInputBg);
   border: 1px solid var(--colorBorder);
-  pointer-events: none;
   transform: scale(0.6);
   backdrop-filter: blur(12px);
   transition: opacity ease var(--durFast),

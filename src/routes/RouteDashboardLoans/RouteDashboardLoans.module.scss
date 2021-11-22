@@ -1,0 +1,12 @@
+.contentLoader {
+  padding-top: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  & svg {
+    display: block;
+    width: 120px;
+    height: 120px;
+  }
+}

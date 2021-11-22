@@ -1,5 +1,7 @@
+import * as ethers from 'ethers'
 import { useCallback, useState } from 'react'
-import { useForm, useFormContext } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
+import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
 import { useBorrowSubmit } from './useBorrowSubmit'
 
 import { Text } from 'shared/ui/common/Text'
@@ -19,19 +21,23 @@ import { TransactionStatusBadge } from 'modules/blockChain/ui/TransactionStatusB
 
 import * as formErrors from 'shared/constants/formErrors'
 import {
+  ContractInvestor,
+  ContractPriceFeed,
+} from 'modules/contracts/contracts'
+import {
   poolAssets,
   poolAssetOptions,
   getPoolAssetIcon,
+  getPoolAssetAddress,
 } from 'modules/pools/constants/poolAssets'
 import { formatNumber } from 'shared/utils/formatNumber'
 import type { FormValues, SuccessData } from './types'
 
 import s from './FormBorrow.module.scss'
 
-const APR = 22
-const LTV = 85
-const LIQ_THRESHOLD = '85%'
-const LIQ_PRICE = '1 ETH = 2547 USD'
+const LTV = 12
+const LIQ_THRESHOLD = '—'
+const LIQ_PRICE = '—'
 const COLLATERAL_PRICE = {
   [poolAssets.DAI]: 1,
   [poolAssets.USDC]: 1,
@@ -48,30 +54,18 @@ const borrowOptions = [
 
 const collateralOptions = [
   poolAssetOptions.DAI,
-  poolAssetOptions.USDC,
-  poolAssetOptions.USDT,
+  // poolAssetOptions.USDC,
+  // poolAssetOptions.USDT,
   poolAssetOptions.ETH,
-  poolAssetOptions.WBTC,
+  // poolAssetOptions.WBTC,
 ]
-
-function AmountToRepay() {
-  const { watch } = useFormContext<FormValues>()
-  const amount = Number(watch('amount'))
-  const term = Number(watch('term'))
-  const asset = watch('borrowedAsset')
-  const earning = (amount * (1 + APR / 100) * (term * 30)) / 12
-  return (
-    <>
-      {formatNumber(earning, 2)} {asset}
-    </>
-  )
-}
 
 type Props = {
   onSuccess: (successData: SuccessData) => void
 }
 
 export function FormBorrow({ onSuccess }: Props) {
+  const chainId = useCurrentChain()
   const [isLocked, setLocked] = useState(false)
   const handleUnlock = useCallback(() => setLocked(false), [])
 
@@ -85,25 +79,53 @@ export function FormBorrow({ onSuccess }: Props) {
     },
   })
 
-  const amount = Number(formMethods.watch('amount'))
-  const collateralAsset = formMethods.watch('collateralAsset')
+  const { watch } = formMethods
+
+  const amount = Number(watch('amount'))
+  const borrowedAsset = watch('borrowedAsset')
+  const collateralAsset = watch('collateralAsset')
+  const term = Number(watch('term'))
+
   const collateralAmount =
     collateralAsset && amount
       ? (amount / ((LTV / 100) * COLLATERAL_PRICE[collateralAsset])).toFixed(18)
       : '0'
 
-  const { submit, txAllowance, txBorrow } = useBorrowSubmit({
+  // TODO: Must depends on `borrowedAsset`
+  const { data: aprData } = ContractInvestor.useSwrWeb3('interestRate')
+  const apr = aprData && Number(aprData) / 100
+  const earning = apr && (amount * (1 + apr / 100) * (term * 30)) / 12
+
+  const borrowedAddress =
+    borrowedAsset && getPoolAssetAddress(borrowedAsset, chainId)
+
+  const { data: borrowedPrice } = ContractPriceFeed.useSwrWeb3(
+    borrowedAddress ? 'getLatestPriceUSD' : null,
+    borrowedAddress!,
+  )
+
+  const collateralAddress =
+    collateralAsset && getPoolAssetAddress(collateralAsset, chainId)
+
+  const { data: collateralPrice } = ContractPriceFeed.useSwrWeb3(
+    collateralAddress ? 'getLatestPriceUSD' : null,
+    collateralAddress!,
+  )
+
+  // TODO: Use this numbers in calculations when contract will be fixed
+  console.log(
+    Number(borrowedPrice),
+    Number(collateralPrice),
+    borrowedPrice && ethers.utils.formatEther(borrowedPrice),
+    collateralPrice && ethers.utils.formatEther(collateralPrice),
+  )
+
+  const { submit, txAllowance, isSubmitting } = useBorrowSubmit({
     isLocked,
     setLocked,
     onSuccess,
     collateralAmount,
   })
-
-  const isSubmitting =
-    txAllowance.isSigning ||
-    txAllowance.isPending ||
-    txBorrow.isSigning ||
-    txBorrow.isPending
 
   return (
     <Form formMethods={formMethods} onSubmit={submit}>
@@ -167,8 +189,11 @@ export function FormBorrow({ onSuccess }: Props) {
       <FormInfoFramesList>
         <FormInfoFrame
           info={[
-            { label: 'APR', value: `${APR}%` },
-            { label: 'Amount to be repaid', value: <AmountToRepay /> },
+            { label: 'APR', value: apr && `${apr}%` },
+            {
+              label: 'Amount to be repaid',
+              value: earning && `${formatNumber(earning, 2)} ${borrowedAsset}`,
+            },
           ]}
         />
         <FormInfoFrame

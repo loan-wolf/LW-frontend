@@ -19,36 +19,24 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
-interface PoolFactoryInterface extends ethers.utils.Interface {
+interface PriceFeedInterface extends ethers.utils.Interface {
   functions: {
-    "createPool(address,uint256,uint256,uint256,uint256,uint256,bool,bytes1,tuple[],address[],address[])": FunctionFragment;
+    "addPriceFeed(address,address)": FunctionFragment;
+    "getLatestPriceUSD(address)": FunctionFragment;
     "owner()": FunctionFragment;
-    "poolsList(uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "createPool",
-    values: [
-      string,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      boolean,
-      BytesLike,
-      { _time: BigNumberish; _fee: BigNumberish; _liquidate: boolean }[],
-      string[],
-      string[]
-    ]
+    functionFragment: "addPriceFeed",
+    values: [string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getLatestPriceUSD",
+    values: [string]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "poolsList",
-    values: [BigNumberish]
-  ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
@@ -58,9 +46,15 @@ interface PoolFactoryInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
 
-  decodeFunctionResult(functionFragment: "createPool", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "addPriceFeed",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getLatestPriceUSD",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "poolsList", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
@@ -71,15 +65,13 @@ interface PoolFactoryInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
-    "NewPool(address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "NewPool"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
 
-export class PoolFactory extends BaseContract {
+export class PriceFeed extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -120,31 +112,21 @@ export class PoolFactory extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: PoolFactoryInterface;
+  interface: PriceFeedInterface;
 
   functions: {
-    createPool(
+    addPriceFeed(
       _token: string,
-      _interest: BigNumberish,
-      _maxLTV: BigNumberish,
-      _liquidationThreshold: BigNumberish,
-      _apy: BigNumberish,
-      tolerancePeriod: BigNumberish,
-      _fullPaymentPermitted: boolean,
-      _symbolPrefix: BytesLike,
-      _penaltyTable: {
-        _time: BigNumberish;
-        _fee: BigNumberish;
-        _liquidate: boolean;
-      }[],
-      _acceptedCollateral: string[],
-      _lenderWhitelist: string[],
+      _feed: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    owner(overrides?: CallOverrides): Promise<[string]>;
+    getLatestPriceUSD(
+      _token: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
-    poolsList(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
+    owner(overrides?: CallOverrides): Promise<[string]>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -156,28 +138,18 @@ export class PoolFactory extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  createPool(
+  addPriceFeed(
     _token: string,
-    _interest: BigNumberish,
-    _maxLTV: BigNumberish,
-    _liquidationThreshold: BigNumberish,
-    _apy: BigNumberish,
-    tolerancePeriod: BigNumberish,
-    _fullPaymentPermitted: boolean,
-    _symbolPrefix: BytesLike,
-    _penaltyTable: {
-      _time: BigNumberish;
-      _fee: BigNumberish;
-      _liquidate: boolean;
-    }[],
-    _acceptedCollateral: string[],
-    _lenderWhitelist: string[],
+    _feed: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  owner(overrides?: CallOverrides): Promise<string>;
+  getLatestPriceUSD(
+    _token: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
-  poolsList(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+  owner(overrides?: CallOverrides): Promise<string>;
 
   renounceOwnership(
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -189,28 +161,18 @@ export class PoolFactory extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    createPool(
+    addPriceFeed(
       _token: string,
-      _interest: BigNumberish,
-      _maxLTV: BigNumberish,
-      _liquidationThreshold: BigNumberish,
-      _apy: BigNumberish,
-      tolerancePeriod: BigNumberish,
-      _fullPaymentPermitted: boolean,
-      _symbolPrefix: BytesLike,
-      _penaltyTable: {
-        _time: BigNumberish;
-        _fee: BigNumberish;
-        _liquidate: boolean;
-      }[],
-      _acceptedCollateral: string[],
-      _lenderWhitelist: string[],
+      _feed: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    owner(overrides?: CallOverrides): Promise<string>;
+    getLatestPriceUSD(
+      _token: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    poolsList(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+    owner(overrides?: CallOverrides): Promise<string>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
@@ -221,10 +183,6 @@ export class PoolFactory extends BaseContract {
   };
 
   filters: {
-    NewPool(
-      PoolAddress?: null
-    ): TypedEventFilter<[string], { PoolAddress: string }>;
-
     OwnershipTransferred(
       previousOwner?: string | null,
       newOwner?: string | null
@@ -235,31 +193,18 @@ export class PoolFactory extends BaseContract {
   };
 
   estimateGas: {
-    createPool(
+    addPriceFeed(
       _token: string,
-      _interest: BigNumberish,
-      _maxLTV: BigNumberish,
-      _liquidationThreshold: BigNumberish,
-      _apy: BigNumberish,
-      tolerancePeriod: BigNumberish,
-      _fullPaymentPermitted: boolean,
-      _symbolPrefix: BytesLike,
-      _penaltyTable: {
-        _time: BigNumberish;
-        _fee: BigNumberish;
-        _liquidate: boolean;
-      }[],
-      _acceptedCollateral: string[],
-      _lenderWhitelist: string[],
+      _feed: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    poolsList(
-      arg0: BigNumberish,
+    getLatestPriceUSD(
+      _token: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -272,31 +217,18 @@ export class PoolFactory extends BaseContract {
   };
 
   populateTransaction: {
-    createPool(
+    addPriceFeed(
       _token: string,
-      _interest: BigNumberish,
-      _maxLTV: BigNumberish,
-      _liquidationThreshold: BigNumberish,
-      _apy: BigNumberish,
-      tolerancePeriod: BigNumberish,
-      _fullPaymentPermitted: boolean,
-      _symbolPrefix: BytesLike,
-      _penaltyTable: {
-        _time: BigNumberish;
-        _fee: BigNumberish;
-        _liquidate: boolean;
-      }[],
-      _acceptedCollateral: string[],
-      _lenderWhitelist: string[],
+      _feed: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    poolsList(
-      arg0: BigNumberish,
+    getLatestPriceUSD(
+      _token: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }

@@ -1,6 +1,6 @@
 import cns from 'classnames'
 import { useMemo } from 'react'
-import { trimAddress } from 'modules/blockChain/utils/trimAddress'
+import { trimMiddleString } from 'shared/utils/trimMiddleString'
 import s from './AddressBadge.module.scss'
 
 type Props = {
@@ -17,7 +17,7 @@ export function AddressBadge({
   className,
 }: Props) {
   const trimmedAddress = useMemo(
-    () => trimAddress(address, symbols),
+    () => trimMiddleString(address, symbols),
     [address, symbols],
   )
   return (

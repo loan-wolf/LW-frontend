@@ -16,6 +16,7 @@ type Props = {
   tooltip?: React.ReactNode
   maxWidth?: number
   className?: string
+  classNameBody?: string
   children?: React.ReactNode
 }
 
@@ -24,6 +25,7 @@ export function Tooltip({
   tooltip,
   maxWidth,
   className,
+  classNameBody,
   children,
 }: Props) {
   return (
@@ -31,7 +33,7 @@ export function Tooltip({
       {children}
       <div
         style={{ maxWidth }}
-        className={cns(s.body, s[`position--${position}`])}
+        className={cns(s.body, classNameBody, s[`position--${position}`])}
       >
         <Text size={12} weight={500} children={tooltip} />
       </div>

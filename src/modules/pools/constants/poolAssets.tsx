@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import { get, getOr, toPairs, find, flow } from 'lodash/fp'
 import { Chains } from 'modules/blockChain/chains'
 import { ReactComponent as TokenDAI } from 'assets/token-dai.svg'
 import { ReactComponent as TokenUSDC } from 'assets/token-usdc.svg'
@@ -26,25 +26,28 @@ export const poolAssetIcons = {
 } as const
 
 export function getPoolAssetIcon(asset: string) {
-  return get(poolAssetIcons, asset, null) as React.ReactNode | null
+  return getOr(null, asset, poolAssetIcons) as React.ReactNode | null
 }
 
 export const poolAssetAddresses = {
-  [poolAssets.DAI]: addresses.TestDAI,
-  [poolAssets.USDC]: {
-    [Chains.Kovan]: '',
-  },
-  [poolAssets.USDT]: {
-    [Chains.Kovan]: '',
-  },
-  [poolAssets.ETH]: addresses.TestETH,
-  [poolAssets.WBTC]: {
-    [Chains.Kovan]: '',
-  },
+  [poolAssets.DAI]: addresses.addressTestDAI,
+  [poolAssets.USDC]: null,
+  [poolAssets.USDT]: null,
+  [poolAssets.ETH]: addresses.addressTestETH,
+  [poolAssets.WBTC]: null,
 } as const
 
 export function getPoolAssetAddress(asset: PoolAsset, chain: Chains) {
-  return get(poolAssetAddresses, [asset, chain], null) as string | null
+  const addr = poolAssetAddresses[asset]
+  return addr?.get(chain)
+}
+
+export function getPoolAssetByAddress(address: string, chain: Chains) {
+  return flow(
+    toPairs,
+    find(([asset, poolAddress]) => address === poolAddress?.get(chain)),
+    get(0),
+  )(poolAssetAddresses) as PoolAsset | undefined
 }
 
 export const poolAssetOptions = {
@@ -84,5 +87,7 @@ export const poolAssetContracts = {
 } as const
 
 export function getPoolAssetContract(asset: PoolAsset) {
-  return poolAssetContracts[asset]
+  const contract = poolAssetContracts[asset]
+  if (!contract) throw new Error(`Contract for asset ${asset} not defined`)
+  return contract
 }
