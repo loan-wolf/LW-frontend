@@ -3,11 +3,10 @@ import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
 import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
 
 import { DashboardRowLoan } from 'modules/pools/ui/DashboardRowLoan'
-import { ReactComponent as LoaderSVG } from 'assets/loader.svg'
+import { PageLoader } from 'shared/ui/layout/PageLoader'
 
 import { ContractInvestor } from 'modules/contracts/contracts'
 import { createRoute } from 'modules/router/utils/createRoute'
-import s from './RouteDashboardLoans.module.scss'
 
 function RouteDashboardLoans() {
   const chainId = useCurrentChain()
@@ -37,11 +36,7 @@ function RouteDashboardLoans() {
   )
 
   if (loans.isLoading) {
-    return (
-      <div className={s.contentLoader}>
-        <LoaderSVG />
-      </div>
-    )
+    return <PageLoader />
   }
 
   if (!loans.data || loans.data.length === 0) {
