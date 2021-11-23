@@ -1,8 +1,10 @@
 import cns from 'classnames'
 import { useLayoutMeta } from 'shared/hooks/useLayoutMeta'
 
-import { Title } from 'shared/ui/common/Title'
+import { AppWrap } from '../AppWrap'
+import { AppInner } from '../AppInner'
 import { Drawer } from '../Drawer'
+import { Title } from 'shared/ui/common/Title'
 import { HeaderActions } from '../HeaderActions'
 
 import s from './AppLayout.module.scss'
@@ -18,20 +20,20 @@ export function AppLayout({ children }: Props) {
   const headerTitle = layoutMeta?.headerTitle
 
   return (
-    <div
-      className={cns(s.appWrap, {
+    <AppWrap
+      className={cns(s.wrap, {
         [s.isNarrow]: isNarrow,
         [s.isNarrowExtended]: isNarrowExtended,
       })}
     >
-      <div className={s.appInner}>
+      <AppInner className={s.appInner}>
         <Drawer className={s.drawer} />
         <HeaderActions />
         <div className={s.content}>
           <Title>{headerTitle}</Title>
           {children}
         </div>
-      </div>
-    </div>
+      </AppInner>
+    </AppWrap>
   )
 }

@@ -1,0 +1,10 @@
+.logo {
+  display: flex;
+  margin-bottom: var(--marginHeader);
+  height: var(--heightHeader);
+  align-items: center;
+
+  & svg {
+    display: block;
+  }
+}
