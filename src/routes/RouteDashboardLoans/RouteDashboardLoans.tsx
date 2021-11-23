@@ -1,55 +1,49 @@
-import { useSWR } from 'modules/network/hooks/useSwr'
-import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
+import { useMemo } from 'react'
+import { useLoansList } from 'modules/pools/hooks/useLoansList'
 import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
 
-import { DashboardRowLoan } from 'modules/pools/ui/DashboardRowLoan'
 import { PageLoader } from 'shared/ui/layout/PageLoader'
+import { DashboardRowLoan } from 'modules/pools/ui/DashboardRowLoan'
+import { DashboardEmptyCTA } from 'modules/pools/ui/DashboardEmptyCTA'
 
 import { ContractInvestor } from 'modules/contracts/contracts'
 import { createRoute } from 'modules/router/utils/createRoute'
+import * as links from 'modules/router/links'
 
 function RouteDashboardLoans() {
+  const loans = useLoansList()
   const chainId = useCurrentChain()
-  const { walletAddress } = useWalletInfo()
-  const contractInvestor = ContractInvestor.useContractWeb3()
+  const investorAddress = ContractInvestor.chainAddress.get(chainId)
 
-  const loans = useSWR(
-    walletAddress ? `loans-${chainId}-${walletAddress}` : null,
-    async () => {
-      if (!walletAddress) return
-
-      const loansCount = await contractInvestor.getNumberOfLoans(walletAddress)
-
-      const requests = Array.from(Array(Number(loansCount)))
-        .map((_, i) => i)
-        .reverse()
-        .map(async i => {
-          const loanId = await contractInvestor.loanIDs(walletAddress, i)
-          const loanObj = await contractInvestor.loanLookup(loanId)
-          return { id: String(loanId), ...loanObj }
-        })
-
-      const res = await Promise.all(requests)
-
-      return res
-    },
+  const loansDisplay = useMemo(
+    () => loans.data?.filter(loan => !loan.isCompleted),
+    [loans.data],
   )
 
   if (loans.isLoading) {
     return <PageLoader />
   }
 
-  if (!loans.data || loans.data.length === 0) {
+  if (!loansDisplay || loansDisplay.length === 0) {
+    return (
+      <DashboardEmptyCTA
+        link={links.borrow}
+        fashion="purple"
+        timeText="old"
+        entityName="loans"
+        actionText="Borrow"
+      />
+    )
   }
 
   return (
     <>
-      {loans.data?.map(loan => (
+      {loansDisplay.map(loan => (
         <DashboardRowLoan
           key={loan.id}
           loan={loan}
           loanId={loan.id}
-          investorAddress={contractInvestor.address}
+          investorAddress={investorAddress}
         />
       ))}
     </>
