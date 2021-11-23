@@ -1,8 +1,12 @@
 import * as ethers from 'ethers'
+
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useSWR } from 'modules/network/hooks/useSwr'
+import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
 import { useRepaymentSubmit } from './useRepaymentSubmit'
 import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
+import { useAssetContractGetter } from 'modules/pools/hooks/useAssetContractGetter'
 
 import { Text } from 'shared/ui/common/Text'
 import { InputControl } from 'shared/ui/controls/Input'
@@ -43,6 +47,8 @@ type Props = {
 
 export function FormRepayment({ loanId, onSuccess }: Props) {
   const chainId = useCurrentChain()
+  const getAssetContract = useAssetContractGetter()
+  const { walletAddress } = useWalletInfo()
   const [isLocked, setLocked] = useState(false)
   const handleUnlock = useCallback(() => setLocked(false), [])
 
@@ -70,14 +76,18 @@ export function FormRepayment({ loanId, onSuccess }: Props) {
     setValue('depositedAsset', depositedAsset || '')
   }, [depositedAsset, setValue])
 
-  const remainingAmount = useMemo(() => {
-    if (!loan) return 0
-    const totalPaymentsValue = loan.totalPaymentsValue
-    const paymentComplete = loan.paymentComplete
-    return Number(
-      ethers.utils.formatEther(totalPaymentsValue.sub(paymentComplete)),
-    )
-  }, [loan])
+  const maxAmountWei = useSWR(
+    depositedAsset ? `repayment-max-${depositedAsset}` : null,
+    () => {
+      if (!depositedAsset || !walletAddress) return null
+      const contract = getAssetContract(depositedAsset)
+      const balance = contract.balanceOf(walletAddress)
+      return balance
+    },
+  )
+
+  const maxAmount =
+    maxAmountWei.data && Number(ethers.utils.formatEther(maxAmountWei.data))
 
   const { submit, txApproval, txAllowance, isSubmitting } = useRepaymentSubmit({
     loanId,
@@ -87,12 +97,12 @@ export function FormRepayment({ loanId, onSuccess }: Props) {
   })
 
   const handleClickMaxAmount = useCallback(() => {
-    formMethods.setValue('amount', String(remainingAmount))
-  }, [formMethods, remainingAmount])
+    setValue('amount', String(maxAmount))
+  }, [setValue, maxAmount])
 
   const handleClickMaxCollateralAmount = useCallback(() => {
-    formMethods.setValue('collateralAmount', String(TOTAL_COLLATERAL_AMOUNT))
-  }, [formMethods])
+    setValue('collateralAmount', String(TOTAL_COLLATERAL_AMOUNT))
+  }, [setValue])
 
   const returnCollateral = formMethods.watch('returnCollateral')
 
@@ -123,7 +133,7 @@ export function FormRepayment({ loanId, onSuccess }: Props) {
               validate: (val: string) =>
                 // TODO: not less than 1
                 formErrors.notLess(val, 0.1) ||
-                formErrors.notMore(val, remainingAmount) ||
+                formErrors.notMore(val, Number(maxAmount)) ||
                 true,
             }}
             action={<InputMaxAction onClick={handleClickMaxAmount} />}
