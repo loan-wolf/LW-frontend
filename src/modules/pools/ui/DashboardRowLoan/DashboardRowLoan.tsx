@@ -157,7 +157,7 @@ export function DashboardRowLoan({
       <div className={s.column}>
         <div className={s.actions}>
           <Button
-            link={links.repayment}
+            link={links.repayment(loanId)}
             className={s.action}
             fashion="greenapple-ghost"
             size={40}

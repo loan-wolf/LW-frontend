@@ -28,3 +28,7 @@ export const addressInvestor = new ChainAddress('Investor', {
 export const addressPriceFeed = new ChainAddress('PriceFeed', {
   [Chains.Kovan]: '0x97395ae460dcB8941Cf8d47DFaaDB729a974820E',
 })
+
+export const addressBonds = new ChainAddress('Bonds', {
+  [Chains.Kovan]: '0x54935e2E07f61DbF0F95512a5f3f31a205E3A24D',
+})

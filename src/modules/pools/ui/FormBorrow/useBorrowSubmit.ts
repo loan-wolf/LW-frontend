@@ -4,17 +4,15 @@ import { useCallback, useState } from 'react'
 import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
 import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
 import { useTransactionSender } from 'modules/blockChain/hooks/useTransactionSender'
-import { useAssetContractGetter } from 'modules/pools/hooks/useAssetContractGetter'
+import { useTxAssetAllowance } from 'modules/contracts/hooks/useTxAssetAllowance'
 
-import {
-  PoolAsset,
-  getPoolAssetAddress,
-} from 'modules/pools/constants/poolAssets'
+import { getPoolAssetAddress } from 'modules/pools/constants/poolAssets'
 import {
   ContractInvestor,
   ContractCollateralManager,
 } from 'modules/contracts/contracts'
 import type { FormValues, SuccessData } from './types'
+import * as errors from 'shared/constants/errors'
 
 const NCFSID = 1 // Oracle return hardcoded scores for now
 
@@ -23,12 +21,6 @@ type Args = {
   setLocked: (isLocked: boolean) => void
   onSuccess: (successData: SuccessData) => void
   collateralAmount: string
-}
-
-const errors = {
-  wallet: 'Connect your wallet',
-  collateralAsset: 'Collateral asset is not selected',
-  collateralAddress: 'Address does not defined for this collateral asset',
 }
 
 export function useBorrowSubmit({
@@ -41,25 +33,7 @@ export function useBorrowSubmit({
   const { walletAddress } = useWalletInfo()
   const contractInvestor = ContractInvestor.useContractWeb3()
   const [isSubmitting, setSubmitting] = useState(false)
-  const getAssetContract = useAssetContractGetter()
-
-  /**
-   * Allow token spending tx
-   */
-  const populateAllowance = useCallback(
-    async (amountWei: ethers.BigNumberish, collateralAsset: PoolAsset) => {
-      const collateralAssetContract = getAssetContract(collateralAsset)
-      const populated =
-        await collateralAssetContract.populateTransaction.approve(
-          ContractCollateralManager.chainAddress.get(chainId),
-          amountWei,
-        )
-
-      return populated
-    },
-    [chainId, getAssetContract],
-  )
-  const txAllowance = useTransactionSender(populateAllowance)
+  const { makeAllowanceIfNeeded, txAllowance } = useTxAssetAllowance()
 
   /**
    * Borrow tx
@@ -109,7 +83,6 @@ export function useBorrowSubmit({
   )
   const txBorrow = useTransactionSender(populateBorrow)
 
-  const { send: sendAllowance } = txAllowance
   const { send: sendBorrow } = txBorrow
 
   const submit = useCallback(
@@ -120,33 +93,29 @@ export function useBorrowSubmit({
         try {
           const { amount, collateralAsset } = formValues
 
-          if (!walletAddress) throw new Error(errors.wallet)
-          if (!collateralAsset) throw new Error(errors.collateralAsset)
+          if (!walletAddress) throw new Error(errors.connectWallet)
+          if (!collateralAsset) {
+            throw new Error(errors.collateralAssetNotSelected)
+          }
 
           const collateralAddress = getPoolAssetAddress(
             collateralAsset,
             chainId,
           )
 
-          if (!collateralAddress) throw new Error(errors.collateralAddress)
+          if (!collateralAddress) {
+            throw new Error(errors.collateralAddressNotDefined)
+          }
 
           setSubmitting(true)
 
-          const collateralAssetContract = getAssetContract(collateralAsset)
-          const allowance = await collateralAssetContract.allowance(
-            walletAddress,
-            ContractCollateralManager.chainAddress.get(chainId),
-          )
-
           const amountWei = ethers.utils.parseEther(amount)
 
-          if (allowance.lt(amountWei)) {
-            const txAllowanceRes = await sendAllowance(
-              amountWei,
-              collateralAsset,
-            )
-            await txAllowanceRes.wait()
-          }
+          await makeAllowanceIfNeeded({
+            spenderAddress: ContractCollateralManager.chainAddress.get(chainId),
+            amountWei,
+            asset: collateralAsset,
+          })
 
           const txBorrowRes = await sendBorrow({
             amountWei,
@@ -166,10 +135,9 @@ export function useBorrowSubmit({
     [
       isLocked,
       setLocked,
-      getAssetContract,
       walletAddress,
       chainId,
-      sendAllowance,
+      makeAllowanceIfNeeded,
       sendBorrow,
       onSuccess,
     ],

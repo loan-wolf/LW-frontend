@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form'
 import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
 import { useBorrowSubmit } from './useBorrowSubmit'
 
-import { Text } from 'shared/ui/common/Text'
 import { InputControl } from 'shared/ui/controls/Input'
 import { SelectControl } from 'shared/ui/controls/Select'
 import { FormSubmitter } from 'shared/ui/common/FormSubmitter'
@@ -17,7 +16,7 @@ import {
   FormLockedValue,
   FormLockedValuesList,
 } from 'shared/ui/common/FormLockedValue'
-import { TransactionStatusBadge } from 'modules/blockChain/ui/TransactionStatusBadge'
+import { FormTransactionRow } from 'modules/blockChain/ui/FormTransactionRow'
 
 import * as formErrors from 'shared/constants/formErrors'
 import {
@@ -32,8 +31,6 @@ import {
 } from 'modules/pools/constants/poolAssets'
 import { formatNumber } from 'shared/utils/formatNumber'
 import type { FormValues, SuccessData } from './types'
-
-import s from './FormBorrow.module.scss'
 
 const LTV = 12
 const LIQ_THRESHOLD = '—'
@@ -215,15 +212,10 @@ export function FormBorrow({ onSuccess }: Props) {
       </FormInfoFramesList>
 
       {isLocked && (
-        <div className={s.allowanceInfo}>
-          <Text size={14}>Token spending approving: </Text>
-          <TransactionStatusBadge
-            status={txAllowance.status}
-            onOpen={
-              !txAllowance.isEmpty && !txAllowance.isSigning
-                ? txAllowance.open
-                : undefined
-            }
+        <div>
+          <FormTransactionRow
+            label="Token spending approving"
+            tx={txAllowance}
           />
         </div>
       )}
