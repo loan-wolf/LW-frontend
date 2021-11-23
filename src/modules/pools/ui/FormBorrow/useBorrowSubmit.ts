@@ -1,15 +1,14 @@
 import * as ethers from 'ethers'
 
 import { useCallback, useState } from 'react'
-import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
 import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
 import { useTransactionSender } from 'modules/blockChain/hooks/useTransactionSender'
+import { useAssetContractGetter } from 'modules/pools/hooks/useAssetContractGetter'
 
 import {
   PoolAsset,
   getPoolAssetAddress,
-  getPoolAssetContract,
 } from 'modules/pools/constants/poolAssets'
 import {
   ContractInvestor,
@@ -28,7 +27,6 @@ type Args = {
 
 const errors = {
   wallet: 'Connect your wallet',
-  library: 'Library not defined',
   collateralAsset: 'Collateral asset is not selected',
   collateralAddress: 'Address does not defined for this collateral asset',
 }
@@ -40,23 +38,10 @@ export function useBorrowSubmit({
   collateralAmount,
 }: Args) {
   const chainId = useCurrentChain()
-  const { library } = useWeb3()
   const { walletAddress } = useWalletInfo()
   const contractInvestor = ContractInvestor.useContractWeb3()
   const [isSubmitting, setSubmitting] = useState(false)
-
-  const getAssetContract = useCallback(
-    (asset: PoolAsset) => {
-      if (!library) throw new Error(errors.library)
-      const CollateralAssetContract = getPoolAssetContract(asset)
-      const collateralAssetContract = CollateralAssetContract.connectWeb3({
-        chainId,
-        library: library.getSigner(),
-      })
-      return collateralAssetContract
-    },
-    [chainId, library],
-  )
+  const getAssetContract = useAssetContractGetter()
 
   /**
    * Allow token spending tx
