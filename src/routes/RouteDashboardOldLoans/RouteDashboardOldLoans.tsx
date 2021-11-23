@@ -43,6 +43,7 @@ function RouteDashboardOldLoans() {
           key={loan.id}
           loan={loan}
           loanId={loan.id}
+          isCompleted={loan.isCompleted}
           investorAddress={investorAddress}
         />
       ))}
