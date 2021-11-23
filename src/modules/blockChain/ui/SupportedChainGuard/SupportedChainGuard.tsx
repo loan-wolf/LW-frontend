@@ -47,13 +47,12 @@ export function SupportedChainGuard({
         <AppInner>
           <DrawerLogo />
           <ActionToContinueScreen
-            title="Selected chain is not supported"
+            title="Selected network is not supported"
             actionTitle="Please"
             actionText={
               <>
-                Select
-                <br /> supported
-                <br /> chain
+                Switch
+                <br /> network
               </>
             }
             actionHint="to continue using app"
