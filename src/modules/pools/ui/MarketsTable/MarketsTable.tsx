@@ -1,6 +1,7 @@
 import cns from 'classnames'
 import { useState } from 'react'
 
+import { Link } from 'shared/ui/controls/Link'
 import { ReactComponent as TokenDAI } from 'assets/token-dai.svg'
 import { ReactComponent as TokenUSDC } from 'assets/token-usdc.svg'
 import { ReactComponent as TokenUSDT } from 'assets/token-usdt.svg'
@@ -11,6 +12,7 @@ import { ReactComponent as BorrowWBTC } from 'assets/borrow.svg'
 import { ReactComponent as LendWBTC } from 'assets/lend.svg'
 import { ReactComponent as Order } from 'assets/order.svg'
 
+import * as links from 'modules/router/links'
 import s from './MarketsTable.module.scss'
 import { orderBy } from 'lodash'
 
@@ -188,10 +190,16 @@ export function MarketsTable() {
               <span className={s.faded}>FROM</span> {row.borrowAPR}%
             </td>
             <td>
-              <BorrowWBTC className={s.borrowIcon} />
+              {/* TODO: Add pool info to link when pools data will be real */}
+              <Link to={links.borrow}>
+                <BorrowWBTC className={s.borrowIcon} />
+              </Link>
             </td>
             <td>
-              <LendWBTC className={s.lendIcon} />
+              {/* TODO: Add pool info to link when pools data will be real */}
+              <Link to={links.deposit}>
+                <LendWBTC className={s.lendIcon} />
+              </Link>
             </td>
           </tr>
         ))}
