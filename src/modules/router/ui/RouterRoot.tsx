@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, memo } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { matchRoutes } from 'react-router-config'
 import { routes } from '../routerConfig'
@@ -26,7 +26,7 @@ function RenderBranch({ branch }: { branch: MatchBranch }) {
   )
 }
 
-export function RouterRoot() {
+function RouterRootRaw() {
   const location = useLocation()
   const branch = useMemo(
     () => matchRoutes(routes, String(location.pathname)),
@@ -38,3 +38,5 @@ export function RouterRoot() {
     </currentMatchBranchContext.Provider>
   )
 }
+
+export const RouterRoot = memo(RouterRootRaw)

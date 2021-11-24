@@ -57,6 +57,8 @@ const shared = {
   fieldMargin: '54px',
   fieldHeight: '60px',
   fieldMarginConcatted: '8px',
+  heightHeader: '50px',
+  marginHeader: '160px',
 
   colorWhite: '#ffffff',
 

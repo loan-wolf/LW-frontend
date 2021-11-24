@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom'
 
 import { Link } from 'shared/ui/controls/Link'
 
-import { ReactComponent as Logo } from 'assets/logo.svg'
+import { DrawerLogo } from '../DrawerLogo'
 import { ReactComponent as Markets } from 'assets/markets.svg'
 import { ReactComponent as Deposit } from 'assets/lend.svg'
 import { ReactComponent as Borrow } from 'assets/borrow.svg'
@@ -61,9 +61,7 @@ type Props = {
 function DrawerRaw({ className }: Props) {
   return (
     <div className={className}>
-      <Link to={links.home} className={s.drawerLogo}>
-        <Logo />
-      </Link>
+      <DrawerLogo link={links.home} />
 
       <DrawerLink link={links.markets} icon={<Markets />} children="Markets" />
       <DrawerLink link={links.deposit} icon={<Deposit />} children="Deposit" />

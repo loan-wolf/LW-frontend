@@ -1,53 +1,19 @@
-import { StrictMode, useMemo, memo } from 'react'
-import { useWalletAutoConnect } from 'modules/wallet/hooks/useWalletAutoConnect'
-import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
-// import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
+import { StrictMode } from 'react'
 
 import { BrowserRouter } from 'react-router-dom'
 import { SingletonHooksContainer } from 'react-singleton-hook'
 
 import { RouterRoot } from 'modules/router/ui/RouterRoot'
-import { ContentBox } from 'shared/ui/layout/ContentBox'
 import { Web3AppProvider } from 'modules/blockChain/providers/web3Provider'
 import { WalletConnectorsProvider } from 'modules/wallet/providers/walletConnectorsProvider'
 import { ThemeProvider } from 'modules/themes/ThemeProvider'
 import { ModalProvider } from 'modules/modal/providers/ModalProvider'
-// import { HeaderWallet } from 'shared/ui/layout/HeaderWallet'
+import { SupportedChainGuard } from 'modules/blockChain/ui/SupportedChainGuard'
+
 import 'modules/appRoot/fonts.scss'
 import 'modules/appRoot/global-styles.scss'
 
 import { BASE_URL, SUPPORTED_CHAINS } from 'config'
-
-function App() {
-  useWalletAutoConnect()
-  const chainId = useCurrentChain()
-  const isChainSupported = useMemo(
-    () => SUPPORTED_CHAINS.includes(chainId),
-    [chainId],
-  )
-  // const { isWalletConnected } = useWalletInfo()
-
-  if (!isChainSupported) {
-    return (
-      <>
-        <ContentBox>Chain not supported</ContentBox>
-      </>
-    )
-  }
-
-  // if (!isWalletConnected) {
-  //   return (
-  //     <>
-  //       <ContentBox>Wallet is not connected</ContentBox>
-  //       <HeaderWallet />
-  //     </>
-  //   )
-  // }
-
-  return <RouterRoot />
-}
-
-const AppMemoized = memo(App)
 
 export function AppRoot() {
   return (
@@ -56,10 +22,15 @@ export function AppRoot() {
         <WalletConnectorsProvider>
           <ThemeProvider>
             <BrowserRouter basename={BASE_URL}>
-              <SingletonHooksContainer />
-              <ModalProvider>
-                <AppMemoized />
-              </ModalProvider>
+              <SupportedChainGuard
+                switchTo={SUPPORTED_CHAINS[0]}
+                supportedChains={SUPPORTED_CHAINS}
+              >
+                <SingletonHooksContainer />
+                <ModalProvider>
+                  <RouterRoot />
+                </ModalProvider>
+              </SupportedChainGuard>
             </BrowserRouter>
           </ThemeProvider>
         </WalletConnectorsProvider>
