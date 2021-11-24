@@ -28,6 +28,7 @@ import s from './DashboardRowLoan.module.scss'
 type Props = {
   loan: Loan
   loanId: string
+  isCompleted: boolean
   investorAddress: string
   className?: string
 }
@@ -35,6 +36,7 @@ type Props = {
 export function DashboardRowLoan({
   loan,
   loanId,
+  isCompleted,
   investorAddress,
   className,
 }: Props) {
@@ -156,14 +158,16 @@ export function DashboardRowLoan({
 
       <div className={s.column}>
         <div className={s.actions}>
-          <Button
-            link={links.repayment}
-            className={s.action}
-            fashion="greenapple-ghost"
-            size={40}
-          >
-            REPAY
-          </Button>
+          {!isCompleted && (
+            <Button
+              link={links.repayment(loanId)}
+              className={s.action}
+              fashion="greenapple-ghost"
+              size={40}
+            >
+              REPAY
+            </Button>
+          )}
           <DropdownLoan
             onAddMore={() => console.log('onAddMore')}
             onWithdraw={() => console.log('onWithdraw')}

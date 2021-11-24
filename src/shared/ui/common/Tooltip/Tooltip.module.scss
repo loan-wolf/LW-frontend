@@ -15,7 +15,7 @@
   border-radius: 8px;
   background-color: var(--colorInputBg);
   border: 1px solid var(--colorBorder);
-  transform: scale(0.6);
+  transform: scale(0);
   backdrop-filter: blur(12px);
   transition: opacity ease var(--durFast),
     transform var(--easeOutBack) var(--durNorm);
@@ -39,7 +39,7 @@
   &.position--top,
   &.position--bottom {
     left: 50%;
-    transform: translateX(-50%) scale(0.6);
+    transform: translateX(-50%) scale(0);
 
     .wrap:hover & {
       transform: translateX(-50%) scale(1);

@@ -2,7 +2,10 @@ import { useMemo } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { matchRoutes } from 'react-router-config'
 import { routes } from '../routerConfig'
-import { currentMatchContext } from '../providers/currentMatchContext'
+import {
+  currentMatchBranchContext,
+  currentMatchContext,
+} from '../providers/currentMatchContext'
 import type { MatchBranch } from '../types'
 
 function RenderBranch({ branch }: { branch: MatchBranch }) {
@@ -12,12 +15,14 @@ function RenderBranch({ branch }: { branch: MatchBranch }) {
   if (!current.route.component) return null
 
   return (
-    <current.route.component
-      match={current.match}
-      history={history}
-      location={history.location}
-      children={rest.length > 0 ? <RenderBranch branch={rest} /> : null}
-    />
+    <currentMatchContext.Provider value={current.match}>
+      <current.route.component
+        match={current.match}
+        history={history}
+        location={history.location}
+        children={rest.length > 0 ? <RenderBranch branch={rest} /> : null}
+      />
+    </currentMatchContext.Provider>
   )
 }
 
@@ -28,8 +33,8 @@ export function RouterRoot() {
     [location.pathname],
   )
   return (
-    <currentMatchContext.Provider value={branch}>
+    <currentMatchBranchContext.Provider value={branch}>
       <RenderBranch branch={branch} />
-    </currentMatchContext.Provider>
+    </currentMatchBranchContext.Provider>
   )
 }

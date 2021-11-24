@@ -1,10 +1,10 @@
-import { RouteMeta } from '../types'
+import { RouteMeta, RouteProps } from '../types'
 
-type Args = RouteMeta & {
-  component: React.ComponentType
+type Args<P = {}> = RouteMeta & {
+  component: React.ComponentType<RouteProps<P>>
 }
 
-export function createRoute({ component, ...routeMeta }: Args) {
+export function createRoute<P>({ component, ...routeMeta }: Args<P>) {
   return {
     component,
     routeMeta,

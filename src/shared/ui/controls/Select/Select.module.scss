@@ -24,15 +24,18 @@
   display: flex;
   align-items: center;
   padding: 20px 24px 0;
-  cursor: pointer;
   user-select: none;
 
-  &:hover {
-    @include inputHover();
-  }
+  &.isInteractive {
+    cursor: pointer;
 
-  &.isFocused {
-    @include inputFocus();
+    &:hover {
+      @include inputHover();
+    }
+
+    &.isFocused {
+      @include inputFocus();
+    }
   }
 
   &.isError {
@@ -51,6 +54,10 @@
   .isConcatBottom & {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
+  }
+
+  &.isReadOnly {
+    cursor: default;
   }
 }
 

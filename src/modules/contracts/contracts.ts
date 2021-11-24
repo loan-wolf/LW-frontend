@@ -38,6 +38,11 @@ export const ContractPriceFeed = createContractHelpers({
   chainAddress: addresses.addressPriceFeed,
 })
 
+export const ContractBonds = createContractHelpers({
+  factory: generated.Bonds__factory,
+  chainAddress: addresses.addressBonds,
+})
+
 export const getContractLoanWolfPool = (chainAddress: ChainAddress) =>
   createContractHelpers({
     factory: generated.LoanWolfPool__factory,

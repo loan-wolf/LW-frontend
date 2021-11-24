@@ -1,0 +1,10 @@
+.wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--fieldMarginConcatted);
+
+  &:last-child {
+    margin-bottom: var(--fieldMargin);
+  }
+}

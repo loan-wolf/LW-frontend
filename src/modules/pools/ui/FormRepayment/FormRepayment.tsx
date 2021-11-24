@@ -1,5 +1,12 @@
-import { useCallback, useState } from 'react'
+import * as ethers from 'ethers'
+
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useSWR } from 'modules/network/hooks/useSwr'
+import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
+import { useRepaymentSubmit } from './useRepaymentSubmit'
+import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
+import { useAssetContractGetter } from 'modules/pools/hooks/useAssetContractGetter'
 
 import { Text } from 'shared/ui/common/Text'
 import { InputControl } from 'shared/ui/controls/Input'
@@ -7,15 +14,20 @@ import { SelectControl } from 'shared/ui/controls/Select'
 import { ToggleControl } from 'shared/ui/controls/Toggle'
 import { InputMaxAction } from 'shared/ui/controls/InputMaxAction'
 import { FormSubmitter } from 'shared/ui/common/FormSubmitter'
+import { FormTransactionRow } from 'modules/blockChain/ui/FormTransactionRow'
 import { Form } from 'shared/ui/controls/Form'
 import {
   FormLockedValue,
   FormLockedValuesList,
 } from 'shared/ui/common/FormLockedValue'
+import { PageLoader } from 'shared/ui/layout/PageLoader'
 
+import { ContractInvestor } from 'modules/contracts/contracts'
+import type { FormValues, SuccessData } from './types'
 import * as formErrors from 'shared/constants/formErrors'
 import {
   poolAssetOptions,
+  getPoolAssetByAddress,
   getPoolAssetIcon,
 } from 'modules/pools/constants/poolAssets'
 import s from './FormRepayment.module.scss'
@@ -26,40 +38,17 @@ const depositOptions = [
   poolAssetOptions.DAI,
 ]
 
-const TOTAL_LOAN_AMOUNT = 3333
 const TOTAL_COLLATERAL_AMOUNT = 4444
 
-const rulesAmount = {
-  required: formErrors.required,
-  validate: (val: string) =>
-    formErrors.notLess(val, 1) ||
-    formErrors.notMore(val, TOTAL_LOAN_AMOUNT) ||
-    true,
-}
-
-const rulesCollateralAmount = {
-  required: formErrors.required,
-  validate: (val: string) =>
-    formErrors.notLess(val, 0.01) ||
-    formErrors.notMore(val, TOTAL_COLLATERAL_AMOUNT) ||
-    true,
-}
-
-type FormValues = {
-  depositedAsset: string
-  amount: string
-  returnCollateral: boolean
-  collateralAmount: string
-}
-
-// TODO: Update with actual response type after contract integration
-export type SuccessData = FormValues
-
 type Props = {
+  loanId: string
   onSuccess: (successData: SuccessData) => void
 }
 
-export function FormRepayment({ onSuccess }: Props) {
+export function FormRepayment({ loanId, onSuccess }: Props) {
+  const chainId = useCurrentChain()
+  const getAssetContract = useAssetContractGetter()
+  const { walletAddress } = useWalletInfo()
   const [isLocked, setLocked] = useState(false)
   const handleUnlock = useCallback(() => setLocked(false), [])
 
@@ -73,33 +62,60 @@ export function FormRepayment({ onSuccess }: Props) {
     },
   })
 
-  const submit = useCallback(
-    formData => {
-      if (!isLocked) {
-        setLocked(true)
-      } else {
-        console.log(formData)
-        onSuccess(formData)
-      }
+  const { setValue } = formMethods
+
+  const loanReq = ContractInvestor.useSwrWeb3('loanLookup', loanId)
+  const { data: loan } = loanReq
+
+  const depositedAsset = useMemo(() => {
+    if (!loan) return null
+    return getPoolAssetByAddress(loan.ERC20Address, chainId)
+  }, [loan, chainId])
+
+  useEffect(() => {
+    setValue('depositedAsset', depositedAsset || '')
+  }, [depositedAsset, setValue])
+
+  const maxAmountWei = useSWR(
+    depositedAsset ? `repayment-max-${depositedAsset}` : null,
+    () => {
+      if (!depositedAsset || !walletAddress) return null
+      const contract = getAssetContract(depositedAsset)
+      const balance = contract.balanceOf(walletAddress)
+      return balance
     },
-    [isLocked, onSuccess],
   )
 
+  const maxAmount =
+    maxAmountWei.data && Number(ethers.utils.formatEther(maxAmountWei.data))
+
+  const { submit, txApproval, txAllowance, isSubmitting } = useRepaymentSubmit({
+    loanId,
+    isLocked,
+    setLocked,
+    onSuccess,
+  })
+
   const handleClickMaxAmount = useCallback(() => {
-    formMethods.setValue('amount', String(TOTAL_LOAN_AMOUNT))
-  }, [formMethods])
+    setValue('amount', String(maxAmount))
+  }, [setValue, maxAmount])
 
   const handleClickMaxCollateralAmount = useCallback(() => {
-    formMethods.setValue('collateralAmount', String(TOTAL_COLLATERAL_AMOUNT))
-  }, [formMethods])
+    setValue('collateralAmount', String(TOTAL_COLLATERAL_AMOUNT))
+  }, [setValue])
 
   const returnCollateral = formMethods.watch('returnCollateral')
+
+  if (loanReq.isLoading) {
+    return <PageLoader />
+  }
 
   return (
     <Form formMethods={formMethods} onSubmit={submit}>
       {!isLocked && (
         <>
           <SelectControl
+            readonly
             name="depositedAsset"
             concat="bottom"
             placeholder="Deposited asset"
@@ -112,7 +128,14 @@ export function FormRepayment({ onSuccess }: Props) {
             concat="top"
             placeholder="Amount"
             onlyNumber
-            rules={rulesAmount}
+            rules={{
+              required: formErrors.required,
+              validate: (val: string) =>
+                // TODO: not less than 1
+                formErrors.notLess(val, 0.1) ||
+                formErrors.notMore(val, Number(maxAmount)) ||
+                true,
+            }}
             action={<InputMaxAction onClick={handleClickMaxAmount} />}
           />
 
@@ -126,7 +149,13 @@ export function FormRepayment({ onSuccess }: Props) {
                 onlyNumber
                 withMargin={false}
                 className={s.inputWithHint}
-                rules={rulesCollateralAmount}
+                rules={{
+                  required: formErrors.required,
+                  validate: (val: string) =>
+                    formErrors.notLess(val, 0.01) ||
+                    formErrors.notMore(val, TOTAL_COLLATERAL_AMOUNT) ||
+                    true,
+                }}
                 action={
                   <InputMaxAction onClick={handleClickMaxCollateralAmount} />
                 }
@@ -162,7 +191,15 @@ export function FormRepayment({ onSuccess }: Props) {
         </FormLockedValuesList>
       )}
 
+      {isLocked && (
+        <div>
+          <FormTransactionRow label="Approving" tx={txApproval} />
+          <FormTransactionRow label="Allowance" tx={txAllowance} />
+        </div>
+      )}
+
       <FormSubmitter
+        isSubmitting={isSubmitting}
         isLocked={isLocked}
         firstStepText="Repay"
         onClickUnlock={handleUnlock}

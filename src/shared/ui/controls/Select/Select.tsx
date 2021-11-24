@@ -34,6 +34,7 @@ type Props = {
   defaultValue?: Value
   options: Option[]
   concat?: 'top' | 'bottom'
+  readonly?: boolean
   error?: React.ReactNode
   onChange?: (value: Value) => void
   onFocus?: React.FocusEventHandler
@@ -51,6 +52,7 @@ function SelectRaw(props: Props, ref: React.Ref<HTMLInputElement>) {
     onChange,
     className,
     concat,
+    readonly,
     onFocus,
     onBlur,
     error,
@@ -73,13 +75,15 @@ function SelectRaw(props: Props, ref: React.Ref<HTMLInputElement>) {
   }, [])
 
   const handleClickBox = useCallback(() => {
-    if (inputRef.current) {
+    if (!readonly && inputRef.current) {
       inputRef.current.focus()
     }
-  }, [])
+  }, [readonly])
 
   const handleClickOption = useCallback(
     (idx: number) => {
+      if (readonly) return
+
       const option = options[idx]
 
       doBlur()
@@ -88,27 +92,29 @@ function SelectRaw(props: Props, ref: React.Ref<HTMLInputElement>) {
         onChange(option.value)
       }
     },
-    [options, onChange, doBlur],
+    [options, onChange, doBlur, readonly],
   )
 
   const handleFocus = useCallback(
     (e: React.FocusEvent) => {
+      if (readonly) return
       setFocused(true)
       if (onFocus) {
         onFocus(e)
       }
     },
-    [onFocus],
+    [readonly, onFocus],
   )
 
   const handleBlur = useCallback(
     (e: React.FocusEvent) => {
+      if (readonly) return
       doBlur()
       if (onBlur) {
         onBlur(e)
       }
     },
-    [doBlur, onBlur],
+    [doBlur, onBlur, readonly],
   )
 
   const currentOption = useMemo(() => {
@@ -184,6 +190,8 @@ function SelectRaw(props: Props, ref: React.Ref<HTMLInputElement>) {
         className={cns(s.box, {
           [s.isFocused]: isFocused,
           [s.isError]: Boolean(error),
+          [s.isReadOnly]: readonly,
+          [s.isInteractive]: !readonly,
         })}
         onClick={handleClickBox}
       >
@@ -198,9 +206,11 @@ function SelectRaw(props: Props, ref: React.Ref<HTMLInputElement>) {
         {currentOption?.icon && (
           <div className={s.optionIcon}>{currentOption.icon}</div>
         )}
-        <div className={s.arrowWrap}>
-          <ArrowIcon className={s.arrow} />
-        </div>
+        {!readonly && (
+          <div className={s.arrowWrap}>
+            <ArrowIcon className={s.arrow} />
+          </div>
+        )}
         {error && <FieldError className={s.error}>{error}</FieldError>}
       </div>
       {isFocused && (
