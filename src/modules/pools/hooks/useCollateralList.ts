@@ -33,7 +33,10 @@ export function useCollateralList() {
               investorAddress,
               loanId,
             )
-          return collateral
+          return {
+            loanId,
+            collateral,
+          }
         })
 
       const res = await Promise.all(requests)
