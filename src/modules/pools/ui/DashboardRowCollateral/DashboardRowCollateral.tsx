@@ -1,14 +1,18 @@
+import * as ethers from 'ethers'
+
+import { Tooltip } from 'shared/ui/common/Tooltip'
 import { InfoFieldValue } from 'shared/ui/common/InfoFieldValue'
 import { DropdownCollateral } from '../DropdownCollateral'
 import { DashboardRow } from 'shared/ui/common/DashboardRow'
 
+import type { BigNumberish } from '@ethersproject/bignumber'
 import { getPoolAssetIcon, PoolAsset } from 'modules/pools/constants/poolAssets'
 import s from './DashboardRowCollateral.module.scss'
 
 export type CollateralDataMock = {
-  collateralAsset: PoolAsset
-  amount: number
-  unlockDate: string
+  asset?: PoolAsset
+  amount: BigNumberish
+  // unlockDate: string
 }
 
 type Props = {
@@ -17,15 +21,26 @@ type Props = {
 }
 
 export function DashboardRowCollateral({ collateral, className }: Props) {
-  const { collateralAsset, amount, unlockDate } = collateral
+  const {
+    asset,
+    amount,
+    //  unlockDate
+  } = collateral
+
+  const collateralAmount = ethers.utils.formatEther(amount)
+
   return (
     <DashboardRow className={className}>
       <InfoFieldValue
         label="Asset"
         value={
-          <>
-            {getPoolAssetIcon(collateralAsset)} {collateralAsset}
-          </>
+          asset ? (
+            <>
+              {getPoolAssetIcon(asset)} {asset}
+            </>
+          ) : (
+            'Unknown'
+          )
         }
         className={s.column}
       />
@@ -33,16 +48,19 @@ export function DashboardRowCollateral({ collateral, className }: Props) {
         label="Amount"
         value={
           <>
-            {amount} {collateralAsset}
+            <Tooltip tooltip={collateralAmount} className={s.collateralWrap}>
+              <span className={s.collateralAmount}>{collateralAmount}</span>{' '}
+              <span>{asset}</span>
+            </Tooltip>
           </>
         }
         className={s.column}
       />
-      <InfoFieldValue
+      {/* <InfoFieldValue
         label="Unlock date"
         value={unlockDate}
         className={s.column}
-      />
+      /> */}
       <div className={s.column}>
         <DropdownCollateral
           onBorrow={() => console.log('onBorrow')}
