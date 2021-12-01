@@ -11,7 +11,7 @@ import { routeDashboardCollateral } from 'routes/RouteDashboardCollateral'
 import { routeDashboardOldDeposits } from 'routes/RouteDashboardOldDeposits'
 import { routeDashboardOldLoans } from 'routes/RouteDashboardOldLoans'
 import { routeRepayment } from 'routes/RouteRepayment'
-import { routeWithdrawal } from 'routes/RouteWithdrawal'
+import { routeWithdrawal } from 'routes/RouteWithdrawalCollateral'
 
 import { AppLayout } from 'shared/ui/layout/AppLayout'
 
@@ -69,7 +69,7 @@ export const routes: RouteConfig[] = [
         ...routeRepayment,
       },
       {
-        path: links.withdrawal,
+        path: links.withdrawalCollateral(':loanId'),
         ...routeWithdrawal,
       },
     ],

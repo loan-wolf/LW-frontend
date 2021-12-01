@@ -12,7 +12,7 @@ export function DropdownDeposit({ onAddMore, className }: Props) {
       <DropdownItem onClick={onAddMore} isUppercased>
         Deposit more
       </DropdownItem>
-      <DropdownItem link={links.withdrawal} isUppercased>
+      <DropdownItem link={links.withdrawalDeposit} isUppercased>
         Withdraw
       </DropdownItem>
     </DropdownBurger>

@@ -71,6 +71,7 @@ export function DashboardRowCollateral({ collateral, className }: Props) {
       />
       <div className={s.column}>
         <DropdownCollateral
+          loanId={loanId.toString()}
           onBorrow={() => console.log('onBorrow')}
           onDeposit={() => console.log('onDeposit')}
         />
