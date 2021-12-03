@@ -1,5 +1,3 @@
-import * as ethers from 'ethers'
-
 import { useCallback, useMemo } from 'react'
 import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useWalletAutoConnect } from 'modules/wallet/hooks/useWalletAutoConnect'
@@ -37,7 +35,7 @@ export function SupportedChainGuard({
   const changeNetwork = useCallback(() => {
     if (!library) return
     library.send('wallet_switchEthereumChain', [
-      { chainId: ethers.BigNumber.from(switchTo).toHexString() },
+      { chainId: `0x${switchTo.toString(16)}` },
     ])
   }, [switchTo, library])
 
