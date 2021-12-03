@@ -85,13 +85,17 @@ export function FormBorrow({ onSuccess }: Props) {
 
   const collateralAmount =
     collateralAsset && amount
-      ? (amount / ((LTV / 100) * COLLATERAL_PRICE[collateralAsset])).toFixed(18)
-      : '0'
+      ? (
+          (amount / COLLATERAL_PRICE[collateralAsset]) *
+          ((100 - LTV) / 100)
+        ).toFixed(18)
+      : ''
 
   // TODO: Must depends on `borrowedAsset`
   const { data: aprData } = ContractInvestor.useSwrWeb3('interestRate')
   const apr = aprData && Number(aprData) / 100
-  const earning = apr && (amount * (1 + apr / 100) * (term * 30)) / 12
+
+  const amountToBeRepaid = apr && amount + ((apr / 100) * amount * term) / 365
 
   const borrowedAddress =
     borrowedAsset && getPoolAssetAddress(borrowedAsset, chainId)
@@ -189,7 +193,10 @@ export function FormBorrow({ onSuccess }: Props) {
             { label: 'APR', value: apr && `${apr}%` },
             {
               label: 'Amount to be repaid',
-              value: earning && `${formatNumber(earning, 2)} ${borrowedAsset}`,
+              value:
+                amountToBeRepaid &&
+                term &&
+                `${formatNumber(amountToBeRepaid, 2)} ${borrowedAsset}`,
             },
           ]}
         />
@@ -198,7 +205,8 @@ export function FormBorrow({ onSuccess }: Props) {
             { label: 'LTV', value: `${LTV}%` },
             {
               label: 'Required collateral',
-              value: collateralAmount,
+              value:
+                collateralAmount && `${collateralAmount} ${collateralAsset}`,
               isTooltiped: true,
             },
           ]}
