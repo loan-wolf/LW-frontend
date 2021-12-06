@@ -37,6 +37,7 @@ const LIQ_THRESHOLD = '—'
 const LIQ_PRICE = '—'
 const COLLATERAL_PRICE = {
   [poolAssets.DAI]: 1,
+  [poolAssets.DAI2]: 1,
   [poolAssets.USDC]: 1,
   [poolAssets.USDT]: 1,
   [poolAssets.ETH]: 4765,

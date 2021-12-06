@@ -8,6 +8,11 @@ export const ContractTestDAI = createContractHelpers({
   chainAddress: addresses.addressTestDAI,
 })
 
+export const ContractTestDAI2 = createContractHelpers({
+  factory: generated.IERC20__factory,
+  chainAddress: addresses.addressTestDAI2,
+})
+
 export const ContractTestETH = createContractHelpers({
   factory: generated.IERC20__factory,
   chainAddress: addresses.addressTestETH,
@@ -43,6 +48,24 @@ export const ContractBonds = createContractHelpers({
   chainAddress: addresses.addressBonds,
 })
 
+export const ContractLiquidityFarm = createContractHelpers({
+  factory: generated.LiquidityFarm__factory,
+  chainAddress: addresses.addressLiquidityFarm,
+})
+
+export const ContractILiquidityPool = createContractHelpers({
+  factory: generated.ILiquidityPool__factory,
+  chainAddress: addresses.addressILiquidityPool,
+})
+
+export const ContractTrader = createContractHelpers({
+  factory: generated.Trader__factory,
+  chainAddress: addresses.addressTrader,
+})
+
+/**
+ * DEPRECATED:
+ */
 export const getContractLoanWolfPool = (chainAddress: ChainAddress) =>
   createContractHelpers({
     factory: generated.LoanWolfPool__factory,

@@ -1,11 +1,10 @@
 import { useState } from 'react'
 
 import { FormDeposit, SuccessData } from 'modules/pools/ui/FormDeposit'
-import { DashboardRowDeposit } from 'modules/pools/ui/DashboardRowDeposit'
+import { SendedTransaction } from 'modules/pools/ui/SendedTransaction'
 import { ContractSuccessTitle } from 'shared/ui/common/ContractSuccessTitle'
 import { NarrowWrapper } from 'shared/ui/layout/NarrowWrapper'
 
-import { PoolAsset } from 'modules/pools/constants/poolAssets'
 import { createRoute } from 'modules/router/utils/createRoute'
 
 function RouteDeposit() {
@@ -14,15 +13,8 @@ function RouteDeposit() {
   if (successData) {
     return (
       <>
-        <ContractSuccessTitle>Loan is disbursed.</ContractSuccessTitle>
-        <DashboardRowDeposit
-          deposit={{
-            depositedAsset: successData.depositedAsset as PoolAsset,
-            amount: Number(successData.amount),
-            apy: 13,
-            interest: 45,
-          }}
-        />
+        <ContractSuccessTitle>Deposit is progress.</ContractSuccessTitle>
+        <SendedTransaction tx={successData.tx} transactionType="Deposit" />
       </>
     )
   }

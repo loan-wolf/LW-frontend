@@ -5,6 +5,10 @@ export const addressTestDAI = new ChainAddress('TestDAI', {
   [Chains.Kovan]: '0x6b198422c97a805701a1cB53fee51F864f825dDA',
 })
 
+export const addressTestDAI2 = new ChainAddress('TestDAI2', {
+  [Chains.Kovan]: '0xd2B5784b7F0Ff40c010638177744588d33A1F929',
+})
+
 export const addressTestETH = new ChainAddress('TestETH', {
   [Chains.Kovan]: '0xbFBd09C03Eddfd8E3b7b3FdfB65DCd1B95B96A1A',
 })
@@ -26,9 +30,21 @@ export const addressInvestor = new ChainAddress('Investor', {
 })
 
 export const addressPriceFeed = new ChainAddress('PriceFeed', {
-  [Chains.Kovan]: '0x97395ae460dcB8941Cf8d47DFaaDB729a974820E',
+  [Chains.Kovan]: '0xeB02DcA23dC6E9E691D61286eF791422ca08a90B',
 })
 
 export const addressBonds = new ChainAddress('Bonds', {
   [Chains.Kovan]: '0x54935e2E07f61DbF0F95512a5f3f31a205E3A24D',
+})
+
+export const addressLiquidityFarm = new ChainAddress('LiquidityFarm', {
+  [Chains.Kovan]: '0x2A7Fa210e2254e2a0b3732171e97686Ee2f3D8Df',
+})
+
+export const addressILiquidityPool = new ChainAddress('ILiquidityPool', {
+  [Chains.Kovan]: '0x01a928Dc8aCc70bd975F6a3925Aea487a1453971',
+})
+
+export const addressTrader = new ChainAddress('Trader', {
+  [Chains.Kovan]: '0xED96578D8AbefDfeBEBcF03D7F1c15Dd5b3A240c',
 })
