@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react'
 import { useForm, useFormContext } from 'react-hook-form'
+import { useDepositSubmit } from './useDepositSubmit'
 
 import { InputControl } from 'shared/ui/controls/Input'
 import { SelectControl } from 'shared/ui/controls/Select'
@@ -13,6 +14,7 @@ import {
   FormLockedValue,
   FormLockedValuesList,
 } from 'shared/ui/common/FormLockedValue'
+import { FormTransactionRow } from 'modules/blockChain/ui/FormTransactionRow'
 
 import * as formErrors from 'shared/constants/formErrors'
 import {
@@ -24,6 +26,7 @@ import {
   getTargetRiskLabel,
 } from 'modules/pools/constants/riskOptions'
 import { formatNumber } from 'shared/utils/formatNumber'
+import type { FormValues, SuccessData } from './types'
 
 const APY = 0.15
 const POOL_SHARE = 0.58
@@ -32,13 +35,8 @@ const depositOptions = [
   poolAssetOptions.USDC,
   poolAssetOptions.USDT,
   poolAssetOptions.DAI,
+  poolAssetOptions.DAI2,
 ]
-
-type FormValues = {
-  depositedAsset: string
-  amount: string
-  targetRiskPool: string
-}
 
 function EstimatedEarning() {
   const { watch } = useFormContext<FormValues>()
@@ -46,9 +44,6 @@ function EstimatedEarning() {
   const earning = (Number(amount) * APY) / 30
   return <>{formatNumber(earning, 2)}</>
 }
-
-// TODO: Update with actual response type after contract integration
-export type SuccessData = FormValues
 
 type Props = {
   onSuccess: (successData: SuccessData) => void
@@ -67,17 +62,11 @@ export function FormDeposit({ onSuccess }: Props) {
     },
   })
 
-  const submit = useCallback(
-    formData => {
-      if (!isLocked) {
-        setLocked(true)
-      } else {
-        console.log(formData)
-        onSuccess(formData)
-      }
-    },
-    [isLocked, onSuccess],
-  )
+  const { submit, isSubmitting, txAllowance } = useDepositSubmit({
+    isLocked,
+    setLocked,
+    onSuccess,
+  })
 
   return (
     <Form formMethods={formMethods} onSubmit={submit}>
@@ -159,8 +148,18 @@ export function FormDeposit({ onSuccess }: Props) {
         />
       </FormInfoFramesList>
 
+      {isLocked && (
+        <div>
+          <FormTransactionRow
+            label="Token spending approving"
+            tx={txAllowance}
+          />
+        </div>
+      )}
+
       <FormSubmitter
         isLocked={isLocked}
+        isSubmitting={isSubmitting}
         firstStepText="Deposit"
         onClickUnlock={handleUnlock}
       />

@@ -21,7 +21,7 @@ function RouteBorrowRaw() {
 
   return (
     <>
-      <ContractSuccessTitle>Deposit Successful.</ContractSuccessTitle>
+      <ContractSuccessTitle>Borrow in progress.</ContractSuccessTitle>
       <SendedTransaction tx={successData.tx} transactionType="Borrow" />
     </>
   )

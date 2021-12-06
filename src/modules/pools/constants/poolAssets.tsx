@@ -10,6 +10,7 @@ import * as contracts from 'modules/contracts/contracts'
 
 export const poolAssets = {
   DAI: 'DAI',
+  DAI2: 'DAI2',
   USDC: 'USDC',
   USDT: 'USDT',
   ETH: 'ETH',
@@ -31,6 +32,7 @@ export function getPoolAssetIcon(asset: string) {
 
 export const poolAssetAddresses = {
   [poolAssets.DAI]: addresses.addressTestDAI,
+  [poolAssets.DAI2]: addresses.addressTestDAI2,
   [poolAssets.USDC]: null,
   [poolAssets.USDT]: null,
   [poolAssets.ETH]: addresses.addressTestETH,
@@ -54,6 +56,11 @@ export const poolAssetOptions = {
   [poolAssets.DAI]: {
     label: poolAssets.DAI,
     value: poolAssets.DAI,
+    icon: poolAssetIcons.DAI,
+  },
+  [poolAssets.DAI2]: {
+    label: poolAssets.DAI2,
+    value: poolAssets.DAI2,
     icon: poolAssetIcons.DAI,
   },
   [poolAssets.USDC]: {
@@ -80,6 +87,7 @@ export const poolAssetOptions = {
 
 export const poolAssetContracts = {
   [poolAssets.DAI]: contracts.ContractTestDAI,
+  [poolAssets.DAI2]: contracts.ContractTestDAI2,
   [poolAssets.USDC]: null,
   [poolAssets.USDT]: null,
   [poolAssets.ETH]: contracts.ContractTestETH,

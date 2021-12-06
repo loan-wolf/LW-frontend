@@ -4,21 +4,27 @@
 export type { Bonds } from "./Bonds";
 export type { CollateralManager } from "./CollateralManager";
 export type { IERC20 } from "./IERC20";
+export type { ILiquidityPool } from "./ILiquidityPool";
 export type { Investor } from "./Investor";
+export type { LiquidityFarm } from "./LiquidityFarm";
 export type { LoanWolfPool } from "./LoanWolfPool";
 export type { PriceFeed } from "./PriceFeed";
 export type { RociCreditToken } from "./RociCreditToken";
 export type { ScoreDB } from "./ScoreDB";
 export type { Token } from "./Token";
 export type { TokenBar } from "./TokenBar";
+export type { Trader } from "./Trader";
 
 export { Bonds__factory } from "./factories/Bonds__factory";
 export { CollateralManager__factory } from "./factories/CollateralManager__factory";
 export { IERC20__factory } from "./factories/IERC20__factory";
+export { ILiquidityPool__factory } from "./factories/ILiquidityPool__factory";
 export { Investor__factory } from "./factories/Investor__factory";
+export { LiquidityFarm__factory } from "./factories/LiquidityFarm__factory";
 export { LoanWolfPool__factory } from "./factories/LoanWolfPool__factory";
 export { PriceFeed__factory } from "./factories/PriceFeed__factory";
 export { RociCreditToken__factory } from "./factories/RociCreditToken__factory";
 export { ScoreDB__factory } from "./factories/ScoreDB__factory";
 export { Token__factory } from "./factories/Token__factory";
 export { TokenBar__factory } from "./factories/TokenBar__factory";
+export { Trader__factory } from "./factories/Trader__factory";

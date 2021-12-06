@@ -103,9 +103,7 @@ export function useBorrowSubmit({
             chainId,
           )
 
-          if (!collateralAddress) {
-            throw new Error(errors.collateralAddressNotDefined)
-          }
+          if (!collateralAddress) throw new Error(errors.assetAddressNotDefined)
 
           setSubmitting(true)
 
