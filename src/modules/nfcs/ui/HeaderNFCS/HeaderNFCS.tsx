@@ -1,7 +1,7 @@
 import cns from 'classnames'
 import { useNFCSState } from 'modules/nfcs/hooks/useNFCSState'
 import { useNFCSModal } from 'modules/nfcs/ui/NFCSModal/useNFCSModal'
-import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 
 import { Text } from 'shared/ui/common/Text'
 import { Button } from 'shared/ui/controls/Button'
@@ -16,7 +16,7 @@ type Props = {
 
 export function HeaderNFCS({ className }: Props) {
   const modalNFCS = useNFCSModal()
-  const { isWalletConnected } = useWalletInfo()
+  const { isWalletConnected } = useWeb3()
   const creditScoreState = useNFCSState()
 
   if (!isWalletConnected) {

@@ -1,8 +1,6 @@
 import { useState, useMemo, useEffect } from 'react'
 import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useSWR } from 'modules/network/hooks/useSwr'
-import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
-import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
 import { useTransactionStatus } from 'modules/blockChain/hooks/useTransactionStatus'
 import { singletonHook } from 'react-singleton-hook'
 
@@ -25,9 +23,7 @@ export const setNFCSTxHash: typeof globalSetNFCSTxHash = txHash =>
   globalSetNFCSTxHash(txHash)
 
 function useNFCSStateImpl() {
-  const chainId = useCurrentChain()
-  const { library } = useWeb3()
-  const { walletAddress } = useWalletInfo()
+  const { library, chainId, walletAddress } = useWeb3()
   const contractScoreDB = ContractScoreDB.useContractWeb3()
   const contractRociCreditToken = ContractRociCreditToken.useContractWeb3()
   const [txHash, setTxHash] = useState<string | null>(null)

@@ -1,5 +1,5 @@
 // import * as ethers from 'ethers'
-import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useWithdrawalDepositSubmit } from './useWithdrawalDepositSubmit'
 
 import { FormWithdrawalAbstract } from '../FormWithdrawalAbstract'
@@ -20,7 +20,7 @@ export function FormWithdrawalDeposit({
   // depositedAmount,
   onSuccess,
 }: Props) {
-  const chainId = useCurrentChain()
+  const { chainId } = useWeb3()
   const asset = getPoolAssetByAddress(depositedAddress, chainId)
 
   const { submit, isSubmitting } = useWithdrawalDepositSubmit({

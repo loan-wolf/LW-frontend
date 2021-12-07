@@ -2,7 +2,6 @@ import { match as Match } from 'react-router'
 import { useState } from 'react'
 import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useSWR } from 'modules/network/hooks/useSwr'
-import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
 
 import {
   SuccessData,
@@ -22,8 +21,7 @@ type Props = {
 }
 
 function RouteWithdrawalDepositRaw({ match }: Props) {
-  const chainId = useCurrentChain()
-  const { library } = useWeb3()
+  const { library, chainId } = useWeb3()
 
   const poolAddress = match.params.poolAddress
 

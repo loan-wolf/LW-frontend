@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useWalletConnect } from '../../hooks/useWalletConnect'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useWalletConnectors } from '../../hooks/useWalletConnectors'
 import { ConnectButton } from './ConnectButton'
 import { ConnectWalletButtonProps } from './types'
@@ -9,7 +9,7 @@ import { isClientSide } from 'shared/utils/isClientSide'
 
 export function ConnectMetamaskButton(props: ConnectWalletButtonProps) {
   const { onConnect, ...rest } = props
-  const connect = useWalletConnect()
+  const { activate } = useWeb3()
   const { metamask: connector } = useWalletConnectors()
 
   const openInWallet = useCallback(() => {
@@ -26,8 +26,8 @@ export function ConnectMetamaskButton(props: ConnectWalletButtonProps) {
     }
 
     onConnect?.()
-    await connect(connector)
-  }, [onConnect, connect, connector, openInWallet])
+    await activate(connector)
+  }, [onConnect, activate, connector, openInWallet])
 
   return (
     <ConnectButton

@@ -1,7 +1,7 @@
 import * as ethers from 'ethers'
 import type { BigNumberish } from '@ethersproject/bignumber'
 import { useCallback, useState } from 'react'
-import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useTransactionSender } from 'modules/blockChain/hooks/useTransactionSender'
 
 import {
@@ -17,7 +17,7 @@ type Args = {
 }
 
 export function useWithdrawalCollateral({ loanId, onSuccess }: Args) {
-  const { walletAddress } = useWalletInfo()
+  const { walletAddress } = useWeb3()
   const [isSubmitting, setSubmitting] = useState(false)
   const contractCollateralManager = ContractCollateralManager.useContractWeb3()
 

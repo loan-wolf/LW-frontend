@@ -1,8 +1,7 @@
 import * as ethers from 'ethers'
 
 import { useCallback, useState } from 'react'
-import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
-import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useTransactionSender } from 'modules/blockChain/hooks/useTransactionSender'
 import { useTxAssetAllowance } from 'modules/contracts/hooks/useTxAssetAllowance'
 
@@ -22,8 +21,7 @@ type Args = {
 }
 
 export function useDepositSubmit({ isLocked, setLocked, onSuccess }: Args) {
-  const chainId = useCurrentChain()
-  const { walletAddress } = useWalletInfo()
+  const { chainId, walletAddress } = useWeb3()
   const contractFarm = ContractLiquidityFarm.useContractWeb3()
   const [isSubmitting, setSubmitting] = useState(false)
   const { makeAllowanceIfNeeded, txAllowance } = useTxAssetAllowance()

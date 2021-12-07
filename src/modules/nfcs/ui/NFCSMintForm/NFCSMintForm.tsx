@@ -3,7 +3,7 @@ import { utils as ethersUtils } from 'ethers'
 
 import { useCallback, useMemo, useEffect } from 'react'
 import { useSimpleReducer } from 'shared/hooks/useSimpleReducer'
-import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 
 import { Text } from 'shared/ui/common/Text'
 import { TermsHint } from 'shared/ui/common/TermsHint'
@@ -23,7 +23,7 @@ type Props = {
 }
 
 export function NFCSMintForm({ onTxSubmit }: Props) {
-  const { walletAddress } = useWalletInfo()
+  const { walletAddress } = useWeb3()
   const contractRociCreditToken = ContractRociCreditToken.useContractWeb3()
   const [signs, setSigns] = useSimpleReducer<
     Record<string, string | undefined>

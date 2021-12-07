@@ -1,4 +1,4 @@
-import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useNFCSModal } from '../../../nfcs/ui/NFCSModal/useNFCSModal'
 
 import { Text } from 'shared/ui/common/Text'
@@ -16,7 +16,7 @@ import { useCallback } from 'react'
 type Props = ModalProps & {}
 
 export function ConnectWalletModal(props: Props) {
-  const { isWalletConnected } = useWalletInfo()
+  const { isWalletConnected } = useWeb3()
   const modalNFCS = useNFCSModal()
   const { onClose } = props
 

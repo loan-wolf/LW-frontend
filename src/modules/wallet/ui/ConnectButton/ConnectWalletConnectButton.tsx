@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useWalletConnect } from '../../hooks/useWalletConnect'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useWalletConnectors } from '../../hooks/useWalletConnectors'
 import { ConnectButton } from './ConnectButton'
 import { ConnectWalletButtonProps } from './types'
@@ -7,7 +7,7 @@ import { ReactComponent as WalletConnectSVG } from 'assets/walletconnect.svg'
 
 export function ConnectWalletConnectButton(props: ConnectWalletButtonProps) {
   const { onConnect, ...rest } = props
-  const connect = useWalletConnect()
+  const { activate } = useWeb3()
   const { walletconnect: connector } = useWalletConnectors()
 
   const handleConnect = useCallback(async () => {
@@ -16,8 +16,8 @@ export function ConnectWalletConnectButton(props: ConnectWalletButtonProps) {
     onConnect?.()
     connector.deactivate()
     await connector.close()
-    await connect(connector)
-  }, [connector, connect, onConnect])
+    await activate(connector)
+  }, [connector, activate, onConnect])
 
   return (
     <ConnectButton

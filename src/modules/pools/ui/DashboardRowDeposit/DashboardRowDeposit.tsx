@@ -1,5 +1,5 @@
 import * as ethers from 'ethers'
-import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 
 import { InfoFieldValue } from 'shared/ui/common/InfoFieldValue'
 import { DropdownDeposit } from '../DropdownDeposit'
@@ -25,7 +25,7 @@ export function DashboardRowDeposit({
   assetAddress,
   className,
 }: Props) {
-  const chainId = useCurrentChain()
+  const { chainId } = useWeb3()
   const {
     liquidity,
     reward,

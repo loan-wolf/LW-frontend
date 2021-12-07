@@ -1,5 +1,5 @@
 import * as ethers from 'ethers'
-import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useWithdrawalCollateral } from './useWithdrawalCollateral'
 
 import { FormWithdrawalAbstract } from '../FormWithdrawalAbstract'
@@ -23,7 +23,7 @@ export function FormWithdrawalCollateral({
   collateralAmount,
   onSuccess,
 }: Props) {
-  const chainId = useCurrentChain()
+  const { chainId } = useWeb3()
   const asset = getPoolAssetByAddress(collateralAddress, chainId)
 
   const { submit, isSubmitting } = useWithdrawalCollateral({

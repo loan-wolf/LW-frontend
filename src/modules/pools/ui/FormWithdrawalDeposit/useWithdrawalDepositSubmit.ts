@@ -1,6 +1,6 @@
 // import * as ethers from 'ethers'
 import { useCallback, useState } from 'react'
-import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useTransactionSender } from 'modules/blockChain/hooks/useTransactionSender'
 
 import { ContractLiquidityFarm } from 'modules/contracts/contracts'
@@ -13,7 +13,7 @@ type Args = {
 }
 
 export function useWithdrawalDepositSubmit({ poolAddress, onSuccess }: Args) {
-  const { walletAddress } = useWalletInfo()
+  const { walletAddress } = useWeb3()
   const [isSubmitting, setSubmitting] = useState(false)
   const contractLiquidityFarm = ContractLiquidityFarm.useContractWeb3()
 

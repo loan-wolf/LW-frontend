@@ -1,6 +1,5 @@
 import { useSWR } from 'modules/network/hooks/useSwr'
-import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
-import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 
 import { PageLoader } from 'shared/ui/layout/PageLoader'
 import { DashboardRowDeposit } from 'modules/pools/ui/DashboardRowDeposit'
@@ -15,8 +14,7 @@ import { withWalletConnectCheck } from 'modules/wallet/hocs/withWalletConnectChe
 // import * as links from 'modules/router/links'
 
 function RouteDashboardDepositsRaw() {
-  const chainId = useCurrentChain()
-  const { walletAddress } = useWalletInfo()
+  const { chainId, walletAddress } = useWeb3()
 
   const contractLiquidityFarm = ContractLiquidityFarm.useContractWeb3()
   const contractILiquidityPool = ContractILiquidityPool.useContractWeb3()

@@ -1,6 +1,6 @@
 import * as ethers from 'ethers'
 import { useMemo } from 'react'
-import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 
 import { Text } from 'shared/ui/common/Text'
 import { Tooltip } from 'shared/ui/common/Tooltip'
@@ -40,7 +40,7 @@ export function DashboardRowLoan({
   investorAddress,
   className,
 }: Props) {
-  const chainId = useCurrentChain()
+  const { chainId } = useWeb3()
   const {
     ERC20Address,
     principal: principalRaw,

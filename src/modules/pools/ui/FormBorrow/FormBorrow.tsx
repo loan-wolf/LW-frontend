@@ -1,7 +1,7 @@
 import * as ethers from 'ethers'
 import { useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useBorrowSubmit } from './useBorrowSubmit'
 
 import { InputControl } from 'shared/ui/controls/Input'
@@ -63,7 +63,7 @@ type Props = {
 }
 
 export function FormBorrow({ onSuccess }: Props) {
-  const chainId = useCurrentChain()
+  const { chainId } = useWeb3()
   const [isLocked, setLocked] = useState(false)
   const handleUnlock = useCallback(() => setLocked(false), [])
 
