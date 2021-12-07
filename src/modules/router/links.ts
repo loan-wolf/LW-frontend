@@ -10,5 +10,7 @@ export const dashboardOldDeposits = '/app/dashboard/old-deposits'
 export const dashboardOldLoans = '/app/dashboard/old-loans'
 export const analytics = '/app/analytics'
 export const repayment = (loanId: string) => `/app/repayment/${loanId}`
-export const withdrawal = '/app/withdrawal'
+export const withdrawalCollateral = (loanId: string) =>
+  `/app/withdrawal/collateral/${loanId}`
+export const withdrawalDeposit = `/app/withdrawal/deposit`
 export const transactions = '/app/transactions'

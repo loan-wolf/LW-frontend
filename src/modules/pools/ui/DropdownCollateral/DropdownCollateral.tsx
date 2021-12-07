@@ -1,16 +1,17 @@
 import { DropdownBurger, DropdownItem } from 'modules/dropdown'
+import * as links from 'modules/router/links'
 
 type Props = {
-  className?: string
+  loanId: string
   onBorrow: () => void
   onDeposit: () => void
-  onWithdraw: () => void
+  className?: string
 }
 
 export function DropdownCollateral({
+  loanId,
   onBorrow,
   onDeposit,
-  onWithdraw,
   className,
 }: Props) {
   return (
@@ -21,7 +22,7 @@ export function DropdownCollateral({
       <DropdownItem onClick={onDeposit} isUppercased>
         Deposit collateral
       </DropdownItem>
-      <DropdownItem onClick={onWithdraw} isUppercased>
+      <DropdownItem link={links.withdrawalCollateral(loanId)} isUppercased>
         Withdrawal collateral
       </DropdownItem>
     </DropdownBurger>

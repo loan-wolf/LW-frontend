@@ -11,3 +11,15 @@
     width: 20%;
   }
 }
+
+.collateralAmount {
+  display: inline-block;
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.collateralWrap {
+  display: flex;
+  align-items: center;
+}

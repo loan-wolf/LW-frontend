@@ -1,11 +1,13 @@
-import { match as Match } from 'react-router'
 import { useState } from 'react'
+import { match as Match } from 'react-router'
 
 import { FormRepayment, SuccessData } from 'modules/pools/ui/FormRepayment'
 import { SendedTransaction } from 'modules/pools/ui/SendedTransaction'
 import { ContractSuccessTitle } from 'shared/ui/common/ContractSuccessTitle'
 import { NarrowWrapper } from 'shared/ui/layout/NarrowWrapper'
+import { PageLoader } from 'shared/ui/layout/PageLoader'
 
+import { ContractInvestor } from 'modules/contracts/contracts'
 import { withWalletConnectCheck } from 'modules/wallet/hocs/withWalletConnectCheck'
 import { createRoute } from 'modules/router/utils/createRoute'
 
@@ -15,7 +17,14 @@ type Props = {
 
 function RouteRepaymentRaw({ match }: Props) {
   const loanId = match.params.loanId
+  const loanReq = ContractInvestor.useSwrWeb3('loanLookup', loanId)
   const [successData, setSuccessData] = useState<SuccessData | null>(null)
+
+  const { data: loan } = loanReq
+
+  if (loanReq.isLoading || !loan) {
+    return <PageLoader />
+  }
 
   if (successData) {
     return (
@@ -28,7 +37,7 @@ function RouteRepaymentRaw({ match }: Props) {
 
   return (
     <NarrowWrapper>
-      <FormRepayment loanId={loanId} onSuccess={setSuccessData} />
+      <FormRepayment loan={loan} loanId={loanId} onSuccess={setSuccessData} />
     </NarrowWrapper>
   )
 }

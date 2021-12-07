@@ -20,9 +20,8 @@ import {
   FormLockedValue,
   FormLockedValuesList,
 } from 'shared/ui/common/FormLockedValue'
-import { PageLoader } from 'shared/ui/layout/PageLoader'
 
-import { ContractInvestor } from 'modules/contracts/contracts'
+import type { Loan } from 'modules/pools/types/Loan'
 import type { FormValues, SuccessData } from './types'
 import * as formErrors from 'shared/constants/formErrors'
 import {
@@ -41,11 +40,12 @@ const depositOptions = [
 const TOTAL_COLLATERAL_AMOUNT = 4444
 
 type Props = {
+  loan: Loan
   loanId: string
   onSuccess: (successData: SuccessData) => void
 }
 
-export function FormRepayment({ loanId, onSuccess }: Props) {
+export function FormRepayment({ loan, loanId, onSuccess }: Props) {
   const chainId = useCurrentChain()
   const getAssetContract = useAssetContractGetter()
   const { walletAddress } = useWalletInfo()
@@ -63,14 +63,12 @@ export function FormRepayment({ loanId, onSuccess }: Props) {
   })
 
   const { setValue } = formMethods
+  const { ERC20Address } = loan
 
-  const loanReq = ContractInvestor.useSwrWeb3('loanLookup', loanId)
-  const { data: loan } = loanReq
-
-  const depositedAsset = useMemo(() => {
-    if (!loan) return null
-    return getPoolAssetByAddress(loan.ERC20Address, chainId)
-  }, [loan, chainId])
+  const depositedAsset = useMemo(
+    () => getPoolAssetByAddress(ERC20Address, chainId),
+    [ERC20Address, chainId],
+  )
 
   useEffect(() => {
     setValue('depositedAsset', depositedAsset || '')
@@ -105,10 +103,6 @@ export function FormRepayment({ loanId, onSuccess }: Props) {
   }, [setValue])
 
   const returnCollateral = formMethods.watch('returnCollateral')
-
-  if (loanReq.isLoading) {
-    return <PageLoader />
-  }
 
   return (
     <Form formMethods={formMethods} onSubmit={submit}>
