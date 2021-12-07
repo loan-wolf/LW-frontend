@@ -1,39 +1,48 @@
-import {
-  DashboardRowCollateral,
-  CollateralDataMock,
-} from 'modules/pools/ui/DashboardRowCollateral'
-import { createRoute } from 'modules/router/utils/createRoute'
+import { useMemo } from 'react'
+import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
+import { useCollateralList } from 'modules/pools/hooks/useCollateralList'
 
-const COLLATERALS_MOCK: CollateralDataMock[] = [
-  {
-    collateralAsset: 'ETH',
-    amount: 123,
-    unlockDate: '2021-10-10 19:59:59',
-  },
-  {
-    collateralAsset: 'USDC',
-    amount: 32,
-    unlockDate: '2021-10-10 19:59:59',
-  },
-  {
-    collateralAsset: 'DAI',
-    amount: 42323,
-    unlockDate: '2021-10-10 19:59:59',
-  },
-]
+import { PageLoader } from 'shared/ui/layout/PageLoader'
+import { DashboardRowCollateral } from 'modules/pools/ui/DashboardRowCollateral'
+import { DashboardEmptyCTA } from 'modules/pools/ui/DashboardEmptyCTA'
+
+import { getPoolAssetByAddress } from 'modules/pools/constants/poolAssets'
+import { createRoute } from 'modules/router/utils/createRoute'
+import * as links from 'modules/router/links'
 
 function RouteDashboardCollateral() {
+  const chainId = useCurrentChain()
+  const collaterals = useCollateralList()
+
+  const displayCollaterals = useMemo(() => {
+    return collaterals.data?.map(item => ({
+      loanId: item.loanId,
+      asset: getPoolAssetByAddress(item.collateral[0], chainId),
+      amount: item.collateral[1],
+    }))
+  }, [collaterals.data, chainId])
+
+  if (collaterals.isLoading) {
+    return <PageLoader />
+  }
+
+  if (!displayCollaterals || displayCollaterals.length === 0) {
+    return (
+      <DashboardEmptyCTA
+        link={links.borrow}
+        fashion="purple"
+        timeText="old"
+        entityName="loans"
+        actionText="Borrow"
+      />
+    )
+  }
+
   return (
     <>
-      {COLLATERALS_MOCK.map((collateral, i) => (
+      {displayCollaterals.map((collateral, i) => (
         <DashboardRowCollateral key={i} collateral={collateral} />
       ))}
-      {/* <DashboardEmptyCTA
-          link={links.deposit}
-          fashion="green"
-          entityName="stakes"
-          actionText="Stake"
-        /> */}
     </>
   )
 }

@@ -15,47 +15,41 @@ import * as formErrors from 'shared/constants/formErrors'
 import {
   poolAssetOptions,
   getPoolAssetIcon,
+  PoolAsset,
 } from 'modules/pools/constants/poolAssets'
 import {
   targetRiskOptions,
   getTargetRiskLabel,
 } from 'modules/pools/constants/riskOptions'
+import type { FormValues } from './types'
 
-const depositOptions = [
+const assetOptions = [
+  poolAssetOptions.ETH,
   poolAssetOptions.USDC,
   poolAssetOptions.USDT,
   poolAssetOptions.DAI,
 ]
 
-const MAX_AMOUNT = 3333
-
-const rulesAmount = {
-  required: formErrors.required,
-  validate: (val: string) =>
-    formErrors.notLess(val, 1) || formErrors.notMore(val, MAX_AMOUNT) || true,
-}
-
-type FormValues = {
-  asset: string
-  amount: string
-  risk: string
-}
-
-// TODO: Update with actual response type after contract integration
-export type SuccessData = FormValues
-
 type Props = {
-  onSuccess: (successData: SuccessData) => void
+  defaultAsset: PoolAsset
+  maxAmount: string
+  isSubmitting: boolean
+  onSubmit: (formValues: FormValues) => void
 }
 
-export function FormWithdrawal({ onSuccess }: Props) {
+export function FormWithdrawalAbstract({
+  defaultAsset,
+  maxAmount,
+  isSubmitting,
+  onSubmit,
+}: Props) {
   const [isLocked, setLocked] = useState(false)
   const handleUnlock = useCallback(() => setLocked(false), [])
 
   const formMethods = useForm<FormValues>({
     shouldUnregister: false,
     defaultValues: {
-      asset: '',
+      asset: defaultAsset,
       amount: '',
       risk: '',
     },
@@ -66,25 +60,25 @@ export function FormWithdrawal({ onSuccess }: Props) {
       if (!isLocked) {
         setLocked(true)
       } else {
-        console.log(formData)
-        onSuccess(formData)
+        onSubmit(formData)
       }
     },
-    [isLocked, onSuccess],
+    [isLocked, onSubmit],
   )
 
   const handleClickMaxAmount = useCallback(() => {
-    formMethods.setValue('amount', String(MAX_AMOUNT))
-  }, [formMethods])
+    formMethods.setValue('amount', maxAmount)
+  }, [maxAmount, formMethods])
 
   return (
     <Form formMethods={formMethods} onSubmit={submit}>
       {!isLocked && (
         <>
           <SelectControl
+            readonly
             name="asset"
             placeholder="Asset"
-            options={depositOptions}
+            options={assetOptions}
             rules={{ required: formErrors.required }}
           />
 
@@ -93,7 +87,12 @@ export function FormWithdrawal({ onSuccess }: Props) {
             concat="bottom"
             placeholder="Amount"
             onlyNumber
-            rules={rulesAmount}
+            rules={{
+              required: formErrors.required,
+              validate: (val: string) =>
+                // formErrors.notLess(val, 1) ||
+                formErrors.notMore(val, Number(maxAmount)) || true,
+            }}
             action={<InputMaxAction onClick={handleClickMaxAmount} />}
           />
 
@@ -102,7 +101,7 @@ export function FormWithdrawal({ onSuccess }: Props) {
             concat="top"
             placeholder="Risk Pool / APY"
             options={targetRiskOptions}
-            rules={{ required: formErrors.required }}
+            // rules={{ required: formErrors.required }}
           />
         </>
       )}
@@ -110,7 +109,7 @@ export function FormWithdrawal({ onSuccess }: Props) {
       {isLocked && (
         <FormLockedValuesList>
           <FormLockedValue
-            label="Deposited asset"
+            label="Asset"
             name="asset"
             getIcon={getPoolAssetIcon}
           />
@@ -126,6 +125,7 @@ export function FormWithdrawal({ onSuccess }: Props) {
 
       <FormSubmitter
         isLocked={isLocked}
+        isSubmitting={isSubmitting}
         firstStepText="Withdrawal"
         onClickUnlock={handleUnlock}
       />
