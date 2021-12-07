@@ -1,6 +1,6 @@
 import * as ethers from 'ethers'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSWR } from 'modules/network/hooks/useSwr'
 import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
@@ -65,10 +65,7 @@ export function FormRepayment({ loan, loanId, onSuccess }: Props) {
   const { setValue } = formMethods
   const { ERC20Address } = loan
 
-  const depositedAsset = useMemo(
-    () => getPoolAssetByAddress(ERC20Address, chainId),
-    [ERC20Address, chainId],
-  )
+  const depositedAsset = getPoolAssetByAddress(ERC20Address, chainId)
 
   useEffect(() => {
     setValue('depositedAsset', depositedAsset || '')

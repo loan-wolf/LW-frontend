@@ -1,3 +1,5 @@
+import { memoize } from 'lodash'
+
 export const Chains = {
   Mainnet: 1,
   Ropsten: 3,
@@ -17,13 +19,13 @@ export const ChainNames = {
   [Chains.Kovan]: 'Kovan',
 } as const
 
-export const parseChainId = (chainId: number | string) => {
+export const parseChainId = memoize((chainId: number | string) => {
   const parsed = Number(chainId)
   if (!ChainNames.hasOwnProperty(chainId)) {
     throw new Error(`Chain ${chainId} is not supported`)
   }
   return parsed as Chains
-}
+})
 
 export const getChainName = (chainId: number) =>
   ChainNames[parseChainId(chainId)]

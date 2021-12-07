@@ -1,46 +1,34 @@
-import * as ethers from 'ethers'
-import type { BigNumberish } from '@ethersproject/bignumber'
+// import * as ethers from 'ethers'
 import { useCallback, useState } from 'react'
 import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
 import { useTransactionSender } from 'modules/blockChain/hooks/useTransactionSender'
 
-import {
-  // ContractInvestor,
-  ContractCollateralManager,
-} from 'modules/contracts/contracts'
+import { ContractLiquidityFarm } from 'modules/contracts/contracts'
 import type { FormValues, SuccessData } from './types'
 import * as errors from 'shared/constants/errors'
 
 type Args = {
-  loanId: string
+  poolAddress: string
   onSuccess: (res: SuccessData) => void
 }
 
-export function useWithdrawalCollateral({ loanId, onSuccess }: Args) {
+export function useWithdrawalDepositSubmit({ poolAddress, onSuccess }: Args) {
   const { walletAddress } = useWalletInfo()
   const [isSubmitting, setSubmitting] = useState(false)
-  const contractCollateralManager = ContractCollateralManager.useContractWeb3()
+  const contractLiquidityFarm = ContractLiquidityFarm.useContractWeb3()
 
   const populateWithdrawal = useCallback(
-    async ({
-      amountWei,
-      address,
-    }: {
-      amountWei: BigNumberish
-      address: string
-    }) => {
+    async (args: { poolAddress: string }) => {
       const populated =
-        await contractCollateralManager.populateTransaction.withdrawal(
-          loanId,
-          amountWei,
-          address,
+        await contractLiquidityFarm.populateTransaction.withdrawZapAndUnstake(
+          args.poolAddress,
           {
             gasLimit: 500000,
           },
         )
       return populated
     },
-    [contractCollateralManager, loanId],
+    [contractLiquidityFarm],
   )
   const txWithdrawal = useTransactionSender(populateWithdrawal)
 
@@ -52,11 +40,10 @@ export function useWithdrawalCollateral({ loanId, onSuccess }: Args) {
         setSubmitting(true)
         if (!walletAddress) throw new Error(errors.connectWallet)
 
-        const amountWei = ethers.utils.parseEther(formValues.amount)
+        // const amountWei = ethers.utils.parseEther(formValues.amount)
 
         const txWithdrawalRes = await sendWithdrawal({
-          amountWei,
-          address: walletAddress,
+          poolAddress,
         })
 
         setSubmitting(false)
@@ -66,7 +53,7 @@ export function useWithdrawalCollateral({ loanId, onSuccess }: Args) {
         throw err
       }
     },
-    [walletAddress, sendWithdrawal, onSuccess],
+    [walletAddress, sendWithdrawal, poolAddress, onSuccess],
   )
 
   return {

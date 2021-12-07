@@ -18,8 +18,9 @@ function RouteDashboardDepositsRaw() {
   const chainId = useCurrentChain()
   const { walletAddress } = useWalletInfo()
 
-  const contractILiquidityPool = ContractILiquidityPool.useContractWeb3()
   const contractLiquidityFarm = ContractLiquidityFarm.useContractWeb3()
+  const contractILiquidityPool = ContractILiquidityPool.useContractWeb3()
+  const poolAddress = ContractILiquidityPool.chainAddress.get(chainId)
 
   const deposits = useSWR(`deposits-${chainId}-${walletAddress}`, async () => {
     const [assetAddress, deposit] = await Promise.all([
@@ -30,12 +31,10 @@ function RouteDashboardDepositsRaw() {
       ),
     ])
 
-    console.log(assetAddress)
-
     return [
       {
-        assetAddress,
         deposit,
+        assetAddress,
       },
     ]
   })
@@ -62,6 +61,7 @@ function RouteDashboardDepositsRaw() {
         <DashboardRowDeposit
           key={i}
           deposit={item.deposit}
+          poolAddress={poolAddress}
           assetAddress={item.assetAddress}
         />
       ))}

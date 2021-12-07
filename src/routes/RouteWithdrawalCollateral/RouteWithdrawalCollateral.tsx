@@ -70,7 +70,7 @@ const RouteWithdrawalCollateral = withWalletConnectCheck(
   RouteWithdrawalCollateralRaw,
 )
 
-export const routeWithdrawal = createRoute({
+export const routeWithdrawalCollateral = createRoute({
   headerTitle: 'Withdrawal',
   layoutType: 'narrow-extended',
   component: RouteWithdrawalCollateral,

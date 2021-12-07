@@ -28,11 +28,12 @@ const assetOptions = [
   poolAssetOptions.USDC,
   poolAssetOptions.USDT,
   poolAssetOptions.DAI,
+  poolAssetOptions.DAI2,
 ]
 
 type Props = {
   defaultAsset: PoolAsset
-  maxAmount: string
+  maxAmount?: string
   isSubmitting: boolean
   onSubmit: (formValues: FormValues) => void
 }
@@ -67,6 +68,7 @@ export function FormWithdrawalAbstract({
   )
 
   const handleClickMaxAmount = useCallback(() => {
+    if (!maxAmount) return
     formMethods.setValue('amount', maxAmount)
   }, [maxAmount, formMethods])
 
@@ -93,7 +95,9 @@ export function FormWithdrawalAbstract({
                 // formErrors.notLess(val, 1) ||
                 formErrors.notMore(val, Number(maxAmount)) || true,
             }}
-            action={<InputMaxAction onClick={handleClickMaxAmount} />}
+            action={
+              maxAmount && <InputMaxAction onClick={handleClickMaxAmount} />
+            }
           />
 
           <SelectControl

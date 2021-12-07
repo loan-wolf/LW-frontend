@@ -1,5 +1,4 @@
 import * as ethers from 'ethers'
-import { useMemo } from 'react'
 import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
 import { useWithdrawalCollateral } from './useWithdrawalCollateral'
 
@@ -25,10 +24,7 @@ export function FormWithdrawalCollateral({
   onSuccess,
 }: Props) {
   const chainId = useCurrentChain()
-  const asset = useMemo(
-    () => getPoolAssetByAddress(collateralAddress, chainId),
-    [collateralAddress, chainId],
-  )
+  const asset = getPoolAssetByAddress(collateralAddress, chainId)
 
   const { submit, isSubmitting } = useWithdrawalCollateral({
     loanId,

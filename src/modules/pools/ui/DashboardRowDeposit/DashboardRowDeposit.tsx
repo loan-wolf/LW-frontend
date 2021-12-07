@@ -14,12 +14,14 @@ import s from './DashboardRowDeposit.module.scss'
 
 type Props = {
   deposit: Deposit
+  poolAddress: string
   assetAddress: string
   className?: string
 }
 
 export function DashboardRowDeposit({
   deposit,
+  poolAddress,
   assetAddress,
   className,
 }: Props) {
@@ -69,7 +71,10 @@ export function DashboardRowDeposit({
         className={s.column}
       />
       <div className={s.column}>
-        <DropdownDeposit onAddMore={() => console.log('onAddMore')} />
+        <DropdownDeposit
+          poolAddress={poolAddress}
+          onAddMore={() => console.log('onAddMore')}
+        />
       </div>
     </DashboardRow>
   )

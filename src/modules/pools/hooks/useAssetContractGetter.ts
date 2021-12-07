@@ -4,7 +4,7 @@ import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
 
 import {
   PoolAsset,
-  getPoolAssetContract,
+  getERCContractByAsset,
 } from 'modules/pools/constants/poolAssets'
 
 export function useAssetContractGetter() {
@@ -14,7 +14,7 @@ export function useAssetContractGetter() {
   const getAssetContract = useCallback(
     (asset: PoolAsset) => {
       if (!library) throw new Error('Library not defined')
-      const CollateralAssetContract = getPoolAssetContract(asset)
+      const CollateralAssetContract = getERCContractByAsset(asset)
       const collateralAssetContract = CollateralAssetContract.connectWeb3({
         chainId,
         library: library.getSigner(),

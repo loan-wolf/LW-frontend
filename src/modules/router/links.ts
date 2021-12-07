@@ -12,5 +12,6 @@ export const analytics = '/app/analytics'
 export const repayment = (loanId: string) => `/app/repayment/${loanId}`
 export const withdrawalCollateral = (loanId: string) =>
   `/app/withdrawal/collateral/${loanId}`
-export const withdrawalDeposit = `/app/withdrawal/deposit`
+export const withdrawalDeposit = (poolAddress: string) =>
+  `/app/withdrawal/deposit/${poolAddress}`
 export const transactions = '/app/transactions'

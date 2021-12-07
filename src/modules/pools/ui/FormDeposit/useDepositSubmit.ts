@@ -72,8 +72,6 @@ export function useDepositSubmit({ isLocked, setLocked, onSuccess }: Args) {
             asset: depositedAsset,
           })
 
-          console.log(amountWei)
-
           const txDepositRes = await sendDeposit({
             amountWei,
           })
