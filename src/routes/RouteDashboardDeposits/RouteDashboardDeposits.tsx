@@ -1,39 +1,75 @@
+import { useSWR } from 'modules/network/hooks/useSwr'
+import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
+import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
+
+import { PageLoader } from 'shared/ui/layout/PageLoader'
+import { DashboardRowDeposit } from 'modules/pools/ui/DashboardRowDeposit'
+// import { DashboardEmptyCTA } from 'modules/pools/ui/DashboardEmptyCTA'
+
 import {
-  DashboardRowDeposit,
-  DepositDataMock,
-} from 'modules/pools/ui/DashboardRowDeposit'
+  ContractLiquidityFarm,
+  ContractILiquidityPool,
+} from 'modules/contracts/contracts'
 import { createRoute } from 'modules/router/utils/createRoute'
+import { withWalletConnectCheck } from 'modules/wallet/hocs/withWalletConnectCheck'
+// import * as links from 'modules/router/links'
 
-const DEPOSITS_MOCK: DepositDataMock[] = [
-  {
-    depositedAsset: 'DAI',
-    amount: 121312,
-    apy: 12,
-    interest: 32,
-  },
-  {
-    depositedAsset: 'DAI',
-    amount: 121,
-    apy: 12,
-    interest: 32,
-  },
-  {
-    depositedAsset: 'ETH',
-    amount: 23,
-    apy: 32,
-    interest: 12,
-  },
-]
+function RouteDashboardDepositsRaw() {
+  const chainId = useCurrentChain()
+  const { walletAddress } = useWalletInfo()
 
-function RouteDashboardDeposits() {
+  const contractILiquidityPool = ContractILiquidityPool.useContractWeb3()
+  const contractLiquidityFarm = ContractLiquidityFarm.useContractWeb3()
+
+  const deposits = useSWR(`deposits-${chainId}-${walletAddress}`, async () => {
+    const [assetAddress, deposit] = await Promise.all([
+      contractILiquidityPool.token1(),
+      contractLiquidityFarm.getStakeInfo(
+        ContractILiquidityPool.chainAddress.get(chainId),
+        walletAddress!,
+      ),
+    ])
+
+    console.log(assetAddress)
+
+    return [
+      {
+        assetAddress,
+        deposit,
+      },
+    ]
+  })
+
+  if (deposits.isLoading || !deposits.data) {
+    return <PageLoader />
+  }
+
+  // if (!) {
+  //   return (
+  //     <DashboardEmptyCTA
+  //       link={links.borrow}
+  //       fashion="purple"
+  //       timeText="old"
+  //       entityName="loans"
+  //       actionText="Borrow"
+  //     />
+  //   )
+  // }
+
   return (
     <>
-      {DEPOSITS_MOCK.map((deposit, i) => (
-        <DashboardRowDeposit key={i} deposit={deposit} />
+      {deposits.data.map((item, i) => (
+        <DashboardRowDeposit
+          key={i}
+          deposit={item.deposit}
+          assetAddress={item.assetAddress}
+        />
       ))}
     </>
   )
 }
+
+const RouteDashboardDeposits = withWalletConnectCheck(RouteDashboardDepositsRaw)
 
 export const routeDashboardDeposits = createRoute({
   component: RouteDashboardDeposits,
