@@ -2,7 +2,7 @@ import { Chains } from 'modules/blockChain/chains'
 import { ChainAddress } from './utils/ChainAddress'
 
 export const addressTestDAI = new ChainAddress('TestDAI', {
-  [Chains.Kovan]: '0x6b198422c97a805701a1cB53fee51F864f825dDA',
+  [Chains.Kovan]: '0xd2B5784b7F0Ff40c010638177744588d33A1F929',
 })
 
 export const addressTestDAI2 = new ChainAddress('TestDAI2', {
@@ -18,7 +18,7 @@ export const addressRociCreditToken = new ChainAddress('RociCreditToken', {
 })
 
 export const addressCollateralManager = new ChainAddress('CollateralManager', {
-  [Chains.Kovan]: '0xACC042d62E869d69eEa6FBC8C5613414421E6d21',
+  [Chains.Kovan]: '0x72357B381f5258081f473f0B1a5f5cAF135685be',
 })
 
 export const addressScoreDB = new ChainAddress('ScoreDB', {
@@ -26,19 +26,19 @@ export const addressScoreDB = new ChainAddress('ScoreDB', {
 })
 
 export const addressInvestor = new ChainAddress('Investor', {
-  [Chains.Kovan]: '0x4D1E6ffe0897B1d92cce3fEE6ab423B4193fB98e',
+  [Chains.Kovan]: '0x948d2361F651E3554A62e9D334d3a95482d54D0B',
 })
 
 export const addressPriceFeed = new ChainAddress('PriceFeed', {
-  [Chains.Kovan]: '0xeB02DcA23dC6E9E691D61286eF791422ca08a90B',
+  [Chains.Kovan]: '0x4c8C54c081645Cd2453Ec4880FE1916F73A13a50',
 })
 
 export const addressBonds = new ChainAddress('Bonds', {
-  [Chains.Kovan]: '0x54935e2E07f61DbF0F95512a5f3f31a205E3A24D',
+  [Chains.Kovan]: '0x2CD6F0804aE7F6B188E076DcE5064A0CBFAe5de8',
 })
 
 export const addressLiquidityFarm = new ChainAddress('LiquidityFarm', {
-  [Chains.Kovan]: '0x2A7Fa210e2254e2a0b3732171e97686Ee2f3D8Df',
+  [Chains.Kovan]: '0xE1ede12970DBE213D6eE50c6d41DE13f761ACCbb',
 })
 
 export const addressILiquidityPool = new ChainAddress('ILiquidityPool', {
@@ -46,5 +46,5 @@ export const addressILiquidityPool = new ChainAddress('ILiquidityPool', {
 })
 
 export const addressTrader = new ChainAddress('Trader', {
-  [Chains.Kovan]: '0xED96578D8AbefDfeBEBcF03D7F1c15Dd5b3A240c',
+  [Chains.Kovan]: '0x663145B52B2fEe131bCD612a54781D12336C3863',
 })
