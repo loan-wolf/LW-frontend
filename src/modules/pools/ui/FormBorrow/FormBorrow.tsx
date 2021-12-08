@@ -32,14 +32,14 @@ import {
 import { formatNumber } from 'shared/utils/formatNumber'
 import type { FormValues, SuccessData } from './types'
 
-const LTV = 12
-const LIQ_THRESHOLD = '—'
-const LIQ_PRICE = '—'
+const LTV = 75
+const LIQ_THRESHOLD = 80
+
 const COLLATERAL_PRICE = {
   [poolAssets.DAI]: 1,
   [poolAssets.USDC]: 1,
   [poolAssets.USDT]: 1,
-  [poolAssets.ETH]: 4765,
+  [poolAssets.ETH]: 4000,
   [poolAssets.WBTC]: 1,
 }
 
@@ -83,12 +83,22 @@ export function FormBorrow({ onSuccess }: Props) {
   const collateralAsset = watch('collateralAsset')
   const term = Number(watch('term'))
 
-  const collateralAmount =
+  const collateralAmountNum =
     collateralAsset && amount
+      ? amount / COLLATERAL_PRICE[collateralAsset] / (LTV / 100)
+      : undefined
+
+  const collateralAmount = collateralAmountNum
+    ? collateralAmountNum.toFixed(4)
+    : ''
+
+  const liquidationPrice =
+    borrowedAsset && collateralAmountNum && collateralAsset
       ? (
-          (amount / COLLATERAL_PRICE[collateralAsset]) *
-          ((100 - LTV) / 100)
-        ).toFixed(18)
+          (LIQ_THRESHOLD / 100) *
+          collateralAmountNum *
+          COLLATERAL_PRICE[collateralAsset]
+        ).toFixed(4)
       : ''
 
   // TODO: Must depends on `borrowedAsset`
@@ -213,8 +223,11 @@ export function FormBorrow({ onSuccess }: Props) {
         />
         <FormInfoFrame
           info={[
-            { label: 'Liquidation Threshold', value: LIQ_THRESHOLD },
-            { label: 'Liquidation Price', value: LIQ_PRICE },
+            { label: 'Liquidation Threshold', value: `${LIQ_THRESHOLD}%` },
+            {
+              label: 'Liquidation Price',
+              value: liquidationPrice && `${liquidationPrice} ${borrowedAsset}`,
+            },
           ]}
         />
       </FormInfoFramesList>
