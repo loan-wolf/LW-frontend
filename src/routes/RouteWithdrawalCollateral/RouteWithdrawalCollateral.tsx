@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { match as Match } from 'react-router'
-import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 
 import {
   SuccessData,
@@ -23,7 +23,7 @@ type Props = {
 }
 
 function RouteWithdrawalCollateralRaw({ match }: Props) {
-  const chainId = useCurrentChain()
+  const { chainId } = useWeb3()
 
   const loanId = match.params.loanId
   const loanReq = ContractInvestor.useSwrWeb3('loanLookup', loanId)
@@ -70,7 +70,7 @@ const RouteWithdrawalCollateral = withWalletConnectCheck(
   RouteWithdrawalCollateralRaw,
 )
 
-export const routeWithdrawal = createRoute({
+export const routeWithdrawalCollateral = createRoute({
   headerTitle: 'Withdrawal',
   layoutType: 'narrow-extended',
   component: RouteWithdrawalCollateral,

@@ -1,14 +1,10 @@
 import { useEffect, useRef } from 'react'
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useWalletConnectorStorage } from './useWalletConnectorStorage'
 import { useWalletConnectors } from './useWalletConnectors'
 
 export function useWalletAutoConnect() {
-  const {
-    active,
-    connector: currentConnector,
-    activate: connect,
-  } = useWeb3React()
+  const { active, connector: currentConnector, activate: connect } = useWeb3()
   const connectors = useWalletConnectors()
   const [connectorName, setConnector] = useWalletConnectorStorage()
 

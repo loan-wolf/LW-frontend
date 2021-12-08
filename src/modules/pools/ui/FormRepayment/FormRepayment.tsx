@@ -1,11 +1,10 @@
 import * as ethers from 'ethers'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSWR } from 'modules/network/hooks/useSwr'
-import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
 import { useRepaymentSubmit } from './useRepaymentSubmit'
-import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useAssetContractGetter } from 'modules/pools/hooks/useAssetContractGetter'
 
 import { Text } from 'shared/ui/common/Text'
@@ -46,9 +45,8 @@ type Props = {
 }
 
 export function FormRepayment({ loan, loanId, onSuccess }: Props) {
-  const chainId = useCurrentChain()
+  const { chainId, walletAddress } = useWeb3()
   const getAssetContract = useAssetContractGetter()
-  const { walletAddress } = useWalletInfo()
   const [isLocked, setLocked] = useState(false)
   const handleUnlock = useCallback(() => setLocked(false), [])
 
@@ -65,10 +63,7 @@ export function FormRepayment({ loan, loanId, onSuccess }: Props) {
   const { setValue } = formMethods
   const { ERC20Address } = loan
 
-  const depositedAsset = useMemo(
-    () => getPoolAssetByAddress(ERC20Address, chainId),
-    [ERC20Address, chainId],
-  )
+  const depositedAsset = getPoolAssetByAddress(ERC20Address, chainId)
 
   useEffect(() => {
     setValue('depositedAsset', depositedAsset || '')

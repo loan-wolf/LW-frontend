@@ -1,3 +1,4 @@
+import { memoize } from 'lodash'
 import { get, getOr, toPairs, find, flow } from 'lodash/fp'
 import { Chains } from 'modules/blockChain/chains'
 import { ReactComponent as TokenDAI } from 'assets/token-dai.svg'
@@ -44,13 +45,15 @@ export function getPoolAssetAddress(asset: PoolAsset, chain: Chains) {
   return addr?.get(chain)
 }
 
-export function getPoolAssetByAddress(address: string, chain: Chains) {
-  return flow(
-    toPairs,
-    find(([asset, poolAddress]) => address === poolAddress?.get(chain)),
-    get(0),
-  )(poolAssetAddresses) as PoolAsset | undefined
-}
+export const getPoolAssetByAddress = memoize(
+  (address: string, chain: Chains) => {
+    return flow(
+      toPairs,
+      find(([asset, poolAddress]) => address === poolAddress?.get(chain)),
+      get(0),
+    )(poolAssetAddresses) as PoolAsset | undefined
+  },
+)
 
 export const poolAssetOptions = {
   [poolAssets.DAI]: {
@@ -85,7 +88,7 @@ export const poolAssetOptions = {
   },
 } as const
 
-export const poolAssetContracts = {
+export const assetERCContracts = {
   [poolAssets.DAI]: contracts.ContractTestDAI,
   [poolAssets.DAI2]: contracts.ContractTestDAI2,
   [poolAssets.USDC]: null,
@@ -94,8 +97,8 @@ export const poolAssetContracts = {
   [poolAssets.WBTC]: null,
 } as const
 
-export function getPoolAssetContract(asset: PoolAsset) {
-  const contract = poolAssetContracts[asset]
+export function getERCContractByAsset(asset: PoolAsset) {
+  const contract = assetERCContracts[asset]
   if (!contract) throw new Error(`Contract for asset ${asset} not defined`)
   return contract
 }

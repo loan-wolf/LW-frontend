@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useCollateralList } from 'modules/pools/hooks/useCollateralList'
 
 import { PageLoader } from 'shared/ui/layout/PageLoader'
@@ -11,7 +11,7 @@ import { createRoute } from 'modules/router/utils/createRoute'
 import * as links from 'modules/router/links'
 
 function RouteDashboardCollateral() {
-  const chainId = useCurrentChain()
+  const { chainId } = useWeb3()
   const collaterals = useCollateralList()
 
   const displayCollaterals = useMemo(() => {

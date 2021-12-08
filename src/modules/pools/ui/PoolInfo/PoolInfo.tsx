@@ -1,7 +1,7 @@
 import { parseEther } from 'ethers/lib/utils'
 
 import { useCallback } from 'react'
-import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { usePropmptModal } from 'modules/modal/ui/PromptModal/usePropmptModal'
 
 import { Button } from 'shared/ui/controls/Button'
@@ -20,7 +20,7 @@ type Props = {
 }
 
 export function PoolInfo({ ContractLoanWolfPool }: Props) {
-  const { walletAddress } = useWalletInfo()
+  const { walletAddress } = useWeb3()
   const userAddress = String(walletAddress)
   const promptModal = usePropmptModal()
 

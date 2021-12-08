@@ -1,5 +1,5 @@
 import cns from 'classnames'
-import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useWalletModal } from 'modules/wallet/ui/WalletModal'
 import { useConnectWalletModal } from 'modules/wallet/ui/ConnectWalletModal'
 
@@ -16,7 +16,7 @@ type Props = {
 }
 
 export function HeaderWallet({ className }: Props) {
-  const { isWalletConnected, walletAddress } = useWalletInfo()
+  const { isWalletConnected, walletAddress } = useWeb3()
   const walletModal = useWalletModal()
   const connectWalletModal = useConnectWalletModal()
 

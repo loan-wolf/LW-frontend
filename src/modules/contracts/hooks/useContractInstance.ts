@@ -1,5 +1,4 @@
 import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
-import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
 import { useGlobalMemo } from 'shared/hooks/useGlobalMemo'
 import {
   ContractConnector,
@@ -12,7 +11,7 @@ export function useContractInstanceRpc<F extends ContractFactoryAbstract>(
 ) {
   type Instance = FactoryInstance<F>
 
-  const chainId = useCurrentChain()
+  const { chainId } = useWeb3()
   const address = connector.chainAddress.get(chainId)
 
   return useGlobalMemo(
@@ -26,8 +25,7 @@ export function useContractInstanceWeb3<F extends ContractFactoryAbstract>(
 ) {
   type Instance = FactoryInstance<F>
 
-  const { library, active, account } = useWeb3()
-  const chainId = useCurrentChain()
+  const { library, active, account, chainId } = useWeb3()
   const activeKey = active ? 'active' : 'inactive'
   const address = connector.chainAddress.get(chainId)
 

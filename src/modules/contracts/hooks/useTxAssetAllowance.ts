@@ -1,7 +1,7 @@
 import * as ethers from 'ethers'
 
 import { useCallback } from 'react'
-import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useTransactionSender } from 'modules/blockChain/hooks/useTransactionSender'
 import { useAssetContractGetter } from 'modules/pools/hooks/useAssetContractGetter'
 
@@ -9,7 +9,7 @@ import { PoolAsset } from 'modules/pools/constants/poolAssets'
 import * as errors from 'shared/constants/errors'
 
 export function useTxAssetAllowance() {
-  const { walletAddress } = useWalletInfo()
+  const { walletAddress } = useWeb3()
   const getAssetContract = useAssetContractGetter()
 
   const populateAllowance = useCallback(

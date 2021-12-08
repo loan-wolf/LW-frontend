@@ -1,6 +1,5 @@
 import { useSWR } from 'modules/network/hooks/useSwr'
-import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
-import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { FilterMethods, UnpackedPromise } from 'shared/utils/utilTypes'
 
 export const useContractSwr = <
@@ -11,8 +10,7 @@ export const useContractSwr = <
   method: Method | null,
   ...params: Parameters<Contract[Method]>
 ) => {
-  const chainId = useCurrentChain()
-  const { walletAddress } = useWalletInfo()
+  const { chainId, walletAddress } = useWeb3()
 
   const cacheKeys = [
     (contract as any).address,

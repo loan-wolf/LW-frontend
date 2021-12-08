@@ -1,6 +1,5 @@
 import { useSWR } from 'modules/network/hooks/useSwr'
-import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
-import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 
 import {
   ContractInvestor,
@@ -8,8 +7,7 @@ import {
 } from 'modules/contracts/contracts'
 
 export function useCollateralList() {
-  const chainId = useCurrentChain()
-  const { walletAddress } = useWalletInfo()
+  const { chainId, walletAddress } = useWeb3()
   const contractInvestor = ContractInvestor.useContractWeb3()
   const contractCollateralManager = ContractCollateralManager.useContractWeb3()
   const investorAddress = contractInvestor.address

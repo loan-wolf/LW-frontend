@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useLoansList } from 'modules/pools/hooks/useLoansList'
-import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 
 import { PageLoader } from 'shared/ui/layout/PageLoader'
 import { DashboardRowLoan } from 'modules/pools/ui/DashboardRowLoan'
@@ -12,7 +12,7 @@ import * as links from 'modules/router/links'
 
 function RouteDashboardLoans() {
   const loans = useLoansList()
-  const chainId = useCurrentChain()
+  const { chainId } = useWeb3()
   const investorAddress = ContractInvestor.chainAddress.get(chainId)
 
   const loansDisplay = useMemo(

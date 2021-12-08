@@ -1,6 +1,6 @@
 import cns from 'classnames'
 import { memo } from 'react'
-import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 
 import { Text } from 'shared/ui/common/Text'
 import { HeaderNFCS } from 'modules/nfcs/ui/HeaderNFCS'
@@ -14,7 +14,7 @@ type Props = {
 }
 
 function HeaderActionsRaw({ className }: Props) {
-  const currentChain = useCurrentChain()
+  const { chainId } = useWeb3()
 
   return (
     <div className={cns(s.wrap, className)}>
@@ -24,10 +24,10 @@ function HeaderActionsRaw({ className }: Props) {
         <div className={s.network}>
           <div
             className={s.networkBulb}
-            style={{ backgroundColor: getChainColor(currentChain) }}
+            style={{ backgroundColor: getChainColor(chainId) }}
           />
           <Text size={14} weight={500}>
-            {getChainName(currentChain)}
+            {getChainName(chainId)}
           </Text>
         </div>
         <HeaderWallet className={s.wallet} />

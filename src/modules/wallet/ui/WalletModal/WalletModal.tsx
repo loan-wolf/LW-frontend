@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useEtherscanOpener } from 'modules/blockChain/hooks/useEtherscanOpener'
-import { useWalletInfo } from 'modules/wallet/hooks/useWalletInfo'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useWalletDisconnect } from 'modules/wallet/hooks/useWalletDisconnect'
 import { useWalletConnectorStorage } from 'modules/wallet/hooks/useWalletConnectorStorage'
 import { useCopyToClipboard } from 'shared/hooks/useCopyToClipboard'
@@ -15,7 +15,7 @@ import s from './WalletModal.module.scss'
 
 export function WalletModal(props: ModalProps) {
   const { onClose } = props
-  const { walletAddress: address } = useWalletInfo()
+  const { walletAddress: address } = useWeb3()
   const [connector] = useWalletConnectorStorage()
   const disconnect = useWalletDisconnect()
 

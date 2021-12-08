@@ -1,7 +1,7 @@
 import * as ethers from 'ethers'
 
 import { useCallback, useState } from 'react'
-import { useCurrentChain } from 'modules/blockChain/hooks/useCurrentChain'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useTransactionSender } from 'modules/blockChain/hooks/useTransactionSender'
 import { useTxAssetAllowance } from 'modules/contracts/hooks/useTxAssetAllowance'
 
@@ -22,7 +22,7 @@ export function useRepaymentSubmit({
   setLocked,
   onSuccess,
 }: Args) {
-  const chainId = useCurrentChain()
+  const { chainId } = useWeb3()
   const contractBonds = ContractBonds.useContractWeb3()
   const contractInvestor = ContractInvestor.useContractWeb3()
   const [isSubmitting, setSubmitting] = useState(false)
