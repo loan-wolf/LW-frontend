@@ -32,14 +32,14 @@ import {
 import { formatNumber } from 'shared/utils/formatNumber'
 import type { FormValues, SuccessData } from './types'
 
-const LTV = 75
+const LTV = 12
 const LIQ_THRESHOLD = 80
 
 const COLLATERAL_PRICE = {
   [poolAssets.DAI]: 1,
   [poolAssets.USDC]: 1,
   [poolAssets.USDT]: 1,
-  [poolAssets.ETH]: 4000,
+  [poolAssets.ETH]: 4300,
   [poolAssets.WBTC]: 1,
 }
 
