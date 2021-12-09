@@ -1,56 +1,55 @@
 import cns from 'classnames'
+import React from 'react'
 
 import { Text } from 'shared/ui/common/Text'
 import { Tooltip } from 'shared/ui/common/Tooltip'
 
 import s from './FormInfoFrame.module.scss'
 
-type InfoItem = {
+type ItemProps = {
   label: React.ReactNode
   value: React.ReactNode
   sign?: React.ReactNode
   isTooltiped?: boolean
 }
 
+export function FormInfoItem({ label, value, sign, isTooltiped }: ItemProps) {
+  const valueEl = isTooltiped ? (
+    <div className={s.truncatedValueWrap}>
+      <Tooltip tooltip={value}>
+        <Text size={20} weight={500} truncateLines={1}>
+          {value}
+        </Text>
+      </Tooltip>
+      {sign && (
+        <Text size={20} weight={500} className={s.sign}>
+          &nbsp;{sign}
+        </Text>
+      )}
+    </div>
+  ) : (
+    <Text size={20} weight={500}>
+      {value}
+    </Text>
+  )
+
+  return (
+    <div className={s.column}>
+      <Text size={14} weight={500} color="secondary">
+        {label}
+      </Text>
+      {value ? valueEl : <>&nbsp;</>}
+    </div>
+  )
+}
+
 type Props = {
-  info: [InfoItem, InfoItem]
+  children: React.ReactNode
   className?: string
 }
 
-export function FormInfoFrame({ info, className }: Props) {
-  return (
-    <div className={cns(s.wrap, className)}>
-      {info.map((item, i) => {
-        const valueEl = item.isTooltiped ? (
-          <div className={s.truncatedValueWrap}>
-            <Tooltip tooltip={item.value}>
-              <Text size={20} weight={500} truncateLines={1}>
-                {item.value}
-              </Text>
-            </Tooltip>
-            {item.sign && (
-              <Text size={20} weight={500} className={s.sign}>
-                &nbsp;{item.sign}
-              </Text>
-            )}
-          </div>
-        ) : (
-          <Text size={20} weight={500}>
-            {item.value}
-          </Text>
-        )
-
-        return (
-          <div key={i} className={s.column}>
-            <Text size={14} weight={500} color="secondary">
-              {item.label}
-            </Text>
-            {item.value ? valueEl : <>&nbsp;</>}
-          </div>
-        )
-      })}
-    </div>
-  )
+export function FormInfoFrame({ className, children }: Props) {
+  return <div className={cns(s.wrap, className)}>{children}</div>
 }
 
 type ListProps = {

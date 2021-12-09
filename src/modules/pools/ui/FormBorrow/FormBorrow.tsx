@@ -7,6 +7,7 @@ import { SelectControl } from 'shared/ui/controls/Select'
 import { FormSubmitter } from 'shared/ui/common/FormSubmitter'
 import { Form } from 'shared/ui/controls/Form'
 import {
+  FormInfoItem,
   FormInfoFrame,
   FormInfoFramesList,
 } from 'shared/ui/common/FormInfoFrame'
@@ -138,38 +139,38 @@ export function FormBorrow({ onSuccess }: Props) {
       )}
 
       <FormInfoFramesList>
-        <FormInfoFrame
-          info={[
-            { label: 'APR', value: apr && `${apr}%` },
-            {
-              label: 'Amount to be repaid',
-              value:
-                amountToBeRepaid &&
-                term &&
-                `${formatNumber(amountToBeRepaid, 2)} ${borrowedAsset}`,
-            },
-          ]}
-        />
-        <FormInfoFrame
-          info={[
-            { label: 'LTV', value: `${LTV}%` },
-            {
-              label: 'Required collateral',
-              value: collateralAmount,
-              sign: collateralAsset,
-              isTooltiped: true,
-            },
-          ]}
-        />
-        <FormInfoFrame
-          info={[
-            { label: 'Liquidation Threshold', value: `${LIQ_THRESHOLD}%` },
-            {
-              label: 'Liquidation Price',
-              value: liquidationPrice && `${liquidationPrice} ${borrowedAsset}`,
-            },
-          ]}
-        />
+        <FormInfoFrame>
+          <FormInfoItem label="APR" value={apr && `${apr}%`} />
+          <FormInfoItem
+            label="Amount to be repaid"
+            value={
+              amountToBeRepaid &&
+              term &&
+              `${formatNumber(amountToBeRepaid, 2)} ${borrowedAsset}`
+            }
+          />
+        </FormInfoFrame>
+        <FormInfoFrame>
+          <FormInfoItem label="LTV" value={`${LTV}%`} />
+          <FormInfoItem
+            label="Required collateral"
+            value={collateralAmount}
+            sign={collateralAsset}
+            isTooltiped
+          />
+        </FormInfoFrame>
+        <FormInfoFrame>
+          <FormInfoItem
+            label="Liquidation Threshold"
+            value={`${LIQ_THRESHOLD}%`}
+          />
+          <FormInfoItem
+            label="Liquidation Price"
+            value={liquidationPrice}
+            sign={borrowedAsset}
+            isTooltiped
+          />
+        </FormInfoFrame>
       </FormInfoFramesList>
 
       {isLocked && (

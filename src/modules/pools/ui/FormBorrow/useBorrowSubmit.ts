@@ -10,9 +10,9 @@ import {
   PoolAsset,
 } from 'modules/pools/constants/poolAssets'
 import { ContractCollateralManager } from 'modules/contracts/contracts'
+import { getInvestorContractByAsset } from 'modules/pools/utils/getInvestorContractByAsset'
 import type { FormValues, SuccessData } from './types'
 import * as errors from 'shared/constants/errors'
-import { getInvestorContractByAsset } from 'modules/pools/utils/getInvestorContractByAsset'
 
 const NCFSID = 1 // Oracle return hardcoded scores for now
 

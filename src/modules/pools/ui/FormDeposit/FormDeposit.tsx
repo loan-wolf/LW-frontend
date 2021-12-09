@@ -7,6 +7,7 @@ import { SelectControl } from 'shared/ui/controls/Select'
 import { FormSubmitter } from 'shared/ui/common/FormSubmitter'
 import { Form } from 'shared/ui/controls/Form'
 import {
+  FormInfoItem,
   FormInfoFrame,
   FormInfoFramesList,
 } from 'shared/ui/common/FormInfoFrame'
@@ -117,34 +118,32 @@ export function FormDeposit({ onSuccess }: Props) {
       )}
 
       <FormInfoFramesList>
-        <FormInfoFrame
-          info={[
-            {
-              label: (
-                <>
-                  Estimated
-                  <br />
-                  earned per 30 days
-                </>
-              ),
-              value: (
-                <>
-                  <EstimatedEarning /> USD
-                </>
-              ),
-            },
-            {
-              label: (
-                <>
-                  Your share
-                  <br />
-                  of the pool
-                </>
-              ),
-              value: `${POOL_SHARE}%`,
-            },
-          ]}
-        />
+        <FormInfoFrame>
+          <FormInfoItem
+            label={
+              <>
+                Estimated
+                <br />
+                earned per 30 days
+              </>
+            }
+            value={
+              <>
+                <EstimatedEarning /> USD
+              </>
+            }
+          />
+          <FormInfoItem
+            label={
+              <>
+                Your share
+                <br />
+                of the pool
+              </>
+            }
+            value={`${POOL_SHARE}%`}
+          />
+        </FormInfoFrame>
       </FormInfoFramesList>
 
       {isLocked && (
