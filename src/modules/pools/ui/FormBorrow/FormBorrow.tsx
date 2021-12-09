@@ -33,14 +33,14 @@ import { formatNumber } from 'shared/utils/formatNumber'
 import type { FormValues, SuccessData } from './types'
 
 const LTV = 12
-const LIQ_THRESHOLD = '—'
-const LIQ_PRICE = '—'
+const LIQ_THRESHOLD = 80
+
 const COLLATERAL_PRICE = {
   [poolAssets.DAI]: 1,
   [poolAssets.DAI2]: 1,
   [poolAssets.USDC]: 1,
   [poolAssets.USDT]: 1,
-  [poolAssets.ETH]: 4765,
+  [poolAssets.ETH]: 4300,
   [poolAssets.WBTC]: 1,
 }
 
@@ -84,15 +84,29 @@ export function FormBorrow({ onSuccess }: Props) {
   const collateralAsset = watch('collateralAsset')
   const term = Number(watch('term'))
 
-  const collateralAmount =
+  const collateralAmountNum =
     collateralAsset && amount
-      ? (amount / ((LTV / 100) * COLLATERAL_PRICE[collateralAsset])).toFixed(18)
-      : '0'
+      ? amount / COLLATERAL_PRICE[collateralAsset] / (LTV / 100)
+      : undefined
+
+  const collateralAmount = collateralAmountNum
+    ? collateralAmountNum.toFixed(4)
+    : ''
+
+  const liquidationPrice =
+    borrowedAsset && collateralAmountNum && collateralAsset
+      ? (
+          (LIQ_THRESHOLD / 100) *
+          collateralAmountNum *
+          COLLATERAL_PRICE[collateralAsset]
+        ).toFixed(4)
+      : ''
 
   // TODO: Must depends on `borrowedAsset`
   const { data: aprData } = ContractInvestor.useSwrWeb3('interestRate')
   const apr = aprData && Number(aprData) / 100
-  const earning = apr && (amount * (1 + apr / 100) * (term * 30)) / 12
+
+  const amountToBeRepaid = apr && amount + ((apr / 100) * amount * term) / 365
 
   const borrowedAddress =
     borrowedAsset && getPoolAssetAddress(borrowedAsset, chainId)
@@ -190,7 +204,10 @@ export function FormBorrow({ onSuccess }: Props) {
             { label: 'APR', value: apr && `${apr}%` },
             {
               label: 'Amount to be repaid',
-              value: earning && `${formatNumber(earning, 2)} ${borrowedAsset}`,
+              value:
+                amountToBeRepaid &&
+                term &&
+                `${formatNumber(amountToBeRepaid, 2)} ${borrowedAsset}`,
             },
           ]}
         />
@@ -199,15 +216,19 @@ export function FormBorrow({ onSuccess }: Props) {
             { label: 'LTV', value: `${LTV}%` },
             {
               label: 'Required collateral',
-              value: collateralAmount,
+              value:
+                collateralAmount && `${collateralAmount} ${collateralAsset}`,
               isTooltiped: true,
             },
           ]}
         />
         <FormInfoFrame
           info={[
-            { label: 'Liquidation Threshold', value: LIQ_THRESHOLD },
-            { label: 'Liquidation Price', value: LIQ_PRICE },
+            { label: 'Liquidation Threshold', value: `${LIQ_THRESHOLD}%` },
+            {
+              label: 'Liquidation Price',
+              value: liquidationPrice && `${liquidationPrice} ${borrowedAsset}`,
+            },
           ]}
         />
       </FormInfoFramesList>
