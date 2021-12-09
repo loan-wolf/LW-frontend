@@ -15,7 +15,7 @@ export function useAssetContractGetter() {
       const CollateralAssetContract = getERCContractByAsset(asset)
       const collateralAssetContract = CollateralAssetContract.connectWeb3({
         chainId,
-        library: library.getSigner(),
+        library,
       })
       return collateralAssetContract
     },

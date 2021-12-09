@@ -13,13 +13,12 @@ export function useLoansList() {
   const loans = useSWR(
     walletAddress ? `loans-${chainId}-${walletAddress}` : null,
     async () => {
-      const signer = library?.getSigner()
-      if (!walletAddress || !signer) return
+      if (!walletAddress || !library) return
 
       const investors = [
-        ContractInvestor_DAI_rDAI1.connectWeb3({ chainId, library: signer }),
-        ContractInvestor_USDC_rUSDC1.connectWeb3({ chainId, library: signer }),
-        ContractInvestor_USDT_rUSDT1.connectWeb3({ chainId, library: signer }),
+        ContractInvestor_DAI_rDAI1.connectWeb3({ chainId, library }),
+        ContractInvestor_USDC_rUSDC1.connectWeb3({ chainId, library }),
+        ContractInvestor_USDT_rUSDT1.connectWeb3({ chainId, library }),
       ]
 
       const requestsInvestors = investors.map(async investor => {

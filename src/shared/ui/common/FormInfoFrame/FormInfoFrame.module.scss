@@ -22,3 +22,12 @@
 .list {
   margin-bottom: var(--fieldMargin);
 }
+
+.truncatedValueWrap {
+  display: flex;
+  align-items: center;
+}
+
+.sign {
+  flex: 0 0 auto;
+}

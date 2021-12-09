@@ -8,14 +8,15 @@ import { ReactComponent as TokenETH } from 'assets/token-eth.svg'
 import { ReactComponent as TokenWBTC } from 'assets/token-wbtc.svg'
 import * as contracts from 'modules/contracts/contracts'
 
-export const poolAssets = {
+export const PoolAsset = {
   DAI: 'DAI',
   USDC: 'USDC',
   USDT: 'USDT',
   ETH: 'ETH',
   WBTC: 'WBTC',
 } as const
-export type PoolAsset = keyof typeof poolAssets
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type PoolAsset = keyof typeof PoolAsset
 
 export const poolAssetIcons = {
   DAI: <TokenDAI />,
@@ -30,11 +31,11 @@ export function getPoolAssetIcon(asset: string) {
 }
 
 export const assetERCContracts = {
-  [poolAssets.DAI]: contracts.ContractTestDAI,
-  [poolAssets.USDC]: contracts.ContractTestUSDC,
-  [poolAssets.USDT]: contracts.ContractTestUSDT,
-  [poolAssets.ETH]: contracts.ContractTestETH,
-  [poolAssets.WBTC]: contracts.ContractTestWBTC,
+  [PoolAsset.DAI]: contracts.ContractTestDAI,
+  [PoolAsset.USDC]: contracts.ContractTestUSDC,
+  [PoolAsset.USDT]: contracts.ContractTestUSDT,
+  [PoolAsset.ETH]: contracts.ContractTestETH,
+  [PoolAsset.WBTC]: contracts.ContractTestWBTC,
 } as const
 
 export function getERCContractByAsset(asset: PoolAsset) {
@@ -59,29 +60,29 @@ export const getPoolAssetByAddress = memoize(
 )
 
 export const poolAssetOptions = {
-  [poolAssets.DAI]: {
-    label: poolAssets.DAI,
-    value: poolAssets.DAI,
+  [PoolAsset.DAI]: {
+    label: PoolAsset.DAI,
+    value: PoolAsset.DAI,
     icon: poolAssetIcons.DAI,
   },
-  [poolAssets.USDC]: {
-    label: poolAssets.USDC,
-    value: poolAssets.USDC,
+  [PoolAsset.USDC]: {
+    label: PoolAsset.USDC,
+    value: PoolAsset.USDC,
     icon: poolAssetIcons.USDC,
   },
-  [poolAssets.USDT]: {
-    label: poolAssets.USDT,
-    value: poolAssets.USDT,
+  [PoolAsset.USDT]: {
+    label: PoolAsset.USDT,
+    value: PoolAsset.USDT,
     icon: poolAssetIcons.USDT,
   },
-  [poolAssets.ETH]: {
-    label: poolAssets.ETH,
-    value: poolAssets.ETH,
+  [PoolAsset.ETH]: {
+    label: PoolAsset.ETH,
+    value: PoolAsset.ETH,
     icon: poolAssetIcons.ETH,
   },
-  [poolAssets.WBTC]: {
-    label: poolAssets.WBTC,
-    value: poolAssets.WBTC,
+  [PoolAsset.WBTC]: {
+    label: PoolAsset.WBTC,
+    value: PoolAsset.WBTC,
     icon: poolAssetIcons.WBTC,
   },
 } as const

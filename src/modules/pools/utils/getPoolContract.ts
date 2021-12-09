@@ -4,6 +4,8 @@ import * as contracts from 'modules/contracts/contracts'
 
 const poolContracts = [contracts.ContractILiquidityPool] as const
 
+// TODO: `useGlobalMemo` hook instead of memoize
+// may be more efficient in garbage collecting aspect
 export const getPoolContractByAddress = memoize(
   (poolAddress: string, chainId: Chains) => {
     const contract = poolContracts.find(

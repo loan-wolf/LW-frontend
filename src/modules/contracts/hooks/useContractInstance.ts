@@ -33,7 +33,7 @@ export function useContractInstanceWeb3<F extends ContractFactoryAbstract>(
     () =>
       connector.connectWeb3({
         chainId,
-        library: library?.getSigner(),
+        library,
       }) as Instance,
     ['contract-web3-', activeKey, chainId, account, address].join('-'),
   )

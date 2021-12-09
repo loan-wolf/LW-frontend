@@ -5,13 +5,14 @@ import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useTransactionSender } from 'modules/blockChain/hooks/useTransactionSender'
 import { useTxAssetAllowance } from 'modules/contracts/hooks/useTxAssetAllowance'
 
-import { getPoolAssetAddress } from 'modules/pools/constants/poolAssets'
 import {
-  ContractInvestor_DAI_rDAI1,
-  ContractCollateralManager,
-} from 'modules/contracts/contracts'
+  getPoolAssetAddress,
+  PoolAsset,
+} from 'modules/pools/constants/poolAssets'
+import { ContractCollateralManager } from 'modules/contracts/contracts'
 import type { FormValues, SuccessData } from './types'
 import * as errors from 'shared/constants/errors'
+import { getInvestorContractByAsset } from 'modules/pools/utils/getInvestorContractByAsset'
 
 const NCFSID = 1 // Oracle return hardcoded scores for now
 
@@ -28,9 +29,7 @@ export function useBorrowSubmit({
   onSuccess,
   collateralAmount,
 }: Args) {
-  const { chainId, walletAddress } = useWeb3()
-  // TODO: must depends on asset
-  const contractInvestor = ContractInvestor_DAI_rDAI1.useContractWeb3()
+  const { chainId, library, walletAddress } = useWeb3()
   const [isSubmitting, setSubmitting] = useState(false)
   const { makeAllowanceIfNeeded, txAllowance } = useTxAssetAllowance()
 
@@ -39,31 +38,36 @@ export function useBorrowSubmit({
    */
   const populateBorrow = useCallback(
     async ({
+      borrowedAsset,
       amountWei,
       collateralAddress,
       address,
       term,
     }: {
+      borrowedAsset: PoolAsset
       amountWei: ethers.BigNumberish
       collateralAddress: string
       address: string
       term: number
     }) => {
-      const numberOfLoans = await contractInvestor.getNumberOfLoans(address)
-      const loanId = await contractInvestor.getId(address, numberOfLoans)
+      const Investor = getInvestorContractByAsset(borrowedAsset)
+      const investor = Investor.connectWeb3({ chainId, library })
+
+      const numberOfLoans = await investor.getNumberOfLoans(address)
+      const loanId = await investor.getId(address, numberOfLoans)
 
       const hash = ethers.utils.keccak256(
         ethers.utils.defaultAbiCoder.encode(
           ['address', 'uint256'],
-          [contractInvestor.address, loanId],
+          [investor.address, loanId],
         ),
       )
 
-      const signature = await contractInvestor.signer.signMessage(
+      const signature = await investor.signer.signMessage(
         ethers.utils.arrayify(hash),
       )
 
-      const populated = await contractInvestor.populateTransaction.borrow(
+      const populated = await investor.populateTransaction.borrow(
         amountWei,
         term,
         NCFSID,
@@ -78,7 +82,7 @@ export function useBorrowSubmit({
 
       return populated
     },
-    [collateralAmount, contractInvestor],
+    [chainId, collateralAmount, library],
   )
   const txBorrow = useTransactionSender(populateBorrow)
 
@@ -90,9 +94,12 @@ export function useBorrowSubmit({
         setLocked(true)
       } else {
         try {
-          const { amount, collateralAsset } = formValues
+          const { borrowedAsset, amount, collateralAsset } = formValues
 
           if (!walletAddress) throw new Error(errors.connectWallet)
+          if (!borrowedAsset) {
+            throw new Error(errors.borrowedAssetNotSelected)
+          }
           if (!collateralAsset) {
             throw new Error(errors.collateralAssetNotSelected)
           }
@@ -115,6 +122,7 @@ export function useBorrowSubmit({
           })
 
           const txBorrowRes = await sendBorrow({
+            borrowedAsset,
             amountWei,
             collateralAddress,
             term: Number(formValues.term),

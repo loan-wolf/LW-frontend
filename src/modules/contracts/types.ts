@@ -23,7 +23,7 @@ export type ConnectRpcArgs = {
 
 export type ConnectWeb3Args = {
   chainId: Chains
-  library: Library
+  library: providers.Web3Provider | undefined
 }
 
 export type ConnectRpcFn<F extends ContractFactoryAbstract> = (

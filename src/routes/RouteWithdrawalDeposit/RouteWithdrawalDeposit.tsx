@@ -29,10 +29,7 @@ function RouteWithdrawalDepositRaw({ match }: Props) {
     `deposit-withdrawal-info-${chainId}-${poolAddress}`,
     async () => {
       const PoolContract = getPoolContractByAddress(poolAddress, chainId)
-      const poolContract = PoolContract.connectWeb3({
-        chainId,
-        library: library?.getSigner(),
-      })
+      const poolContract = PoolContract.connectWeb3({ chainId, library })
       const [depositedTokenAddress] = await Promise.all([poolContract.token1()])
       return {
         depositedTokenAddress,

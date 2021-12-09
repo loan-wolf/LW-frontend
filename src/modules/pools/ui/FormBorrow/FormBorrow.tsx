@@ -1,7 +1,5 @@
-import * as ethers from 'ethers'
 import { useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useBorrowSubmit } from './useBorrowSubmit'
 
 import { InputControl } from 'shared/ui/controls/Input'
@@ -20,28 +18,12 @@ import { FormTransactionRow } from 'modules/blockChain/ui/FormTransactionRow'
 
 import * as formErrors from 'shared/constants/formErrors'
 import {
-  // ContractInvestor,
-  ContractPriceFeed,
-} from 'modules/contracts/contracts'
-import {
-  poolAssets,
   poolAssetOptions,
   getPoolAssetIcon,
-  getPoolAssetAddress,
 } from 'modules/pools/constants/poolAssets'
 import { formatNumber } from 'shared/utils/formatNumber'
 import type { FormValues, SuccessData } from './types'
-
-const LTV = 12
-const LIQ_THRESHOLD = 80
-
-const COLLATERAL_PRICE = {
-  [poolAssets.DAI]: 1,
-  [poolAssets.USDC]: 1,
-  [poolAssets.USDT]: 1,
-  [poolAssets.ETH]: 4300,
-  [poolAssets.WBTC]: 1,
-}
+import { useBorrowFormCalcs } from './useBorrowFormCalcs'
 
 const borrowOptions = [
   poolAssetOptions.USDC,
@@ -56,7 +38,6 @@ type Props = {
 }
 
 export function FormBorrow({ onSuccess }: Props) {
-  const { chainId } = useWeb3()
   const [isLocked, setLocked] = useState(false)
   const handleUnlock = useCallback(() => setLocked(false), [])
 
@@ -71,60 +52,24 @@ export function FormBorrow({ onSuccess }: Props) {
   })
 
   const { watch } = formMethods
-
   const amount = Number(watch('amount'))
   const borrowedAsset = watch('borrowedAsset')
   const collateralAsset = watch('collateralAsset')
   const term = Number(watch('term'))
 
-  const collateralAmountNum =
-    collateralAsset && amount
-      ? amount / COLLATERAL_PRICE[collateralAsset] / (LTV / 100)
-      : undefined
-
-  const collateralAmount = collateralAmountNum
-    ? collateralAmountNum.toFixed(4)
-    : ''
-
-  const liquidationPrice =
-    borrowedAsset && collateralAmountNum && collateralAsset
-      ? (
-          (LIQ_THRESHOLD / 100) *
-          collateralAmountNum *
-          COLLATERAL_PRICE[collateralAsset]
-        ).toFixed(4)
-      : ''
-
-  // TODO: Must depends on `borrowedAsset`
-  // const { data: aprData } = ContractInvestor.useSwrWeb3('interestRateAnnual')
-  const aprData: any = '10'
-  const apr = aprData && Number(aprData) / 100
-
-  const amountToBeRepaid = apr && amount + ((apr / 100) * amount * term) / 365
-
-  const borrowedAddress =
-    borrowedAsset && getPoolAssetAddress(borrowedAsset, chainId)
-
-  const { data: borrowedPrice } = ContractPriceFeed.useSwrWeb3(
-    borrowedAddress ? 'getLatestPriceUSD' : null,
-    borrowedAddress!,
-  )
-
-  const collateralAddress =
-    collateralAsset && getPoolAssetAddress(collateralAsset, chainId)
-
-  const { data: collateralPrice } = ContractPriceFeed.useSwrWeb3(
-    collateralAddress ? 'getLatestPriceUSD' : null,
-    collateralAddress!,
-  )
-
-  // TODO: Use this numbers in calculations when contract will be fixed
-  console.log(
-    Number(borrowedPrice),
-    Number(collateralPrice),
-    borrowedPrice && ethers.utils.formatEther(borrowedPrice),
-    collateralPrice && ethers.utils.formatEther(collateralPrice),
-  )
+  const {
+    LTV,
+    LIQ_THRESHOLD,
+    apr,
+    collateralAmount,
+    liquidationPrice,
+    amountToBeRepaid,
+  } = useBorrowFormCalcs({
+    amount,
+    borrowedAsset,
+    collateralAsset,
+    term,
+  })
 
   const { submit, txAllowance, isSubmitting } = useBorrowSubmit({
     isLocked,
@@ -210,8 +155,8 @@ export function FormBorrow({ onSuccess }: Props) {
             { label: 'LTV', value: `${LTV}%` },
             {
               label: 'Required collateral',
-              value:
-                collateralAmount && `${collateralAmount} ${collateralAsset}`,
+              value: collateralAmount,
+              sign: collateralAsset,
               isTooltiped: true,
             },
           ]}
