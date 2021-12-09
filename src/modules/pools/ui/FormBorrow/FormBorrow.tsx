@@ -20,7 +20,7 @@ import { FormTransactionRow } from 'modules/blockChain/ui/FormTransactionRow'
 
 import * as formErrors from 'shared/constants/formErrors'
 import {
-  ContractInvestor,
+  // ContractInvestor,
   ContractPriceFeed,
 } from 'modules/contracts/contracts'
 import {
@@ -37,7 +37,6 @@ const LIQ_THRESHOLD = '—'
 const LIQ_PRICE = '—'
 const COLLATERAL_PRICE = {
   [poolAssets.DAI]: 1,
-  [poolAssets.DAI2]: 1,
   [poolAssets.USDC]: 1,
   [poolAssets.USDT]: 1,
   [poolAssets.ETH]: 4765,
@@ -50,13 +49,7 @@ const borrowOptions = [
   poolAssetOptions.DAI,
 ]
 
-const collateralOptions = [
-  poolAssetOptions.DAI,
-  // poolAssetOptions.USDC,
-  // poolAssetOptions.USDT,
-  poolAssetOptions.ETH,
-  // poolAssetOptions.WBTC,
-]
+const collateralOptions = [poolAssetOptions.ETH, poolAssetOptions.WBTC]
 
 type Props = {
   onSuccess: (successData: SuccessData) => void
@@ -90,7 +83,8 @@ export function FormBorrow({ onSuccess }: Props) {
       : '0'
 
   // TODO: Must depends on `borrowedAsset`
-  const { data: aprData } = ContractInvestor.useSwrWeb3('interestRate')
+  // const { data: aprData } = ContractInvestor.useSwrWeb3('interestRateAnnual')
+  const aprData: any = '10'
   const apr = aprData && Number(aprData) / 100
   const earning = apr && (amount * (1 + apr / 100) * (term * 30)) / 12
 

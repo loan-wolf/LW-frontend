@@ -1,17 +1,20 @@
-import type { ChainAddress } from './ChainAddress'
-import type { ContractFactoryAbstract } from '../types'
+import { ChainAddress } from './ChainAddress'
+import type { AddressesMap, ContractFactoryAbstract } from '../types'
 import { createContractConnectors } from './createContractConnectors'
 import { createContractHooks } from './createContractHooks'
 
 type CreatorArgs<F> = {
+  name: string
   factory: F
-  chainAddress: ChainAddress
+  address: AddressesMap
 }
 
 export function createContractHelpers<F extends ContractFactoryAbstract>({
+  name,
   factory,
-  chainAddress,
+  address,
 }: CreatorArgs<F>) {
+  const chainAddress = new ChainAddress(name, address)
   const connector = createContractConnectors({
     factory,
     chainAddress,

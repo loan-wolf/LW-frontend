@@ -28,7 +28,6 @@ const assetOptions = [
   poolAssetOptions.USDC,
   poolAssetOptions.USDT,
   poolAssetOptions.DAI,
-  poolAssetOptions.DAI2,
 ]
 
 type Props = {

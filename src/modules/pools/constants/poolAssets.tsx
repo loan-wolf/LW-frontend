@@ -6,12 +6,10 @@ import { ReactComponent as TokenUSDC } from 'assets/token-usdc.svg'
 import { ReactComponent as TokenUSDT } from 'assets/token-usdt.svg'
 import { ReactComponent as TokenETH } from 'assets/token-eth.svg'
 import { ReactComponent as TokenWBTC } from 'assets/token-wbtc.svg'
-import * as addresses from 'modules/contracts/contractAddresses'
 import * as contracts from 'modules/contracts/contracts'
 
 export const poolAssets = {
   DAI: 'DAI',
-  DAI2: 'DAI2',
   USDC: 'USDC',
   USDT: 'USDT',
   ETH: 'ETH',
@@ -31,27 +29,32 @@ export function getPoolAssetIcon(asset: string) {
   return getOr(null, asset, poolAssetIcons) as React.ReactNode | null
 }
 
-export const poolAssetAddresses = {
-  [poolAssets.DAI]: addresses.addressTestDAI,
-  [poolAssets.DAI2]: addresses.addressTestDAI2,
-  [poolAssets.USDC]: null,
-  [poolAssets.USDT]: null,
-  [poolAssets.ETH]: addresses.addressTestETH,
-  [poolAssets.WBTC]: null,
+export const assetERCContracts = {
+  [poolAssets.DAI]: contracts.ContractTestDAI,
+  [poolAssets.USDC]: contracts.ContractTestUSDC,
+  [poolAssets.USDT]: contracts.ContractTestUSDT,
+  [poolAssets.ETH]: contracts.ContractTestETH,
+  [poolAssets.WBTC]: contracts.ContractTestWBTC,
 } as const
 
+export function getERCContractByAsset(asset: PoolAsset) {
+  const contract = assetERCContracts[asset]
+  // if (!contract) throw new Error(`Contract for asset ${asset} not defined`)
+  return contract
+}
+
 export function getPoolAssetAddress(asset: PoolAsset, chain: Chains) {
-  const addr = poolAssetAddresses[asset]
-  return addr?.get(chain)
+  const addr = assetERCContracts[asset].chainAddress
+  return addr.get(chain)
 }
 
 export const getPoolAssetByAddress = memoize(
   (address: string, chain: Chains) => {
     return flow(
       toPairs,
-      find(([asset, poolAddress]) => address === poolAddress?.get(chain)),
+      find(([a, c]) => address === c.chainAddress?.get(chain)),
       get(0),
-    )(poolAssetAddresses) as PoolAsset | undefined
+    )(assetERCContracts) as PoolAsset | undefined
   },
 )
 
@@ -59,11 +62,6 @@ export const poolAssetOptions = {
   [poolAssets.DAI]: {
     label: poolAssets.DAI,
     value: poolAssets.DAI,
-    icon: poolAssetIcons.DAI,
-  },
-  [poolAssets.DAI2]: {
-    label: poolAssets.DAI2,
-    value: poolAssets.DAI2,
     icon: poolAssetIcons.DAI,
   },
   [poolAssets.USDC]: {
@@ -87,18 +85,3 @@ export const poolAssetOptions = {
     icon: poolAssetIcons.WBTC,
   },
 } as const
-
-export const assetERCContracts = {
-  [poolAssets.DAI]: contracts.ContractTestDAI,
-  [poolAssets.DAI2]: contracts.ContractTestDAI2,
-  [poolAssets.USDC]: null,
-  [poolAssets.USDT]: null,
-  [poolAssets.ETH]: contracts.ContractTestETH,
-  [poolAssets.WBTC]: null,
-} as const
-
-export function getERCContractByAsset(asset: PoolAsset) {
-  const contract = assetERCContracts[asset]
-  if (!contract) throw new Error(`Contract for asset ${asset} not defined`)
-  return contract
-}

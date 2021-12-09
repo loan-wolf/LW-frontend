@@ -1,11 +1,14 @@
 import * as ethers from 'ethers'
 
 import { useCallback, useState } from 'react'
-import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
+// import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useTransactionSender } from 'modules/blockChain/hooks/useTransactionSender'
 import { useTxAssetAllowance } from 'modules/contracts/hooks/useTxAssetAllowance'
 
-import { ContractBonds, ContractInvestor } from 'modules/contracts/contracts'
+import {
+  ContractBonds,
+  ContractInvestor_DAI_rDAI1,
+} from 'modules/contracts/contracts'
 import type { FormValues, SuccessData } from './types'
 import * as errors from 'shared/constants/errors'
 
@@ -22,9 +25,10 @@ export function useRepaymentSubmit({
   setLocked,
   onSuccess,
 }: Args) {
-  const { chainId } = useWeb3()
+  // const { chainId } = useWeb3()
   const contractBonds = ContractBonds.useContractWeb3()
-  const contractInvestor = ContractInvestor.useContractWeb3()
+  // TODO: must depends on asset
+  const contractInvestor = ContractInvestor_DAI_rDAI1.useContractWeb3()
   const [isSubmitting, setSubmitting] = useState(false)
   const { makeAllowanceIfNeeded, txAllowance } = useTxAssetAllowance()
 
@@ -82,7 +86,7 @@ export function useRepaymentSubmit({
           const amountWei = ethers.utils.parseEther(amount)
 
           await makeAllowanceIfNeeded({
-            spenderAddress: ContractInvestor.chainAddress.get(chainId),
+            spenderAddress: contractInvestor.address,
             amountWei,
             asset: depositedAsset,
           })
@@ -102,9 +106,9 @@ export function useRepaymentSubmit({
       setLocked,
       sendApproval,
       makeAllowanceIfNeeded,
-      chainId,
       sendPayment,
       onSuccess,
+      contractInvestor,
     ],
   )
 

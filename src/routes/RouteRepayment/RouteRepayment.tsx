@@ -7,7 +7,7 @@ import { ContractSuccessTitle } from 'shared/ui/common/ContractSuccessTitle'
 import { NarrowWrapper } from 'shared/ui/layout/NarrowWrapper'
 import { PageLoader } from 'shared/ui/layout/PageLoader'
 
-import { ContractInvestor } from 'modules/contracts/contracts'
+import { ContractInvestor_DAI_rDAI1 } from 'modules/contracts/contracts'
 import { withWalletConnectCheck } from 'modules/wallet/hocs/withWalletConnectCheck'
 import { createRoute } from 'modules/router/utils/createRoute'
 
@@ -17,7 +17,8 @@ type Props = {
 
 function RouteRepaymentRaw({ match }: Props) {
   const loanId = match.params.loanId
-  const loanReq = ContractInvestor.useSwrWeb3('loanLookup', loanId)
+  // TODO: Get actual investor
+  const loanReq = ContractInvestor_DAI_rDAI1.useSwrWeb3('loanLookup', loanId)
   const [successData, setSuccessData] = useState<SuccessData | null>(null)
 
   const { data: loan } = loanReq

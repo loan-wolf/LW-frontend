@@ -35,7 +35,6 @@ const depositOptions = [
   poolAssetOptions.USDC,
   poolAssetOptions.USDT,
   poolAssetOptions.DAI,
-  poolAssetOptions.DAI2,
 ]
 
 function EstimatedEarning() {

@@ -2,44 +2,55 @@ import { useSWR } from 'modules/network/hooks/useSwr'
 import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 
 import {
-  ContractInvestor,
+  ContractInvestor_DAI_rDAI1,
+  ContractInvestor_USDC_rUSDC1,
+  ContractInvestor_USDT_rUSDT1,
   ContractCollateralManager,
 } from 'modules/contracts/contracts'
 
 export function useCollateralList() {
-  const { chainId, walletAddress } = useWeb3()
-  const contractInvestor = ContractInvestor.useContractWeb3()
+  const { chainId, library, walletAddress } = useWeb3()
+
   const contractCollateralManager = ContractCollateralManager.useContractWeb3()
-  const investorAddress = contractInvestor.address
+  // const investorAddress = contractInvestor.address
 
   const loans = useSWR(
-    walletAddress
-      ? `collaterals-${chainId}-${investorAddress}-${walletAddress}`
-      : null,
+    walletAddress ? `collaterals-${chainId}-${walletAddress}` : null,
     async () => {
-      if (!walletAddress) return
+      const signer = library?.getSigner()
 
-      const loansCount = await contractInvestor.getNumberOfLoans(walletAddress)
+      if (!walletAddress || !signer) return
 
-      const requests = Array.from(Array(Number(loansCount)))
-        .map((_, i) => i)
-        .reverse()
-        .map(async i => {
-          const loanId = await contractInvestor.loanIDs(walletAddress, i)
-          const collateral =
-            await contractCollateralManager.getCollateralLookup(
-              investorAddress,
+      const investors = [
+        ContractInvestor_DAI_rDAI1.connectWeb3({ chainId, library: signer }),
+        ContractInvestor_USDC_rUSDC1.connectWeb3({ chainId, library: signer }),
+        ContractInvestor_USDT_rUSDT1.connectWeb3({ chainId, library: signer }),
+      ]
+
+      const requestsInvestors = investors.map(async investor => {
+        const loansCount = await investor.getNumberOfLoans(walletAddress)
+        const requests = Array.from(Array(Number(loansCount)))
+          .map((_, i) => i)
+          .reverse()
+          .map(async i => {
+            const loanId = await investor.loanIDs(walletAddress, i)
+            const collateral =
+              await contractCollateralManager.getCollateralLookup(
+                investor.address,
+                loanId,
+              )
+            return {
               loanId,
-            )
-          return {
-            loanId,
-            collateral,
-          }
-        })
+              collateral,
+            }
+          })
+        const res = await Promise.all(requests)
+        return res
+      })
 
-      const res = await Promise.all(requests)
-
-      return res
+      const responses = await Promise.all(requestsInvestors)
+      const flattened = responses.flat()
+      return flattened
     },
   )
 

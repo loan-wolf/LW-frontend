@@ -41,7 +41,7 @@ interface InvestorInterface extends ethers.utils.Interface {
     "getLoanInfo(uint256)": FunctionFragment;
     "getNumberOfLoans(address)": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
-    "interestRate()": FunctionFragment;
+    "interestRateAnnual()": FunctionFragment;
     "isComplete(uint256)": FunctionFragment;
     "isDelinquent(uint256)": FunctionFragment;
     "issueBonds(uint256)": FunctionFragment;
@@ -155,7 +155,7 @@ interface InvestorInterface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "interestRate",
+    functionFragment: "interestRateAnnual",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -289,7 +289,7 @@ interface InvestorInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "interestRate",
+    functionFragment: "interestRateAnnual",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "isComplete", data: BytesLike): Result;
@@ -506,7 +506,7 @@ export class Investor extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    interestRate(overrides?: CallOverrides): Promise<[BigNumber]>;
+    interestRateAnnual(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     isComplete(
       _id: BigNumberish,
@@ -515,8 +515,8 @@ export class Investor extends BaseContract {
 
     isDelinquent(
       _id: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
     issueBonds(
       _id: BigNumberish,
@@ -748,14 +748,11 @@ export class Investor extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  interestRate(overrides?: CallOverrides): Promise<BigNumber>;
+  interestRateAnnual(overrides?: CallOverrides): Promise<BigNumber>;
 
   isComplete(_id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
-  isDelinquent(
-    _id: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  isDelinquent(_id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
   issueBonds(
     _id: BigNumberish,
@@ -984,7 +981,7 @@ export class Investor extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    interestRate(overrides?: CallOverrides): Promise<BigNumber>;
+    interestRateAnnual(overrides?: CallOverrides): Promise<BigNumber>;
 
     isComplete(_id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
@@ -1253,7 +1250,7 @@ export class Investor extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    interestRate(overrides?: CallOverrides): Promise<BigNumber>;
+    interestRateAnnual(overrides?: CallOverrides): Promise<BigNumber>;
 
     isComplete(
       _id: BigNumberish,
@@ -1262,7 +1259,7 @@ export class Investor extends BaseContract {
 
     isDelinquent(
       _id: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     issueBonds(
@@ -1472,7 +1469,9 @@ export class Investor extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    interestRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    interestRateAnnual(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     isComplete(
       _id: BigNumberish,
@@ -1481,7 +1480,7 @@ export class Investor extends BaseContract {
 
     isDelinquent(
       _id: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     issueBonds(

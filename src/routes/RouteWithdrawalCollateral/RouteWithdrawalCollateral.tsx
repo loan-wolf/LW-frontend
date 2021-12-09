@@ -12,7 +12,7 @@ import { NarrowWrapper } from 'shared/ui/layout/NarrowWrapper'
 import { PageLoader } from 'shared/ui/layout/PageLoader'
 
 import {
-  ContractInvestor,
+  ContractInvestor_DAI_rDAI1,
   ContractCollateralManager,
 } from 'modules/contracts/contracts'
 import { withWalletConnectCheck } from 'modules/wallet/hocs/withWalletConnectCheck'
@@ -26,10 +26,11 @@ function RouteWithdrawalCollateralRaw({ match }: Props) {
   const { chainId } = useWeb3()
 
   const loanId = match.params.loanId
-  const loanReq = ContractInvestor.useSwrWeb3('loanLookup', loanId)
+  // TODO: get actual investor
+  const loanReq = ContractInvestor_DAI_rDAI1.useSwrWeb3('loanLookup', loanId)
   const collateralReq = ContractCollateralManager.useSwrWeb3(
     'getCollateralLookup',
-    ContractInvestor.chainAddress.get(chainId),
+    ContractInvestor_DAI_rDAI1.chainAddress.get(chainId),
     loanId,
   )
   const [successData, setSuccessData] = useState<SuccessData | null>(null)

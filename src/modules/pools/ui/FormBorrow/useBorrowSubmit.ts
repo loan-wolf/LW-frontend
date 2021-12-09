@@ -7,7 +7,7 @@ import { useTxAssetAllowance } from 'modules/contracts/hooks/useTxAssetAllowance
 
 import { getPoolAssetAddress } from 'modules/pools/constants/poolAssets'
 import {
-  ContractInvestor,
+  ContractInvestor_DAI_rDAI1,
   ContractCollateralManager,
 } from 'modules/contracts/contracts'
 import type { FormValues, SuccessData } from './types'
@@ -29,7 +29,8 @@ export function useBorrowSubmit({
   collateralAmount,
 }: Args) {
   const { chainId, walletAddress } = useWeb3()
-  const contractInvestor = ContractInvestor.useContractWeb3()
+  // TODO: must depends on asset
+  const contractInvestor = ContractInvestor_DAI_rDAI1.useContractWeb3()
   const [isSubmitting, setSubmitting] = useState(false)
   const { makeAllowanceIfNeeded, txAllowance } = useTxAssetAllowance()
 
