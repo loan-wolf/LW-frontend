@@ -6,7 +6,7 @@ import {
   getERCContractByAsset,
 } from 'modules/pools/constants/poolAssets'
 
-export function useAssetContractGetter() {
+export function useConnectorAssetERC20() {
   const { library, chainId } = useWeb3()
 
   const getAssetContract = useCallback(

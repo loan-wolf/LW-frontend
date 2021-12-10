@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 import { useSWR } from 'modules/network/hooks/useSwr'
 import { useRepaymentSubmit } from './useRepaymentSubmit'
 import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
-import { useAssetContractGetter } from 'modules/pools/hooks/useAssetContractGetter'
+import { useConnectorAssetERC20 } from 'modules/pools/hooks/useConnectorAssetERC20'
 
 import { Text } from 'shared/ui/common/Text'
 import { InputControl } from 'shared/ui/controls/Input'
@@ -46,7 +46,7 @@ type Props = {
 
 export function FormRepayment({ loan, loanId, onSuccess }: Props) {
   const { chainId, walletAddress } = useWeb3()
-  const getAssetContract = useAssetContractGetter()
+  const connectAssetContract = useConnectorAssetERC20()
   const [isLocked, setLocked] = useState(false)
   const handleUnlock = useCallback(() => setLocked(false), [])
 
@@ -75,7 +75,7 @@ export function FormRepayment({ loan, loanId, onSuccess }: Props) {
     depositedAsset ? `repayment-max-${depositedAsset}` : null,
     () => {
       if (!depositedAsset || !walletAddress) return null
-      const contract = getAssetContract(depositedAsset)
+      const contract = connectAssetContract(depositedAsset)
       const balance = contract.balanceOf(walletAddress)
       return balance
     },

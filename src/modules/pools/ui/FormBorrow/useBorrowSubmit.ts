@@ -4,13 +4,13 @@ import { useCallback, useState } from 'react'
 import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useTransactionSender } from 'modules/blockChain/hooks/useTransactionSender'
 import { useTxAssetAllowance } from 'modules/contracts/hooks/useTxAssetAllowance'
+import { useConnectorInvestor } from 'modules/pools/hooks/useConnectorInvestor'
 
 import {
   getPoolAssetAddress,
   PoolAsset,
 } from 'modules/pools/constants/poolAssets'
 import { ContractCollateralManager } from 'modules/contracts/contracts'
-import { getInvestorContractByAsset } from 'modules/pools/utils/getInvestorContractByAsset'
 import type { FormValues, SuccessData } from './types'
 import * as errors from 'shared/constants/errors'
 
@@ -29,9 +29,10 @@ export function useBorrowSubmit({
   onSuccess,
   collateralAmount,
 }: Args) {
-  const { chainId, library, walletAddress } = useWeb3()
+  const { chainId, walletAddress } = useWeb3()
   const [isSubmitting, setSubmitting] = useState(false)
   const { makeAllowanceIfNeeded, txAllowance } = useTxAssetAllowance()
+  const connectInvstorContract = useConnectorInvestor()
 
   /**
    * Borrow tx
@@ -50,9 +51,7 @@ export function useBorrowSubmit({
       address: string
       term: number
     }) => {
-      const Investor = getInvestorContractByAsset(borrowedAsset)
-      const investor = Investor.connectWeb3({ chainId, library })
-
+      const investor = connectInvstorContract(borrowedAsset)
       const numberOfLoans = await investor.getNumberOfLoans(address)
       const loanId = await investor.getId(address, numberOfLoans)
 
@@ -82,7 +81,7 @@ export function useBorrowSubmit({
 
       return populated
     },
-    [chainId, collateralAmount, library],
+    [collateralAmount, connectInvstorContract],
   )
   const txBorrow = useTransactionSender(populateBorrow)
 
