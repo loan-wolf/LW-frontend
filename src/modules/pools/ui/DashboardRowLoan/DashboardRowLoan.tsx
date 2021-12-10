@@ -75,7 +75,7 @@ export function DashboardRowLoan({
 
   // Сейчас в контракте ошибка, это значение должно быть в paymentDueDate, пока будем так
   const maturityTime =
-    (Number(paymentDueDate) + Number(paymentPeriod) * 24 * 60 * 60) * 1000
+    Number(paymentDueDate) + Number(paymentPeriod) * 24 * 60 * 60
 
   const apr = Number(formatEther(interestRateWei)) * 12
   const principal = Number(formatEther(principalWei))
