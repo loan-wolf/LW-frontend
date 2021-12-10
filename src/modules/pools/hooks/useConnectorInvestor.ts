@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
-import { getInvestorContractByAsset } from 'modules/pools/utils/getInvestorContractByAsset'
+import { getInvestorContractByAsset } from 'modules/pools/utils/getInvestorContract'
 import { PoolAsset } from 'modules/pools/constants/poolAssets'
 
 export function useConnectorInvestor() {

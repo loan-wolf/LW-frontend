@@ -1,4 +1,5 @@
 import { memoize } from 'lodash'
+import { Chains } from 'modules/blockChain/chains'
 import { PoolAsset } from '../constants/poolAssets'
 import {
   ContractInvestor_DAI_rDAI1,
@@ -21,3 +22,13 @@ export const getInvestorContractByAsset = memoize((asset: PoolAsset) => {
   if (!contract) throw new Error(`No investor contract for ${asset}`)
   return contract
 })
+
+export const getInvestorContractByAddress = memoize(
+  (chainId: Chains, address: string) => {
+    const contract = Object.values(INVESTORS_MAP).find(
+      c => c?.chainAddress.get(chainId) === address,
+    )
+    if (!contract) throw new Error(`No investor contract for ${address}`)
+    return contract
+  },
+)

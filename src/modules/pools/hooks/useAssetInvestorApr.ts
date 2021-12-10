@@ -1,7 +1,7 @@
 import * as ethers from 'ethers'
 import { useSWR } from 'modules/network/hooks/useSwr'
 import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
-import { getInvestorContractByAsset } from '../utils/getInvestorContractByAsset'
+import { getInvestorContractByAsset } from '../utils/getInvestorContract'
 import type { PoolAsset } from '../constants/poolAssets'
 
 export function useAssetApr(asset: PoolAsset | '') {

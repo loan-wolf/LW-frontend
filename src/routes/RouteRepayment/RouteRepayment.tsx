@@ -1,5 +1,8 @@
-import { useState } from 'react'
 import { match as Match } from 'react-router'
+import { useState } from 'react'
+import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
+import { useContractSwr } from 'modules/contracts/hooks/useContractSwr'
+import { useContractInstanceWeb3 } from 'modules/contracts/hooks/useContractInstance'
 
 import { FormRepayment, SuccessData } from 'modules/pools/ui/FormRepayment'
 import { SendedTransaction } from 'modules/pools/ui/SendedTransaction'
@@ -7,23 +10,29 @@ import { ContractSuccessTitle } from 'shared/ui/common/ContractSuccessTitle'
 import { NarrowWrapper } from 'shared/ui/layout/NarrowWrapper'
 import { PageLoader } from 'shared/ui/layout/PageLoader'
 
-import { ContractInvestor_DAI_rDAI1 } from 'modules/contracts/contracts'
 import { withWalletConnectCheck } from 'modules/wallet/hocs/withWalletConnectCheck'
 import { createRoute } from 'modules/router/utils/createRoute'
+import { getInvestorContractByAddress } from 'modules/pools/utils/getInvestorContract'
 
 type Props = {
-  match: Match<{ loanId: string }>
+  match: Match<{ investorAddress: string; loanId: string }>
 }
 
 function RouteRepaymentRaw({ match }: Props) {
-  const loanId = match.params.loanId
-  // TODO: Get actual investor
-  const loanReq = ContractInvestor_DAI_rDAI1.useSwrWeb3('loanLookup', loanId)
+  const { investorAddress, loanId } = match.params
+  const { chainId } = useWeb3()
   const [successData, setSuccessData] = useState<SuccessData | null>(null)
 
-  const { data: loan } = loanReq
+  const Investor = getInvestorContractByAddress(chainId, investorAddress)
+  const investor = useContractInstanceWeb3(Investor)
 
-  if (loanReq.isLoading || !loan) {
+  const { isLoading, data: loan } = useContractSwr(
+    investor,
+    'loanLookup',
+    loanId,
+  )
+
+  if (isLoading || !loan) {
     return <PageLoader />
   }
 
@@ -38,7 +47,12 @@ function RouteRepaymentRaw({ match }: Props) {
 
   return (
     <NarrowWrapper>
-      <FormRepayment loan={loan} loanId={loanId} onSuccess={setSuccessData} />
+      <FormRepayment
+        loan={loan}
+        loanId={loanId}
+        investorAddress={investorAddress}
+        onSuccess={setSuccessData}
+      />
     </NarrowWrapper>
   )
 }

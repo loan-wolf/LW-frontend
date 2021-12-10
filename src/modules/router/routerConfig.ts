@@ -66,7 +66,7 @@ export const routes: RouteConfig[] = [
         ],
       },
       {
-        path: links.repayment(':loanId'),
+        path: links.repayment(':investorAddress', ':loanId'),
         ...routeRepayment,
       },
       {

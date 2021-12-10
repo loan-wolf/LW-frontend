@@ -1,7 +1,3 @@
-import * as ethers from 'ethers'
-import { useMemo } from 'react'
-import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
-
 import { Text } from 'shared/ui/common/Text'
 import { Tooltip } from 'shared/ui/common/Tooltip'
 import { Button } from 'shared/ui/controls/Button'
@@ -11,21 +7,13 @@ import { DropdownLoan } from '../DropdownLoan'
 import { DashboardRow } from 'shared/ui/common/DashboardRow'
 import { FormattedDate } from 'shared/ui/utils/FormattedDate'
 
-import {
-  getPoolAssetIcon,
-  getPoolAssetByAddress,
-} from 'modules/pools/constants/poolAssets'
+import { getPoolAssetIcon } from 'modules/pools/constants/poolAssets'
 
-import {
-  ContractCollateralManager,
-  ContractPriceFeed,
-} from 'modules/contracts/contracts'
 import type { Loan } from 'modules/pools/types/Loan'
-import * as links from 'modules/router/links'
+import { useLoanCalcs } from 'modules/pools/hooks/useLoanCalcs'
 import { trimMiddleString } from 'shared/utils/trimMiddleString'
+import * as links from 'modules/router/links'
 import s from './DashboardRowLoan.module.scss'
-
-const { formatEther } = ethers.utils
 
 type Props = {
   loan: Loan
@@ -42,53 +30,21 @@ export function DashboardRowLoan({
   investorAddress,
   className,
 }: Props) {
-  const { chainId } = useWeb3()
   const {
-    ERC20Address,
-    principal: principalWei,
-    interestRate: interestRateWei,
-    paymentDueDate,
-    paymentPeriod,
-  } = loan
-
-  const borrowedAsset = useMemo(
-    () => getPoolAssetByAddress(ERC20Address, chainId),
-    [ERC20Address, chainId],
-  )
-
-  const collateralInfo = ContractCollateralManager.useSwrWeb3(
-    'getCollateralLookup',
-    investorAddress,
+    apr,
+    borrowedAsset,
+    principal,
+    interest,
+    totalDebt,
+    totalDebtUSD,
+    maturityTime,
+    collateralAmount,
+    collateralAsset,
+  } = useLoanCalcs({
+    loan,
     loanId,
-  )
-
-  const { data: borrowedAssetPriceWei } = ContractPriceFeed.useSwrWeb3(
-    'getLatestPriceUSD',
-    ERC20Address,
-  )
-
-  const borrowedAssetPrice =
-    borrowedAssetPriceWei && Number(formatEther(borrowedAssetPriceWei))
-
-  const loanDate = Number(loan.paymentDueDate) * 1000
-  const daysPassed = Math.ceil((Date.now() - loanDate) / 1000 / 3600 / 24)
-
-  // Сейчас в контракте ошибка, это значение должно быть в paymentDueDate, пока будем так
-  const maturityTime =
-    Number(paymentDueDate) + Number(paymentPeriod) * 24 * 60 * 60
-
-  const apr = Number(formatEther(interestRateWei)) * 12
-  const principal = Number(formatEther(principalWei))
-  const interest = principal * (apr / 365 / 100) * daysPassed
-  const totalDebt = principal + interest
-  const totalDebtUSD = borrowedAssetPrice && totalDebt * borrowedAssetPrice
-
-  const collateralAsset =
-    collateralInfo.data &&
-    getPoolAssetByAddress(collateralInfo.data[0], chainId)
-
-  const collateralAmount =
-    collateralInfo.data && ethers.utils.formatEther(collateralInfo.data[1])
+    investorAddress,
+  })
 
   return (
     <DashboardRow className={className}>
@@ -186,7 +142,7 @@ export function DashboardRowLoan({
         <div className={s.actions}>
           {!isCompleted && (
             <Button
-              link={links.repayment(loanId)}
+              link={links.repayment(investorAddress, loanId)}
               className={s.action}
               fashion="greenapple-ghost"
               size={40}

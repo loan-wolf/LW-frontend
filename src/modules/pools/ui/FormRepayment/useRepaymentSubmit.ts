@@ -9,7 +9,7 @@ import { useConnectorInvestor } from 'modules/pools/hooks/useConnectorInvestor'
 import { ContractBonds } from 'modules/contracts/contracts'
 import type { FormValues, SuccessData } from './types'
 import type { PoolAsset } from 'modules/pools/constants/poolAssets'
-import { getInvestorContractByAsset } from 'modules/pools/utils/getInvestorContractByAsset'
+import { getInvestorContractByAsset } from 'modules/pools/utils/getInvestorContract'
 import * as errors from 'shared/constants/errors'
 
 type Args = {
@@ -83,15 +83,15 @@ export function useRepaymentSubmit({
         setLocked(true)
       } else {
         try {
-          const { amount, depositedAsset } = formValues
+          const { amount, borrowedAsset } = formValues
 
-          if (!depositedAsset) {
+          if (!borrowedAsset) {
             throw new Error(errors.depositAssetNotSelected)
           }
 
           setSubmitting(true)
 
-          const Investor = getInvestorContractByAsset(depositedAsset)
+          const Investor = getInvestorContractByAsset(borrowedAsset)
           const investorAddress = Investor.chainAddress.get(chainId)
 
           const txApprovalRes = await sendApproval(investorAddress)
@@ -102,11 +102,11 @@ export function useRepaymentSubmit({
           await makeAllowanceIfNeeded({
             spenderAddress: investorAddress,
             amountWei,
-            asset: depositedAsset,
+            asset: borrowedAsset,
           })
 
           const txRepaymentRes = await sendPayment({
-            asset: depositedAsset,
+            asset: borrowedAsset,
             amountWei,
           })
 
