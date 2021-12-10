@@ -23,14 +23,14 @@
   }
 }
 
-.collateralAmount {
+.truncatedAmount {
   display: inline-block;
   max-width: 90px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.collateralWrap {
+.truncatedWrap {
   display: flex;
   align-items: center;
 }

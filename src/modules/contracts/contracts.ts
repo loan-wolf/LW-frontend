@@ -76,6 +76,14 @@ export const ContractScoreDB = createContractHelpers({
   },
 })
 
+export const ContractHardcodedCreditScores = createContractHelpers({
+  name: 'HardcodedCreditScores',
+  factory: generated.HardcodedCreditScores__factory,
+  address: {
+    [Chains.Kovan]: '0x8c844F35fF60842Bb0e6B7807464c4de554D616e',
+  },
+})
+
 /**
  * Collaterals
  */

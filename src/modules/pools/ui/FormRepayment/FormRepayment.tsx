@@ -10,7 +10,7 @@ import { useAssetContractGetter } from 'modules/pools/hooks/useAssetContractGett
 import { Text } from 'shared/ui/common/Text'
 import { InputControl } from 'shared/ui/controls/Input'
 import { SelectControl } from 'shared/ui/controls/Select'
-import { ToggleControl } from 'shared/ui/controls/Toggle'
+// import { ToggleControl } from 'shared/ui/controls/Toggle'
 import { InputMaxAction } from 'shared/ui/controls/InputMaxAction'
 import { FormSubmitter } from 'shared/ui/common/FormSubmitter'
 import { FormTransactionRow } from 'modules/blockChain/ui/FormTransactionRow'
@@ -69,6 +69,8 @@ export function FormRepayment({ loan, loanId, onSuccess }: Props) {
     setValue('depositedAsset', depositedAsset || '')
   }, [depositedAsset, setValue])
 
+  // ???
+  // TODO: get actual max amont, not user's balance
   const maxAmountWei = useSWR(
     depositedAsset ? `repayment-max-${depositedAsset}` : null,
     () => {
@@ -128,7 +130,8 @@ export function FormRepayment({ loan, loanId, onSuccess }: Props) {
             action={<InputMaxAction onClick={handleClickMaxAmount} />}
           />
 
-          <ToggleControl label="Return collateral" name="returnCollateral" />
+          {/* TODO: develop ux for this kind of chained transaction */}
+          {/* <ToggleControl label="Return collateral" name="returnCollateral" /> */}
 
           {returnCollateral && (
             <div className={s.inputWithHintWrap}>

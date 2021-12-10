@@ -25,6 +25,8 @@ import * as links from 'modules/router/links'
 import { trimMiddleString } from 'shared/utils/trimMiddleString'
 import s from './DashboardRowLoan.module.scss'
 
+const { formatEther } = ethers.utils
+
 type Props = {
   loan: Loan
   loanId: string
@@ -43,9 +45,10 @@ export function DashboardRowLoan({
   const { chainId } = useWeb3()
   const {
     ERC20Address,
-    principal: principalRaw,
-    interestRate,
+    principal: principalWei,
+    interestRate: interestRateWei,
     paymentDueDate,
+    paymentPeriod,
   } = loan
 
   const borrowedAsset = useMemo(
@@ -59,25 +62,30 @@ export function DashboardRowLoan({
     loanId,
   )
 
-  const { data: borrowedAssetPrice } = ContractPriceFeed.useSwrWeb3(
+  const { data: borrowedAssetPriceWei } = ContractPriceFeed.useSwrWeb3(
     'getLatestPriceUSD',
     ERC20Address,
   )
 
-  const maturityTime = Number(paymentDueDate)
-  const principal = Number(ethers.utils.formatEther(principalRaw))
-  const apr = Number(interestRate) / 100
-  const interest = principal / apr
-  const totalDebt = principal + interest
-  const totalDebtUSD =
-    borrowedAssetPrice && Number(borrowedAssetPrice) * totalDebt
+  const borrowedAssetPrice =
+    borrowedAssetPriceWei && Number(formatEther(borrowedAssetPriceWei))
 
-  const collateralAsset = useMemo(
-    () =>
-      collateralInfo.data &&
-      getPoolAssetByAddress(collateralInfo.data[0], chainId),
-    [collateralInfo.data, chainId],
-  )
+  const loanDate = Number(loan.paymentDueDate) * 1000
+  const daysPassed = Math.ceil((Date.now() - loanDate) / 1000 / 3600 / 24)
+
+  // Сейчас в контракте ошибка, это значение должно быть в paymentDueDate, пока будем так
+  const maturityTime =
+    (Number(paymentDueDate) + Number(paymentPeriod) * 24 * 60 * 60) * 1000
+
+  const apr = Number(formatEther(interestRateWei)) * 12
+  const principal = Number(formatEther(principalWei))
+  const interest = principal * (apr / 365 / 100) * daysPassed
+  const totalDebt = principal + interest
+  const totalDebtUSD = borrowedAssetPrice && totalDebt * borrowedAssetPrice
+
+  const collateralAsset =
+    collateralInfo.data &&
+    getPoolAssetByAddress(collateralInfo.data[0], chainId)
 
   const collateralAmount =
     collateralInfo.data && ethers.utils.formatEther(collateralInfo.data[1])
@@ -97,7 +105,15 @@ export function DashboardRowLoan({
             )
           }
         />
-        <InfoFieldValue label="APR" value={`${apr}%`} />
+        <InfoFieldValue
+          label="APR"
+          value={
+            <Tooltip tooltip={apr} className={s.truncatedWrap}>
+              <span className={s.truncatedAmount}>{apr}</span>&nbsp;
+              <span>%</span>
+            </Tooltip>
+          }
+        />
       </div>
 
       <div className={s.column}>
@@ -105,9 +121,16 @@ export function DashboardRowLoan({
           label="Total debt"
           value={
             <div>
-              {totalDebt}&nbsp;{borrowedAsset}{' '}
+              <Tooltip tooltip={totalDebt} className={s.truncatedWrap}>
+                <span className={s.truncatedAmount}>{totalDebt}</span>&nbsp;
+                <span>{borrowedAsset}</span>
+              </Tooltip>
               <Text tag="span" size={16} color="secondary">
-                ({totalDebtUSD}&nbsp;USD)
+                <Tooltip tooltip={totalDebtUSD} className={s.truncatedWrap}>
+                  (<span className={s.truncatedAmount}>{totalDebtUSD}</span>
+                  &nbsp;
+                  <span>USD</span>)
+                </Tooltip>
               </Text>
             </div>
           }
@@ -116,17 +139,19 @@ export function DashboardRowLoan({
           <InfoFieldValue
             label="Principal"
             value={
-              <>
-                {principal}&nbsp;{borrowedAsset}
-              </>
+              <Tooltip tooltip={principal} className={s.truncatedWrap}>
+                <span className={s.truncatedAmount}>{principal}</span>&nbsp;
+                <span>{borrowedAsset}</span>
+              </Tooltip>
             }
           />
           <InfoFieldValue
             label="Interest"
             value={
-              <>
-                {interest}&nbsp;{borrowedAsset}
-              </>
+              <Tooltip tooltip={interest} className={s.truncatedWrap}>
+                <span className={s.truncatedAmount}>{interest}</span>&nbsp;
+                <span>{borrowedAsset}</span>
+              </Tooltip>
             }
           />
         </InfoFieldValueCouple>
@@ -136,8 +161,9 @@ export function DashboardRowLoan({
         <InfoFieldValue
           label="Collateral Amount"
           value={
-            <Tooltip tooltip={collateralAmount} className={s.collateralWrap}>
-              <span className={s.collateralAmount}>{collateralAmount}</span>{' '}
+            <Tooltip tooltip={collateralAmount} className={s.truncatedWrap}>
+              <span className={s.truncatedAmount}>{collateralAmount}</span>
+              &nbsp;
               <span>{collateralAsset}</span>
             </Tooltip>
           }

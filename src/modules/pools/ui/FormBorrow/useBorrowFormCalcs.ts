@@ -7,9 +7,12 @@ import {
   PoolAsset,
   getPoolAssetAddress,
 } from 'modules/pools/constants/poolAssets'
-import { ContractPriceFeed } from 'modules/contracts/contracts'
+import {
+  ContractHardcodedCreditScores,
+  ContractPriceFeed,
+} from 'modules/contracts/contracts'
 
-const LTV = 12
+const HARDCODED_CREDIT_SCORE = 5
 const LIQ_THRESHOLD = 80
 
 type Args = {
@@ -28,7 +31,7 @@ export function useBorrowFormCalcs({
   const { chainId } = useWeb3()
 
   const { data: aprData } = useAssetApr(borrowedAsset)
-  const apr = aprData && Number(aprData) / 100
+  const apr = aprData && Number(aprData)
 
   const amountToBeRepaid = apr && amount + ((apr / 100) * amount * term) / 365
 
@@ -39,6 +42,13 @@ export function useBorrowFormCalcs({
   //   borrowedAddress ? 'getLatestPriceUSD' : null,
   //   borrowedAddress!,
   // )
+
+  // TODO: Take real credit score when it will be possible
+  const { data: ltvWei } = ContractHardcodedCreditScores.useSwrWeb3(
+    'LTV',
+    HARDCODED_CREDIT_SCORE,
+  )
+  const ltv = ltvWei && Number(ethers.utils.formatEther(ltvWei))
 
   const collateralAddress =
     collateralAsset && getPoolAssetAddress(collateralAsset, chainId)
@@ -52,8 +62,8 @@ export function useBorrowFormCalcs({
     collateralPriceData && Number(ethers.utils.formatEther(collateralPriceData))
 
   const collateralAmount =
-    collateralAsset && collateralPrice && amount
-      ? (amount / collateralPrice / (LTV / 100)).toFixed(18)
+    collateralAsset && collateralPrice && amount && ltv
+      ? (amount / collateralPrice / (ltv / 100)).toFixed(18)
       : ''
 
   const liquidationPrice =
@@ -66,7 +76,7 @@ export function useBorrowFormCalcs({
       : ''
 
   return {
-    LTV,
+    ltv,
     LIQ_THRESHOLD,
     apr,
     collateralAmount,

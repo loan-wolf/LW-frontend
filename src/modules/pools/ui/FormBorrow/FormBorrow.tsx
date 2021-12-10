@@ -22,7 +22,6 @@ import {
   poolAssetOptions,
   getPoolAssetIcon,
 } from 'modules/pools/constants/poolAssets'
-import { formatNumber } from 'shared/utils/formatNumber'
 import type { FormValues, SuccessData } from './types'
 import { useBorrowFormCalcs } from './useBorrowFormCalcs'
 
@@ -59,7 +58,7 @@ export function FormBorrow({ onSuccess }: Props) {
   const term = Number(watch('term'))
 
   const {
-    LTV,
+    ltv,
     LIQ_THRESHOLD,
     apr,
     collateralAmount,
@@ -143,15 +142,13 @@ export function FormBorrow({ onSuccess }: Props) {
           <FormInfoItem label="APR" value={apr && `${apr}%`} />
           <FormInfoItem
             label="Amount to be repaid"
-            value={
-              amountToBeRepaid &&
-              term &&
-              `${formatNumber(amountToBeRepaid, 2)} ${borrowedAsset}`
-            }
+            value={amountToBeRepaid}
+            sign={borrowedAsset}
+            isTooltiped
           />
         </FormInfoFrame>
         <FormInfoFrame>
-          <FormInfoItem label="LTV" value={`${LTV}%`} />
+          <FormInfoItem label="LTV" value={`${ltv}%`} />
           <FormInfoItem
             label="Required collateral"
             value={collateralAmount}
