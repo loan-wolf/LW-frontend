@@ -70,7 +70,7 @@ export const routes: RouteConfig[] = [
         ...routeRepayment,
       },
       {
-        path: links.withdrawalCollateral(':loanId'),
+        path: links.withdrawalCollateral(':investorAddress', ':loanId'),
         ...routeWithdrawalCollateral,
       },
       {

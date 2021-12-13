@@ -4,10 +4,7 @@ import { useCallback, useState } from 'react'
 import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useTransactionSender } from 'modules/blockChain/hooks/useTransactionSender'
 
-import {
-  // ContractInvestor,
-  ContractCollateralManager,
-} from 'modules/contracts/contracts'
+import { ContractCollateralManager } from 'modules/contracts/contracts'
 import type { FormValues, SuccessData } from './types'
 import * as errors from 'shared/constants/errors'
 
@@ -16,7 +13,7 @@ type Args = {
   onSuccess: (res: SuccessData) => void
 }
 
-export function useWithdrawalCollateral({ loanId, onSuccess }: Args) {
+export function useWithdrawalCollateralSubmit({ loanId, onSuccess }: Args) {
   const { walletAddress } = useWeb3()
   const [isSubmitting, setSubmitting] = useState(false)
   const contractCollateralManager = ContractCollateralManager.useContractWeb3()

@@ -27,8 +27,6 @@ export function useRepaymentSubmit({
 }: Args) {
   const { chainId } = useWeb3()
   const contractBonds = ContractBonds.useContractWeb3()
-  // TODO: must depends on asset
-  // const contractInvestor = ContractInvestor_DAI_rDAI1.useContractWeb3()
   const [isSubmitting, setSubmitting] = useState(false)
   const { makeAllowanceIfNeeded, txAllowance } = useTxAssetAllowance()
   const connectInvstorContract = useConnectorInvestor()

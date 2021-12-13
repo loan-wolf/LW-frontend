@@ -14,6 +14,7 @@ export type CollateralDataMock = {
   loanId: BigNumberish
   asset?: PoolAsset
   amount: BigNumberish
+  investorAddress: string
   // unlockDate: string
 }
 
@@ -27,6 +28,7 @@ export function DashboardRowCollateral({ collateral, className }: Props) {
     loanId,
     asset,
     amount,
+    investorAddress,
     //  unlockDate
   } = collateral
 
@@ -71,6 +73,7 @@ export function DashboardRowCollateral({ collateral, className }: Props) {
       />
       <div className={s.column}>
         <DropdownCollateral
+          investorAddress={investorAddress}
           loanId={loanId.toString()}
           onBorrow={() => console.log('onBorrow')}
           onDeposit={() => console.log('onDeposit')}

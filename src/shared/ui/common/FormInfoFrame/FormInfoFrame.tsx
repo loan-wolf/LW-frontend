@@ -11,12 +11,19 @@ type ItemProps = {
   value: React.ReactNode
   sign?: React.ReactNode
   isTooltiped?: boolean
+  tooltipMaxWith?: number
 }
 
-export function FormInfoItem({ label, value, sign, isTooltiped }: ItemProps) {
+export function FormInfoItem({
+  label,
+  value,
+  sign,
+  isTooltiped,
+  tooltipMaxWith,
+}: ItemProps) {
   const valueEl = isTooltiped ? (
     <div className={s.truncatedValueWrap}>
-      <Tooltip tooltip={value}>
+      <Tooltip tooltip={value} maxWidth={tooltipMaxWith}>
         <Text size={20} weight={500} truncateLines={1}>
           {value}
         </Text>

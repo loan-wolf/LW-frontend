@@ -39,6 +39,7 @@ export function useCollateralList() {
               )
             return {
               loanId,
+              investorAddress: investor.address,
               collateral,
             }
           })

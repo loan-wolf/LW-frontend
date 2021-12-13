@@ -161,11 +161,7 @@ export function DashboardRowLoan({
           label="Loan Id"
           value={
             <>
-              <Tooltip
-                position="top-right"
-                tooltip={loanId}
-                classNameBody={s.loanIdTooltip}
-              >
+              <Tooltip position="top-right" tooltip={loanId} maxWidth={210}>
                 {trimMiddleString(loanId, 5)}
               </Tooltip>
             </>

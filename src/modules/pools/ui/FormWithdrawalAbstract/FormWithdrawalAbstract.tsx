@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { InputControl } from 'shared/ui/controls/Input'
@@ -34,6 +34,7 @@ type Props = {
   defaultAsset: PoolAsset
   maxAmount?: string
   isSubmitting: boolean
+  info?: React.ReactNode
   onSubmit: (formValues: FormValues) => void
 }
 
@@ -41,6 +42,7 @@ export function FormWithdrawalAbstract({
   defaultAsset,
   maxAmount,
   isSubmitting,
+  info,
   onSubmit,
 }: Props) {
   const [isLocked, setLocked] = useState(false)
@@ -125,6 +127,8 @@ export function FormWithdrawalAbstract({
           />
         </FormLockedValuesList>
       )}
+
+      {info}
 
       <FormSubmitter
         isLocked={isLocked}

@@ -10,9 +10,9 @@ import { ContractSuccessTitle } from 'shared/ui/common/ContractSuccessTitle'
 import { NarrowWrapper } from 'shared/ui/layout/NarrowWrapper'
 import { PageLoader } from 'shared/ui/layout/PageLoader'
 
+import { getInvestorContractByAddress } from 'modules/pools/utils/getInvestorContract'
 import { withWalletConnectCheck } from 'modules/wallet/hocs/withWalletConnectCheck'
 import { createRoute } from 'modules/router/utils/createRoute'
-import { getInvestorContractByAddress } from 'modules/pools/utils/getInvestorContract'
 
 type Props = {
   match: Match<{ investorAddress: string; loanId: string }>

@@ -17,6 +17,7 @@ function RouteDashboardCollateral() {
   const displayCollaterals = useMemo(() => {
     return collaterals.data?.map(item => ({
       loanId: item.loanId,
+      investorAddress: item.investorAddress,
       asset: getPoolAssetByAddress(item.collateral[0], chainId),
       amount: item.collateral[1],
     }))
