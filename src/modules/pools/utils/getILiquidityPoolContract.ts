@@ -10,8 +10,8 @@ import { filterUndef } from 'shared/utils/filterUndef'
 
 export const ILIQUIDITY_POOL_CONTRACTS_MAP = {
   [PoolAsset.DAI]: ContractILiquidityPool_DAI_rDAI1,
-  [PoolAsset.USDT]: ContractILiquidityPool_USDC_rUSDC1,
-  [PoolAsset.USDC]: ContractILiquidityPool_USDT_rUSDT1,
+  [PoolAsset.USDT]: ContractILiquidityPool_USDT_rUSDT1,
+  [PoolAsset.USDC]: ContractILiquidityPool_USDC_rUSDC1,
   [PoolAsset.ETH]: null,
   [PoolAsset.WBTC]: null,
 } as const
@@ -41,7 +41,6 @@ export const getILiquidityPoolContractByAddress = memoize(
 
 export const getAssetByPoolAddress = memoize(
   (chainId: Chains, address: string) => {
-    console.log(address, toPairs(ILIQUIDITY_POOL_CONTRACTS_MAP))
     const contract = toPairs(ILIQUIDITY_POOL_CONTRACTS_MAP).find(
       ([asset, c]) => c?.chainAddress.get(chainId) === address,
     )
