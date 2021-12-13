@@ -6,14 +6,17 @@ import {
   ContractInvestor_USDT_rUSDT1,
   ContractInvestor_USDC_rUSDC1,
 } from 'modules/contracts/contracts'
+import { filterUndef } from 'shared/utils/filterUndef'
 
-const INVESTORS_MAP = {
+export const INVESTORS_MAP = {
   [PoolAsset.DAI]: ContractInvestor_DAI_rDAI1,
   [PoolAsset.USDT]: ContractInvestor_USDT_rUSDT1,
   [PoolAsset.USDC]: ContractInvestor_USDC_rUSDC1,
   [PoolAsset.ETH]: null,
   [PoolAsset.WBTC]: null,
 } as const
+
+export const INVESTORS_MAP_LIST = filterUndef(Object.values(INVESTORS_MAP))
 
 // TODO: `useGlobalMemo` hook instead of memoize
 // may be more efficient in garbage collecting aspect
@@ -25,10 +28,11 @@ export const getInvestorContractByAsset = memoize((asset: PoolAsset) => {
 
 export const getInvestorContractByAddress = memoize(
   (chainId: Chains, address: string) => {
-    const contract = Object.values(INVESTORS_MAP).find(
-      c => c?.chainAddress.get(chainId) === address,
+    const contract = INVESTORS_MAP_LIST.find(
+      c => c.chainAddress.get(chainId) === address,
     )
     if (!contract) throw new Error(`No investor contract for ${address}`)
     return contract
   },
+  (...args) => args.join('-'),
 )

@@ -57,6 +57,7 @@ export const getPoolAssetByAddress = memoize(
       get(0),
     )(assetERCContracts) as PoolAsset | undefined
   },
+  (...args) => args.join('-'),
 )
 
 export const poolAssetOptions = {

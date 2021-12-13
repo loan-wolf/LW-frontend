@@ -5,14 +5,17 @@ import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useTransactionSender } from 'modules/blockChain/hooks/useTransactionSender'
 import { useTxAssetAllowance } from 'modules/contracts/hooks/useTxAssetAllowance'
 
-import { getPoolAssetAddress } from 'modules/pools/constants/poolAssets'
+import {
+  getPoolAssetAddress,
+  PoolAsset,
+} from 'modules/pools/constants/poolAssets'
 import {
   ContractTrader,
   ContractLiquidityFarm,
-  ContractILiquidityPool,
 } from 'modules/contracts/contracts'
 import type { FormValues, SuccessData } from './types'
 import { logGroup } from 'shared/utils/logGroup'
+import { getILiquidityPoolContractByAsset } from 'modules/pools/utils/getILiquidityPoolContract'
 import * as errors from 'shared/constants/errors'
 
 type Args = {
@@ -31,8 +34,15 @@ export function useDepositSubmit({ isLocked, setLocked, onSuccess }: Args) {
    * Deposit tx
    */
   const populateDeposit = useCallback(
-    async ({ amountWei }: { amountWei: ethers.BigNumberish }) => {
-      const poolAddress = ContractILiquidityPool.chainAddress.get(chainId)
+    async ({
+      depositedAsset,
+      amountWei,
+    }: {
+      depositedAsset: PoolAsset
+      amountWei: ethers.BigNumberish
+    }) => {
+      const PoolContract = getILiquidityPoolContractByAsset(depositedAsset)
+      const poolAddress = PoolContract.chainAddress.get(chainId)
 
       logGroup('Submitting deposit', {
         'Pool address': poolAddress,
@@ -80,6 +90,7 @@ export function useDepositSubmit({ isLocked, setLocked, onSuccess }: Args) {
 
           const txDepositRes = await sendDeposit({
             amountWei,
+            depositedAsset,
           })
 
           setSubmitting(false)

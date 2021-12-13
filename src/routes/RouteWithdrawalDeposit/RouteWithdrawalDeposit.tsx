@@ -12,7 +12,7 @@ import { ContractSuccessTitle } from 'shared/ui/common/ContractSuccessTitle'
 import { NarrowWrapper } from 'shared/ui/layout/NarrowWrapper'
 import { PageLoader } from 'shared/ui/layout/PageLoader'
 
-import { getPoolContractByAddress } from 'modules/pools/utils/getPoolContract'
+import { getILiquidityPoolContractByAddress } from 'modules/pools/utils/getILiquidityPoolContract'
 import { withWalletConnectCheck } from 'modules/wallet/hocs/withWalletConnectCheck'
 import { createRoute } from 'modules/router/utils/createRoute'
 
@@ -28,7 +28,10 @@ function RouteWithdrawalDepositRaw({ match }: Props) {
   const depositedInfoReq = useSWR(
     `deposit-withdrawal-info-${chainId}-${poolAddress}`,
     async () => {
-      const PoolContract = getPoolContractByAddress(poolAddress, chainId)
+      const PoolContract = getILiquidityPoolContractByAddress(
+        chainId,
+        poolAddress,
+      )
       const poolContract = PoolContract.connectWeb3({ chainId, library })
       const [depositedTokenAddress] = await Promise.all([poolContract.token1()])
       return {

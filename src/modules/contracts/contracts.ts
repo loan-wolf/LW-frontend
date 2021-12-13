@@ -192,13 +192,77 @@ export const ContractLiquidityFarm = createContractHelpers({
   },
 })
 
-export const ContractILiquidityPool = createContractHelpers({
-  name: 'ILiquidityPool',
+export const ContractILiquidityPool_DAI_rDAI1 = createContractHelpers({
+  name: 'ILiquidityPool_DAI_rDAI1',
   factory: generated.ILiquidityPool__factory,
   address: {
     [Chains.Kovan]: '0x01a928Dc8aCc70bd975F6a3925Aea487a1453971',
   },
 })
+
+// export const ContractILiquidityPool_DAI_rDAI2 = createContractHelpers({
+//   name: 'ILiquidityPool_DAI_rDAI2',
+//   factory: generated.ILiquidityPool__factory,
+//   address: {
+//     [Chains.Kovan]: '0x46d2CE92b1E4be9c6Bd65D6fae17f70eEf6867f4',
+//   },
+// })
+
+// export const ContractILiquidityPool_DAI_rDAI3 = createContractHelpers({
+//   name: 'ILiquidityPool_DAI_rDAI3',
+//   factory: generated.ILiquidityPool__factory,
+//   address: {
+//     [Chains.Kovan]: '0x7c4692aB399e5c836c92041c30F13368a92E1947',
+//   },
+// })
+
+export const ContractILiquidityPool_USDT_rUSDT1 = createContractHelpers({
+  name: 'ILiquidityPool_USDT_rUSDT1',
+  factory: generated.ILiquidityPool__factory,
+  address: {
+    [Chains.Kovan]: '0x3e5C644f486A3bDD325c9bBd679aAdcE299e0034',
+  },
+})
+
+// export const ContractILiquidityPool_USDT_rUSDT2 = createContractHelpers({
+//   name: 'ILiquidityPool_USDT_rUSDT2',
+//   factory: generated.ILiquidityPool__factory,
+//   address: {
+//     [Chains.Kovan]: '0x5Bc80EA76d82159ebBad0D62fC92091b1d19534a',
+//   },
+// })
+
+// export const ContractILiquidityPool_USDT_rUSDT3 = createContractHelpers({
+//   name: 'ILiquidityPool_USDT_rUSDT3',
+//   factory: generated.ILiquidityPool__factory,
+//   address: {
+//     [Chains.Kovan]: '0x8A98625a4613231bE8ceE1040Af4D963e90e6a4E',
+//   },
+// })
+
+export const ContractILiquidityPool_USDC_rUSDC1 = createContractHelpers({
+  name: 'ILiquidityPool_USDC_rUSDC1',
+  factory: generated.ILiquidityPool__factory,
+  address: {
+    [Chains.Kovan]: '0x623043aa5a65d728790dD61963C9fA5fA27082c7',
+  },
+})
+
+// export const ContractILiquidityPool_USDC_rUSDC2 = createContractHelpers({
+//   name: 'ILiquidityPool_USDC_rUSDC2',
+//   factory: generated.ILiquidityPool__factory,
+//   address: {
+//     [Chains.Kovan]: '0x9d7ea0C27c735ca5696649069048b99103d4c4A4',
+//   },
+// })
+
+// export const ContractILiquidityPool_USDC_rUSDC3 = createContractHelpers({
+//   name: 'ILiquidityPool_USDC_rUSDC3',
+//   factory: generated.ILiquidityPool__factory,
+//   address: {
+//     [Chains.Kovan]: '0xb15b7fd7b53F318Ce62FcCfdFd083782DC16972f',
+//   },
+// })
 
 export const ContractTrader = createContractHelpers({
   name: 'Trader',

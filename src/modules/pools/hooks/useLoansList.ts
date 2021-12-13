@@ -1,11 +1,7 @@
 import { useSWR } from 'modules/network/hooks/useSwr'
 import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 
-import {
-  ContractInvestor_DAI_rDAI1,
-  ContractInvestor_USDC_rUSDC1,
-  ContractInvestor_USDT_rUSDT1,
-} from 'modules/contracts/contracts'
+import { INVESTORS_MAP_LIST } from '../utils/getInvestorContract'
 
 export function useLoansList() {
   const { chainId, walletAddress, library } = useWeb3()
@@ -15,11 +11,9 @@ export function useLoansList() {
     async () => {
       if (!walletAddress || !library) return
 
-      const investors = [
-        ContractInvestor_DAI_rDAI1.connectWeb3({ chainId, library }),
-        ContractInvestor_USDC_rUSDC1.connectWeb3({ chainId, library }),
-        ContractInvestor_USDT_rUSDT1.connectWeb3({ chainId, library }),
-      ]
+      const investors = INVESTORS_MAP_LIST.map(c =>
+        c.connectWeb3({ chainId, library }),
+      )
 
       const requestsInvestors = investors.map(async investor => {
         const loansCount = await investor.getNumberOfLoans(walletAddress)
