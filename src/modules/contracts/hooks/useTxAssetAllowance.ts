@@ -5,11 +5,15 @@ import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useTransactionSender } from 'modules/blockChain/hooks/useTransactionSender'
 import { useConnectorAssetERC20 } from 'modules/pools/hooks/useConnectorAssetERC20'
 
-import { PoolAsset } from 'modules/pools/constants/poolAssets'
+import {
+  PoolAsset,
+  getPoolAssetByAddress,
+} from 'modules/pools/constants/poolAssets'
+import { logGroup } from 'shared/utils/logGroup'
 import * as errors from 'shared/constants/errors'
 
 export function useTxAssetAllowance() {
-  const { walletAddress } = useWeb3()
+  const { walletAddress, chainId } = useWeb3()
   const connectAssetContract = useConnectorAssetERC20()
 
   const populateAllowance = useCallback(
@@ -23,6 +27,12 @@ export function useTxAssetAllowance() {
       asset: PoolAsset
     }) => {
       const assetContract = connectAssetContract(asset)
+
+      logGroup('Submitting new allowance', {
+        Amount: ethers.utils.formatEther(amountWei),
+        'Amount in wei': String(amountWei),
+      })
+
       const populated = await assetContract.populateTransaction.approve(
         spenderAddress,
         amountWei,
@@ -54,6 +64,13 @@ export function useTxAssetAllowance() {
         spenderAddress,
       )
 
+      logGroup('Current allowance', {
+        Asset: getPoolAssetByAddress(assetContract.address, chainId),
+        'Asset address': assetContract.address,
+        'Current allowance': ethers.utils.formatEther(allowance),
+        'Current allowance in wei': allowance.toString(),
+      })
+
       if (allowance.lt(amountWei)) {
         const txAllowanceRes = await sendAllowance({
           spenderAddress,
@@ -63,7 +80,7 @@ export function useTxAssetAllowance() {
         await txAllowanceRes.wait()
       }
     },
-    [walletAddress, connectAssetContract, sendAllowance],
+    [walletAddress, connectAssetContract, sendAllowance, chainId],
   )
 
   return {

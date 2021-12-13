@@ -12,6 +12,7 @@ import {
 } from 'modules/pools/constants/poolAssets'
 import { ContractCollateralManager } from 'modules/contracts/contracts'
 import type { FormValues, SuccessData } from './types'
+import { logGroup } from 'shared/utils/logGroup'
 import * as errors from 'shared/constants/errors'
 
 const NCFSID = 1 // Oracle return hardcoded scores for now
@@ -66,11 +67,22 @@ export function useBorrowSubmit({
         ethers.utils.arrayify(hash),
       )
 
+      const collateralWei = ethers.utils.parseEther(collateralAmount)
+
+      logGroup('Submitting borrow', {
+        Term: term,
+        Amount: ethers.utils.formatEther(amountWei),
+        'Amount in wei': amountWei.toString(),
+        'Collateral amount': collateralAmount,
+        'Collateral amount in wei': collateralWei.toString(),
+        'Collateral address': collateralAddress,
+      })
+
       const populated = await investor.populateTransaction.borrow(
         amountWei,
         term,
         NCFSID,
-        ethers.utils.parseEther(collateralAmount),
+        collateralWei,
         collateralAddress,
         hash,
         signature,

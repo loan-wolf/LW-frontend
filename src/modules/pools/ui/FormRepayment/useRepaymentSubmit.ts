@@ -10,6 +10,7 @@ import { ContractBonds } from 'modules/contracts/contracts'
 import type { FormValues, SuccessData } from './types'
 import type { PoolAsset } from 'modules/pools/constants/poolAssets'
 import { getInvestorContractByAsset } from 'modules/pools/utils/getInvestorContract'
+import { logGroup } from 'shared/utils/logGroup'
 import * as errors from 'shared/constants/errors'
 
 type Args = {
@@ -36,6 +37,10 @@ export function useRepaymentSubmit({
    */
   const populateApproval = useCallback(
     async (investorAddress: string) => {
+      logGroup('Submitting setApprovalForAll', {
+        'Investor address': investorAddress,
+      })
+
       const populated =
         await contractBonds.populateTransaction.setApprovalForAll(
           investorAddress,
@@ -59,6 +64,14 @@ export function useRepaymentSubmit({
       amountWei: ethers.BigNumberish
     }) => {
       const investor = connectInvstorContract(asset)
+
+      logGroup('Submitting repayment', {
+        'Loan id': loanId,
+        Amount: ethers.utils.formatEther(amountWei),
+        'Amount in wei': String(amountWei),
+        'Investor address': investor.address,
+      })
+
       const populated = await investor.populateTransaction.payment(
         loanId,
         amountWei,

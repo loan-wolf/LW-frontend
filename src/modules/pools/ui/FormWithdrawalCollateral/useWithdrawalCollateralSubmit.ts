@@ -6,6 +6,7 @@ import { useTransactionSender } from 'modules/blockChain/hooks/useTransactionSen
 
 import { ContractCollateralManager } from 'modules/contracts/contracts'
 import type { FormValues, SuccessData } from './types'
+import { logGroup } from 'shared/utils/logGroup'
 import * as errors from 'shared/constants/errors'
 
 type Args = {
@@ -26,6 +27,12 @@ export function useWithdrawalCollateralSubmit({ loanId, onSuccess }: Args) {
       amountWei: BigNumberish
       address: string
     }) => {
+      logGroup('Submitting withdrawal collateral', {
+        Address: address,
+        Amount: ethers.utils.formatEther(amountWei),
+        'Amount in wei': String(amountWei),
+      })
+
       const populated =
         await contractCollateralManager.populateTransaction.withdrawal(
           loanId,

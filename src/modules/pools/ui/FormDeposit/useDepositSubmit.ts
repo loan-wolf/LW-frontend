@@ -12,6 +12,7 @@ import {
   ContractILiquidityPool,
 } from 'modules/contracts/contracts'
 import type { FormValues, SuccessData } from './types'
+import { logGroup } from 'shared/utils/logGroup'
 import * as errors from 'shared/constants/errors'
 
 type Args = {
@@ -32,6 +33,13 @@ export function useDepositSubmit({ isLocked, setLocked, onSuccess }: Args) {
   const populateDeposit = useCallback(
     async ({ amountWei }: { amountWei: ethers.BigNumberish }) => {
       const poolAddress = ContractILiquidityPool.chainAddress.get(chainId)
+
+      logGroup('Submitting deposit', {
+        'Pool address': poolAddress,
+        Amount: ethers.utils.formatEther(amountWei),
+        'Amount in wei': amountWei.toString(),
+      })
+
       const populated = await contractFarm.populateTransaction.depositZap(
         poolAddress,
         amountWei,
