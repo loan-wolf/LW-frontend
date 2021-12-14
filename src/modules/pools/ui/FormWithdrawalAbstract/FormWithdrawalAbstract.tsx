@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { InputControl } from 'shared/ui/controls/Input'
-import { SelectControl } from 'shared/ui/controls/Select'
+import { SelectControl, SelectOption } from 'shared/ui/controls/Select'
 import { InputMaxAction } from 'shared/ui/controls/InputMaxAction'
 import { FormSubmitter } from 'shared/ui/common/FormSubmitter'
 import { Form } from 'shared/ui/controls/Form'
@@ -17,11 +17,8 @@ import {
   getPoolAssetIcon,
   PoolAsset,
 } from 'modules/pools/constants/poolAssets'
-import {
-  targetRiskOptions,
-  getTargetRiskLabel,
-} from 'modules/pools/constants/riskOptions'
 import type { FormValues } from './types'
+import { PoolRisk } from 'modules/pools/constants/PoolRisk'
 
 const assetOptions = [
   poolAssetOptions.ETH,
@@ -32,16 +29,20 @@ const assetOptions = [
 
 type Props = {
   defaultAsset: PoolAsset
+  defaultRisk?: PoolRisk | ''
   maxAmount?: string
   isSubmitting: boolean
   info?: React.ReactNode
+  riskOptions: SelectOption[]
   onSubmit: (formValues: FormValues) => void
 }
 
 export function FormWithdrawalAbstract({
   defaultAsset,
+  defaultRisk = '',
   maxAmount,
   isSubmitting,
+  riskOptions,
   info,
   onSubmit,
 }: Props) {
@@ -53,7 +54,7 @@ export function FormWithdrawalAbstract({
     defaultValues: {
       asset: defaultAsset,
       amount: '',
-      risk: '',
+      risk: defaultRisk,
     },
   })
 
@@ -105,7 +106,8 @@ export function FormWithdrawalAbstract({
             name="risk"
             concat="top"
             placeholder="Risk Pool / APY"
-            options={targetRiskOptions}
+            readonly
+            options={riskOptions}
             // rules={{ required: formErrors.required }}
           />
         </>
@@ -123,7 +125,7 @@ export function FormWithdrawalAbstract({
             label="Target risk pool"
             name="risk"
             valueSize={16}
-            formatValue={getTargetRiskLabel}
+            formatValue={v => riskOptions.find(o => o.value === v)?.label}
           />
         </FormLockedValuesList>
       )}

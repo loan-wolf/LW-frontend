@@ -61,15 +61,7 @@ export function DashboardRowLoan({
             )
           }
         />
-        <InfoFieldValue
-          label="APR"
-          value={
-            <Tooltip tooltip={apr} className={s.truncatedWrap}>
-              <span className={s.truncatedAmount}>{apr}</span>&nbsp;
-              <span>%</span>
-            </Tooltip>
-          }
-        />
+        <InfoFieldValue isTruncated label="APR" value={apr} sign="%" />
       </div>
 
       <div className={s.column}>
@@ -93,36 +85,26 @@ export function DashboardRowLoan({
         />
         <InfoFieldValueCouple>
           <InfoFieldValue
+            isTruncated
             label="Principal"
-            value={
-              <Tooltip tooltip={principal} className={s.truncatedWrap}>
-                <span className={s.truncatedAmount}>{principal}</span>&nbsp;
-                <span>{borrowedAsset}</span>
-              </Tooltip>
-            }
+            value={principal}
+            sign={borrowedAsset}
           />
           <InfoFieldValue
+            isTruncated
             label="Interest"
-            value={
-              <Tooltip tooltip={interest} className={s.truncatedWrap}>
-                <span className={s.truncatedAmount}>{interest}</span>&nbsp;
-                <span>{borrowedAsset}</span>
-              </Tooltip>
-            }
+            value={interest}
+            sign={borrowedAsset}
           />
         </InfoFieldValueCouple>
       </div>
 
       <div className={s.column}>
         <InfoFieldValue
+          isTruncated
           label="Collateral Amount"
-          value={
-            <Tooltip tooltip={collateralAmount} className={s.truncatedWrap}>
-              <span className={s.truncatedAmount}>{collateralAmount}</span>
-              &nbsp;
-              <span>{collateralAsset}</span>
-            </Tooltip>
-          }
+          value={collateralAmount}
+          sign={collateralAsset}
         />
         <InfoFieldValue
           label="Maturity time "
@@ -160,11 +142,9 @@ export function DashboardRowLoan({
         <InfoFieldValue
           label="Loan Id"
           value={
-            <>
-              <Tooltip position="top-right" tooltip={loanId} maxWidth={210}>
-                {trimMiddleString(loanId, 5)}
-              </Tooltip>
-            </>
+            <Tooltip position="top-right" tooltip={loanId} maxWidth={210}>
+              {trimMiddleString(loanId, 5)}
+            </Tooltip>
           }
         />
       </div>

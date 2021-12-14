@@ -6,7 +6,7 @@ import { useTransactionSender } from 'modules/blockChain/hooks/useTransactionSen
 import { useTxAssetAllowance } from 'modules/contracts/hooks/useTxAssetAllowance'
 
 import {
-  getPoolAssetAddress,
+  getERCAssetAddress,
   PoolAsset,
 } from 'modules/pools/constants/poolAssets'
 import {
@@ -15,7 +15,8 @@ import {
 } from 'modules/contracts/contracts'
 import type { FormValues, SuccessData } from './types'
 import { logGroup } from 'shared/utils/logGroup'
-import { getILiquidityPoolContractByAsset } from 'modules/pools/utils/getILiquidityPoolContract'
+import { PoolRisk } from 'modules/pools/constants/PoolRisk'
+import { getILiquidityPoolByAssetAndRisk } from 'modules/pools/utils/getILiquidityPoolContract'
 import * as errors from 'shared/constants/errors'
 
 type Args = {
@@ -37,11 +38,16 @@ export function useDepositSubmit({ isLocked, setLocked, onSuccess }: Args) {
     async ({
       depositedAsset,
       amountWei,
+      risk,
     }: {
       depositedAsset: PoolAsset
       amountWei: ethers.BigNumberish
+      risk: PoolRisk
     }) => {
-      const PoolContract = getILiquidityPoolContractByAsset(depositedAsset)
+      const { contract: PoolContract } = getILiquidityPoolByAssetAndRisk(
+        depositedAsset,
+        risk,
+      )
       const poolAddress = PoolContract.chainAddress.get(chainId)
 
       logGroup('Submitting deposit', {
@@ -72,10 +78,11 @@ export function useDepositSubmit({ isLocked, setLocked, onSuccess }: Args) {
         setLocked(true)
       } else {
         try {
-          const { amount, depositedAsset } = formValues
+          const { amount, depositedAsset, targetRiskPool } = formValues
           if (!walletAddress) throw new Error(errors.connectWallet)
           if (!depositedAsset) throw new Error(errors.depositAssetNotSelected)
-          const assetAddress = getPoolAssetAddress(depositedAsset, chainId)
+          if (!targetRiskPool) throw new Error(errors.riskNotSelected)
+          const assetAddress = getERCAssetAddress(depositedAsset, chainId)
           if (!assetAddress) throw new Error(errors.assetAddressNotDefined)
 
           setSubmitting(true)
@@ -91,6 +98,7 @@ export function useDepositSubmit({ isLocked, setLocked, onSuccess }: Args) {
           const txDepositRes = await sendDeposit({
             amountWei,
             depositedAsset,
+            risk: targetRiskPool,
           })
 
           setSubmitting(false)

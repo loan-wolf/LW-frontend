@@ -19,7 +19,7 @@ import s from './Select.module.scss'
 
 type Value = string
 
-type Option = {
+export type SelectOption = {
   label: string
   value: Value
   icon?: React.ReactNode
@@ -32,7 +32,7 @@ type Props = {
   className?: string
   value?: Value
   defaultValue?: Value
-  options: Option[]
+  options: SelectOption[]
   concat?: 'top' | 'bottom'
   readonly?: boolean
   error?: React.ReactNode

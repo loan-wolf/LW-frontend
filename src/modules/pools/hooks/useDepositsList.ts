@@ -3,29 +3,28 @@ import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 
 import { ContractLiquidityFarm } from 'modules/contracts/contracts'
 import {
-  getAssetByPoolAddress,
-  ILIQUIDITY_POOL_CONTRACTS_LIST,
+  getILiquidityPoolByAddress,
+  ILIQUIDITY_POOL_COLLECTION,
 } from '../utils/getILiquidityPoolContract'
-import { getPoolAssetAddress } from '../constants/poolAssets'
+import { getERCAssetAddress } from '../constants/poolAssets'
 
 export function useDepositsList() {
-  const { chainId, library, walletAddress } = useWeb3()
+  const { chainId, walletAddress } = useWeb3()
   const contractLiquidityFarm = ContractLiquidityFarm.useContractWeb3()
 
   const deposits = useSWR(`deposits-${chainId}-${walletAddress}`, async () => {
-    const pools = ILIQUIDITY_POOL_CONTRACTS_LIST.map(c =>
-      c.connectWeb3({ chainId, library }),
-    )
-
-    const requestsPools = pools.map(async pool => {
-      const poolAddress = pool.address
-      const deposit = await contractLiquidityFarm.getStakeInfo(
-        poolAddress,
-        walletAddress!,
-      )
-      const asset = getAssetByPoolAddress(chainId, poolAddress)
-      const assetAddress = getPoolAssetAddress(asset, chainId)
+    const requestsPools = ILIQUIDITY_POOL_COLLECTION.map(async pool => {
+      const poolAddress = pool.contract.chainAddress.get(chainId)
+      const [[rewardToken, apy], deposit] = await Promise.all([
+        contractLiquidityFarm.getPoolInfo(poolAddress),
+        contractLiquidityFarm.getStakeInfo(poolAddress, walletAddress!),
+      ])
+      const { asset } = getILiquidityPoolByAddress(chainId, poolAddress)
+      const assetAddress = getERCAssetAddress(asset, chainId)
       return {
+        apy,
+        rewardToken,
+        risk: pool.risk,
         deposit,
         poolAddress,
         assetAddress,

@@ -7,12 +7,13 @@ import { DashboardRow } from 'shared/ui/common/DashboardRow'
 
 import type { Deposit } from 'modules/pools/types/Deposit'
 import {
-  getPoolAssetByAddress,
+  getERCAssetByAddress,
   getPoolAssetIcon,
 } from 'modules/pools/constants/poolAssets'
 import s from './DashboardRowDeposit.module.scss'
 
 type Props = {
+  apy: ethers.BigNumberish
   deposit: Deposit
   poolAddress: string
   assetAddress: string
@@ -20,6 +21,7 @@ type Props = {
 }
 
 export function DashboardRowDeposit({
+  apy,
   deposit,
   poolAddress,
   assetAddress,
@@ -32,9 +34,9 @@ export function DashboardRowDeposit({
     // tokenStake
   } = deposit
 
-  const depositedAsset = getPoolAssetByAddress(assetAddress, chainId)
-
-  const apy = 12
+  const depositedAsset = getERCAssetByAddress(assetAddress, chainId)
+  // TODO: calculate actual amount
+  const depositedAmount = ethers.utils.formatEther(liquidity)
 
   return (
     <DashboardRow className={className}>
@@ -52,22 +54,22 @@ export function DashboardRowDeposit({
         className={s.column}
       />
       <InfoFieldValue
+        isTruncated
         label="Deposit"
-        value={
-          <>
-            {ethers.utils.formatEther(liquidity)} {depositedAsset}
-          </>
-        }
+        value={depositedAmount}
+        sign={depositedAsset}
         className={s.column}
       />
-      <InfoFieldValue label="APY" value={<>{apy}%</>} className={s.column} />
       <InfoFieldValue
+        label="APY"
+        value={<>{Number(apy) / 100}%</>}
+        className={s.column}
+      />
+      <InfoFieldValue
+        isTruncated
         label="Accrued interest"
-        value={
-          <>
-            {ethers.utils.formatEther(reward)} {depositedAsset}
-          </>
-        }
+        value={ethers.utils.formatEther(reward)}
+        sign={depositedAsset}
         className={s.column}
       />
       <div className={s.column}>

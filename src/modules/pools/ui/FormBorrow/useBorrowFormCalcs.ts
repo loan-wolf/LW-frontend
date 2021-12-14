@@ -5,7 +5,7 @@ import { useAssetApr } from 'modules/pools/hooks/useAssetInvestorApr'
 
 import {
   PoolAsset,
-  getPoolAssetAddress,
+  getERCAssetAddress,
 } from 'modules/pools/constants/poolAssets'
 import {
   ContractHardcodedCreditScores,
@@ -51,7 +51,7 @@ export function useBorrowFormCalcs({
   const ltv = ltvWei && Number(ethers.utils.formatEther(ltvWei))
 
   const collateralAddress =
-    collateralAsset && getPoolAssetAddress(collateralAsset, chainId)
+    collateralAsset && getERCAssetAddress(collateralAsset, chainId)
 
   const { data: collateralPriceData } = ContractPriceFeed.useSwrWeb3(
     collateralAddress ? 'getLatestPriceUSD' : null,

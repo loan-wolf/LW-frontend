@@ -24,9 +24,8 @@ type Props = {
 
 function RouteWithdrawalCollateralRaw({ match }: Props) {
   const { chainId } = useWeb3()
-  const [successData, setSuccessData] = useState<SuccessData | null>(null)
-
   const { investorAddress, loanId } = match.params
+  const [successData, setSuccessData] = useState<SuccessData | null>(null)
 
   const Investor = getInvestorContractByAddress(chainId, investorAddress)
   const investor = useContractInstanceWeb3(Investor)

@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react'
 import { useForm, useFormContext } from 'react-hook-form'
 import { useDepositSubmit } from './useDepositSubmit'
+import { useDepositRiskOptions } from 'modules/pools/hooks/useDepositRiskOptions'
 
 import { InputControl } from 'shared/ui/controls/Input'
 import { SelectControl } from 'shared/ui/controls/Select'
@@ -22,10 +23,6 @@ import {
   poolAssetOptions,
   getPoolAssetIcon,
 } from 'modules/pools/constants/poolAssets'
-import {
-  targetRiskOptions,
-  getTargetRiskLabel,
-} from 'modules/pools/constants/riskOptions'
 import { formatNumber } from 'shared/utils/formatNumber'
 import type { FormValues, SuccessData } from './types'
 
@@ -62,6 +59,9 @@ export function FormDeposit({ onSuccess }: Props) {
     },
   })
 
+  const depositedAsset = formMethods.watch('depositedAsset')
+  const { data: riskOptions = [] } = useDepositRiskOptions(depositedAsset)
+
   const { submit, isSubmitting, txAllowance } = useDepositSubmit({
     isLocked,
     setLocked,
@@ -95,7 +95,7 @@ export function FormDeposit({ onSuccess }: Props) {
             concat="top"
             placeholder="Target risk pool"
             rules={{ required: formErrors.required }}
-            options={targetRiskOptions}
+            options={riskOptions}
           />
         </>
       )}
@@ -112,7 +112,7 @@ export function FormDeposit({ onSuccess }: Props) {
             label="Target risk pool"
             name="targetRiskPool"
             valueSize={16}
-            formatValue={getTargetRiskLabel}
+            formatValue={v => riskOptions.find(i => i.value === v)?.label}
           />
         </FormLockedValuesList>
       )}

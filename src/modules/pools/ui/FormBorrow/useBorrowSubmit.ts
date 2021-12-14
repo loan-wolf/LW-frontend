@@ -7,7 +7,7 @@ import { useTxAssetAllowance } from 'modules/contracts/hooks/useTxAssetAllowance
 import { useConnectorInvestor } from 'modules/pools/hooks/useConnectorInvestor'
 
 import {
-  getPoolAssetAddress,
+  getERCAssetAddress,
   PoolAsset,
 } from 'modules/pools/constants/poolAssets'
 import { ContractCollateralManager } from 'modules/contracts/contracts'
@@ -115,11 +115,7 @@ export function useBorrowSubmit({
             throw new Error(errors.collateralAssetNotSelected)
           }
 
-          const collateralAddress = getPoolAssetAddress(
-            collateralAsset,
-            chainId,
-          )
-
+          const collateralAddress = getERCAssetAddress(collateralAsset, chainId)
           if (!collateralAddress) throw new Error(errors.assetAddressNotDefined)
 
           setSubmitting(true)

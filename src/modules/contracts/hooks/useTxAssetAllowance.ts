@@ -7,7 +7,7 @@ import { useConnectorAssetERC20 } from 'modules/pools/hooks/useConnectorAssetERC
 
 import {
   PoolAsset,
-  getPoolAssetByAddress,
+  getERCAssetByAddress,
 } from 'modules/pools/constants/poolAssets'
 import { logGroup } from 'shared/utils/logGroup'
 import * as errors from 'shared/constants/errors'
@@ -65,7 +65,7 @@ export function useTxAssetAllowance() {
       )
 
       logGroup('Current allowance', {
-        Asset: getPoolAssetByAddress(assetContract.address, chainId),
+        Asset: getERCAssetByAddress(assetContract.address, chainId),
         'Asset address': assetContract.address,
         'Current allowance': ethers.utils.formatEther(allowance),
         'Current allowance in wei': allowance.toString(),

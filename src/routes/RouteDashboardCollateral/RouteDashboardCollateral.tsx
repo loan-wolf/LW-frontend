@@ -6,7 +6,7 @@ import { PageLoader } from 'shared/ui/layout/PageLoader'
 import { DashboardRowCollateral } from 'modules/pools/ui/DashboardRowCollateral'
 import { DashboardEmptyCTA } from 'modules/pools/ui/DashboardEmptyCTA'
 
-import { getPoolAssetByAddress } from 'modules/pools/constants/poolAssets'
+import { getERCAssetByAddress } from 'modules/pools/constants/poolAssets'
 import { createRoute } from 'modules/router/utils/createRoute'
 import * as links from 'modules/router/links'
 
@@ -18,7 +18,7 @@ function RouteDashboardCollateral() {
     return collaterals.data?.map(item => ({
       loanId: item.loanId,
       investorAddress: item.investorAddress,
-      asset: getPoolAssetByAddress(item.collateral[0], chainId),
+      asset: getERCAssetByAddress(item.collateral[0], chainId),
       amount: item.collateral[1],
     }))
   }, [collaterals.data, chainId])

@@ -5,7 +5,7 @@ import {
   ContractCollateralManager,
   ContractPriceFeed,
 } from 'modules/contracts/contracts'
-import { getPoolAssetByAddress } from 'modules/pools/constants/poolAssets'
+import { getERCAssetByAddress } from 'modules/pools/constants/poolAssets'
 import type { Loan } from '../types/Loan'
 
 const { formatEther } = ethers.utils
@@ -31,7 +31,7 @@ export function useLoanCalcs({ loan, loanId, investorAddress }: Args) {
     'getLatestPriceUSD',
     ERC20Address,
   )
-  const borrowedAsset = getPoolAssetByAddress(ERC20Address, chainId)
+  const borrowedAsset = getERCAssetByAddress(ERC20Address, chainId)
   const borrowedAssetPrice =
     borrowedAssetPriceWei && Number(formatEther(borrowedAssetPriceWei))
 
@@ -54,7 +54,7 @@ export function useLoanCalcs({ loan, loanId, investorAddress }: Args) {
     loanId,
   )
   const collateralAsset =
-    collateralInfo && getPoolAssetByAddress(collateralInfo[0], chainId)
+    collateralInfo && getERCAssetByAddress(collateralInfo[0], chainId)
   const collateralAmount =
     collateralInfo && ethers.utils.formatEther(collateralInfo[1])
 

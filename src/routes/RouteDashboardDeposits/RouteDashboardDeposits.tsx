@@ -30,6 +30,7 @@ function RouteDashboardDepositsRaw() {
       {deposits.data.map((item, i) => (
         <DashboardRowDeposit
           key={i}
+          apy={item.apy}
           deposit={item.deposit}
           poolAddress={item.poolAddress}
           assetAddress={item.assetAddress}

@@ -11,7 +11,7 @@ import {
 
 import type { Loan } from 'modules/pools/types/Loan'
 import type { SuccessData } from './types'
-import { getPoolAssetByAddress } from 'modules/pools/constants/poolAssets'
+import { getERCAssetByAddress } from 'modules/pools/constants/poolAssets'
 
 type Props = {
   loan: Loan
@@ -29,7 +29,7 @@ export function FormWithdrawalCollateral({
   onSuccess,
 }: Props) {
   const { chainId } = useWeb3()
-  const asset = getPoolAssetByAddress(collateralAddress, chainId)
+  const asset = getERCAssetByAddress(collateralAddress, chainId)
   const collateralAmount = ethers.utils.formatEther(collateralAmountWei)
 
   const { submit, isSubmitting } = useWithdrawalCollateralSubmit({
@@ -45,6 +45,7 @@ export function FormWithdrawalCollateral({
       maxAmount={collateralAmount}
       isSubmitting={isSubmitting}
       onSubmit={submit}
+      riskOptions={[{ label: 'Work in progress', value: '' }]}
       info={
         <FormInfoFramesList>
           <FormInfoFrame>

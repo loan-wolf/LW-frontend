@@ -1,51 +1,92 @@
-import { memoize, toPairs } from 'lodash'
+import { memoize } from 'lodash'
 import { Chains } from 'modules/blockChain/chains'
 import { PoolAsset } from '../constants/poolAssets'
 import {
   ContractILiquidityPool_DAI_rDAI1,
+  ContractILiquidityPool_DAI_rDAI2,
+  ContractILiquidityPool_DAI_rDAI3,
   ContractILiquidityPool_USDC_rUSDC1,
+  ContractILiquidityPool_USDC_rUSDC2,
+  ContractILiquidityPool_USDC_rUSDC3,
   ContractILiquidityPool_USDT_rUSDT1,
+  ContractILiquidityPool_USDT_rUSDT2,
+  ContractILiquidityPool_USDT_rUSDT3,
 } from 'modules/contracts/contracts'
-import { filterUndef } from 'shared/utils/filterUndef'
+import { PoolRisk } from '../constants/PoolRisk'
 
-export const ILIQUIDITY_POOL_CONTRACTS_MAP = {
-  [PoolAsset.DAI]: ContractILiquidityPool_DAI_rDAI1,
-  [PoolAsset.USDT]: ContractILiquidityPool_USDT_rUSDT1,
-  [PoolAsset.USDC]: ContractILiquidityPool_USDC_rUSDC1,
-  [PoolAsset.ETH]: null,
-  [PoolAsset.WBTC]: null,
-} as const
+export const ILIQUIDITY_POOL_COLLECTION = [
+  // DAI
+  {
+    asset: PoolAsset.DAI,
+    risk: PoolRisk.LOW,
+    contract: ContractILiquidityPool_DAI_rDAI1,
+  },
+  {
+    asset: PoolAsset.DAI,
+    risk: PoolRisk.MIDDLE,
+    contract: ContractILiquidityPool_DAI_rDAI2,
+  },
+  {
+    asset: PoolAsset.DAI,
+    risk: PoolRisk.HIGH,
+    contract: ContractILiquidityPool_DAI_rDAI3,
+  },
 
-export const ILIQUIDITY_POOL_CONTRACTS_LIST = filterUndef(
-  Object.values(ILIQUIDITY_POOL_CONTRACTS_MAP),
-)
+  // USDT
+  {
+    asset: PoolAsset.USDT,
+    risk: PoolRisk.LOW,
+    contract: ContractILiquidityPool_USDT_rUSDT1,
+  },
+  {
+    asset: PoolAsset.USDT,
+    risk: PoolRisk.MIDDLE,
+    contract: ContractILiquidityPool_USDT_rUSDT2,
+  },
+  {
+    asset: PoolAsset.USDT,
+    risk: PoolRisk.HIGH,
+    contract: ContractILiquidityPool_USDT_rUSDT3,
+  },
 
-// TODO: `useGlobalMemo` hook instead of memoize
-// may be more efficient in garbage collecting aspect
-export const getILiquidityPoolContractByAsset = memoize((asset: PoolAsset) => {
-  const contract = ILIQUIDITY_POOL_CONTRACTS_MAP[asset]
-  if (!contract) throw new Error(`No ILiquidityPool contract for ${asset}`)
-  return contract
-})
+  // USDC
+  {
+    asset: PoolAsset.USDC,
+    risk: PoolRisk.LOW,
+    contract: ContractILiquidityPool_USDC_rUSDC1,
+  },
+  {
+    asset: PoolAsset.USDC,
+    risk: PoolRisk.MIDDLE,
+    contract: ContractILiquidityPool_USDC_rUSDC2,
+  },
+  {
+    asset: PoolAsset.USDC,
+    risk: PoolRisk.HIGH,
+    contract: ContractILiquidityPool_USDC_rUSDC3,
+  },
+] as const
 
-export const getILiquidityPoolContractByAddress = memoize(
-  (chainId: Chains, address: string) => {
-    const contract = ILIQUIDITY_POOL_CONTRACTS_LIST.find(
-      c => c.chainAddress.get(chainId) === address,
+const getError = (e: string) => `No ILiquidityPool contract for ${e}`
+
+export const getILiquidityPoolByAssetAndRisk = memoize(
+  (asset: PoolAsset, risk: PoolRisk) => {
+    const item = ILIQUIDITY_POOL_COLLECTION.find(
+      i => i.asset === asset && i.risk === risk,
     )
-    if (!contract) throw new Error(`No ILiquidityPool contract for ${address}`)
-    return contract
+    if (!item) throw new Error(getError(asset))
+    return item
   },
   (...args) => args.join('-'),
 )
 
-export const getAssetByPoolAddress = memoize(
+export const getILiquidityPoolByAddress = memoize(
   (chainId: Chains, address: string) => {
-    const contract = toPairs(ILIQUIDITY_POOL_CONTRACTS_MAP).find(
-      ([asset, c]) => c?.chainAddress.get(chainId) === address,
+    const item = ILIQUIDITY_POOL_COLLECTION.find(
+      i => i.contract.chainAddress.get(chainId) === address,
     )
-    if (!contract) throw new Error(`No ILiquidityPool contract for ${address}`)
-    return contract[0] as PoolAsset
+    if (!item) throw new Error(getError(address))
+    return item
   },
   (...args) => args.join('-'),
 )

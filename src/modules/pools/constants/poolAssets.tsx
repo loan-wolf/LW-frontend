@@ -44,12 +44,12 @@ export function getERCContractByAsset(asset: PoolAsset) {
   return contract
 }
 
-export function getPoolAssetAddress(asset: PoolAsset, chain: Chains) {
+export function getERCAssetAddress(asset: PoolAsset, chain: Chains) {
   const addr = assetERCContracts[asset].chainAddress
   return addr.get(chain)
 }
 
-export const getPoolAssetByAddress = memoize(
+export const getERCAssetByAddress = memoize(
   (address: string, chain: Chains) => {
     return flow(
       toPairs,
