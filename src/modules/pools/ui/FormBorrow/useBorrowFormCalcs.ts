@@ -61,10 +61,16 @@ export function useBorrowFormCalcs({
   const collateralPrice =
     collateralPriceData && Number(ethers.utils.formatEther(collateralPriceData))
 
-  const collateralAmount =
+  let collateralAmount =
     collateralAsset && collateralPrice && amount && ltv
-      ? (amount / collateralPrice / (ltv / 100)).toFixed(18)
+      ? amount / collateralPrice / (ltv / 100)
       : ''
+
+  // TODO: get rid of this hack, maybe using bignumber calculations will help
+  if (typeof collateralAmount === 'number') {
+    collateralAmount += collateralAmount * 0.01
+    collateralAmount = collateralAmount.toFixed(18)
+  }
 
   const liquidationPrice =
     borrowedAsset && collateralAmount && collateralAsset && collateralPrice
