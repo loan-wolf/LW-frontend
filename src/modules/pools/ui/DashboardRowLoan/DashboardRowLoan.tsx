@@ -133,8 +133,9 @@ export function DashboardRowLoan({
             </Button>
           )}
           <DropdownLoan
+            loanId={loanId}
+            investorAddress={investorAddress}
             onAddMore={() => console.log('onAddMore')}
-            onWithdraw={() => console.log('onWithdraw')}
             onBorrow={() => console.log('onBorrow')}
             className={s.action}
           />
