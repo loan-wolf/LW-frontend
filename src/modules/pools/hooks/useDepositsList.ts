@@ -32,8 +32,10 @@ export function useDepositsList() {
     })
 
     const responses = await Promise.all(requestsPools)
-    const flattened = responses.flat()
-    return flattened
+    const formatted = responses
+      .flat()
+      .filter(i => Number(i.deposit.liquidity) !== 0)
+    return formatted
   })
 
   return deposits

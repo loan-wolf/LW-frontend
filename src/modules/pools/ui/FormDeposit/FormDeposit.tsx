@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react'
 import { useForm, useFormContext } from 'react-hook-form'
 import { useDepositSubmit } from './useDepositSubmit'
 import { useDepositRiskOptions } from 'modules/pools/hooks/useDepositRiskOptions'
+import { useQueryParams } from 'modules/router/hooks/useQueryParams'
 
 import { InputControl } from 'shared/ui/controls/Input'
 import { SelectControl } from 'shared/ui/controls/Select'
@@ -23,6 +24,7 @@ import {
   poolAssetOptions,
   getPoolAssetIcon,
 } from 'modules/pools/constants/poolAssets'
+import { assetOrUndef } from 'modules/pools/utils/assetOrUndef'
 import { formatNumber } from 'shared/utils/formatNumber'
 import type { FormValues, SuccessData } from './types'
 
@@ -49,11 +51,12 @@ type Props = {
 export function FormDeposit({ onSuccess }: Props) {
   const [isLocked, setLocked] = useState(false)
   const handleUnlock = useCallback(() => setLocked(false), [])
+  const { asset: defaultAsset } = useQueryParams()
 
   const formMethods = useForm<FormValues>({
     shouldUnregister: false,
     defaultValues: {
-      depositedAsset: '',
+      depositedAsset: assetOrUndef(defaultAsset as string),
       amount: '',
       targetRiskPool: '',
     },

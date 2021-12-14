@@ -1,6 +1,8 @@
 import { useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useBorrowSubmit } from './useBorrowSubmit'
+import { useQueryParams } from 'modules/router/hooks/useQueryParams'
+import { useBorrowFormCalcs } from './useBorrowFormCalcs'
 
 import { InputControl } from 'shared/ui/controls/Input'
 import { SelectControl } from 'shared/ui/controls/Select'
@@ -23,7 +25,7 @@ import {
   getPoolAssetIcon,
 } from 'modules/pools/constants/poolAssets'
 import type { FormValues, SuccessData } from './types'
-import { useBorrowFormCalcs } from './useBorrowFormCalcs'
+import { assetOrUndef } from 'modules/pools/utils/assetOrUndef'
 
 const borrowOptions = [
   poolAssetOptions.USDC,
@@ -40,11 +42,12 @@ type Props = {
 export function FormBorrow({ onSuccess }: Props) {
   const [isLocked, setLocked] = useState(false)
   const handleUnlock = useCallback(() => setLocked(false), [])
+  const { asset: defaultAsset } = useQueryParams()
 
   const formMethods = useForm<FormValues>({
     shouldUnregister: false,
     defaultValues: {
-      borrowedAsset: '',
+      borrowedAsset: assetOrUndef(defaultAsset as string),
       amount: '',
       term: '',
       collateralAsset: '',
