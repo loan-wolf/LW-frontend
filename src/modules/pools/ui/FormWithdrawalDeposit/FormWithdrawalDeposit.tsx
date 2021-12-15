@@ -24,9 +24,8 @@ export function FormWithdrawalDeposit({ poolAddress, onSuccess }: Props) {
   const { asset, risk } = getILiquidityPoolByAddress(chainId, poolAddress)
   const { data: riskOptions = [] } = useDepositRiskOptions(asset)
   const { data: deposit } = ContractLiquidityFarm.useSwrWeb3(
-    'getStakeInfo',
-    poolAddress,
-    walletAddress!,
+    Boolean(walletAddress) && 'getStakeInfo',
+    [poolAddress, walletAddress!],
   )
   // TODO: calculate actual amount
   const depositedAmountWei = deposit?.liquidity

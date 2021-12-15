@@ -30,12 +30,11 @@ function RouteWithdrawalCollateralRaw({ match }: Props) {
   const Investor = getInvestorContractByAddress(chainId, investorAddress)
   const investor = useContractInstanceWeb3(Investor)
 
-  const { data: loan } = useContractSwr(investor, 'loanLookup', loanId)
+  const { data: loan } = useContractSwr(investor, 'loanLookup', [loanId])
 
   const { data: collateral } = ContractCollateralManager.useSwrWeb3(
     'getCollateralLookup',
-    investor.address,
-    loanId,
+    [investor.address, loanId],
   )
 
   if (!loan || !collateral) {

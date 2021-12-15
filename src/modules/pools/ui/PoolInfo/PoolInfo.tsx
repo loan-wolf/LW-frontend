@@ -28,19 +28,17 @@ export function PoolInfo({ ContractLoanWolfPool }: Props) {
   const contractTestDAI = ContractTestDAI.useContractWeb3()
   const poolAddress = contractLoanWolfPool.address
 
-  const symbol = ContractLoanWolfPool.useSwrWeb3('symbol')
-  const allowance = ContractTestDAI.useSwrWeb3(
-    'allowance',
+  const symbol = ContractLoanWolfPool.useSwrWeb3('symbol', [])
+  const allowance = ContractTestDAI.useSwrWeb3('allowance', [
     userAddress,
     poolAddress,
-  )
-  const liquidity = ContractLoanWolfPool.useSwrWeb3('balanceOf', poolAddress)
-  const depositBalance = ContractLoanWolfPool.useSwrWeb3(
-    'balanceOf',
+  ])
+  const liquidity = ContractLoanWolfPool.useSwrWeb3('balanceOf', [poolAddress])
+  const depositBalance = ContractLoanWolfPool.useSwrWeb3('balanceOf', [
     userAddress,
-  )
-  const loanId = ContractLoanWolfPool.useSwrWeb3('loanIDs', userAddress, 0)
-  const userRDai = ContractLoanWolfPool.useSwrWeb3('balanceOf', userAddress)
+  ])
+  const loanId = ContractLoanWolfPool.useSwrWeb3('loanIDs', [userAddress, 0])
+  const userRDai = ContractLoanWolfPool.useSwrWeb3('balanceOf', [userAddress])
 
   // Deposit
   const handleDeposit = useCallback(() => {

@@ -19,10 +19,10 @@ export function WalletModal(props: ModalProps) {
   const [connector] = useWalletConnectorStorage()
   const disconnect = useWalletDisconnect()
 
-  const totalSupply = ContractTestDAI.useSwrWeb3('totalSupply')
+  const totalSupply = ContractTestDAI.useSwrWeb3('totalSupply', [])
   const daiBalance = ContractTestDAI.useSwrWeb3(
-    address ? 'balanceOf' : null,
-    String(address),
+    Boolean(address) && 'balanceOf',
+    [String(address)],
   )
 
   const handleDisconnect = useCallback(() => {

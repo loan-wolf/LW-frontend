@@ -1,3 +1,4 @@
+import { noop } from 'lodash'
 import { useState, useMemo, useEffect } from 'react'
 import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useSWR } from 'modules/network/hooks/useSwr'
@@ -23,7 +24,7 @@ export const setNFCSTxHash: typeof globalSetNFCSTxHash = txHash =>
   globalSetNFCSTxHash(txHash)
 
 function useNFCSStateImpl() {
-  const { library, chainId, walletAddress } = useWeb3()
+  const { library, walletAddress } = useWeb3()
   const contractScoreDB = ContractScoreDB.useContractWeb3()
   const contractRociCreditToken = ContractRociCreditToken.useContractWeb3()
   const [txHash, setTxHash] = useState<string | null>(null)
@@ -39,22 +40,16 @@ function useNFCSStateImpl() {
     defaultStatus: 'empty',
   })
 
-  const tokenId = useSWR(`tokenId-${chainId}-${walletAddress}`, async () => {
-    if (!walletAddress) return
-    const events = await contractRociCreditToken.queryFilter(
-      eventFilterTokenMinted,
-    )
-    const event = events[0]
-    if (!events[0] || !event.decode) {
-      return undefined
-    }
-    const decoded = event.decode(event.data, event.topics)
-    return decoded._tokenId
-  })
+  const tokenId = ContractRociCreditToken.useSwrWeb3(
+    Boolean(walletAddress) && 'getToken',
+    [walletAddress!],
+    { onError: noop, shouldRetryOnError: false },
+  )
 
-  const score = ContractScoreDB.useSwrWeb3(
-    tokenId.data ? 'getCurrentScore' : null,
-    tokenId.data,
+  const score = useSWR<{ CreditScore: number; ID: number }>(
+    tokenId.data
+      ? `https://cs-api-v1.roci.fi/score/${String(tokenId.data)}`
+      : null,
   )
 
   /**
@@ -116,9 +111,19 @@ function useNFCSStateImpl() {
     status = 'generated'
   }
 
+  const tokenParsed = tokenId.data?.toNumber()
+  useEffect(() => {
+    console.log('Token id:', tokenParsed)
+  }, [tokenParsed])
+
+  let nfcs = score.data?.CreditScore ?? -1
+  if (nfcs === 1000) {
+    nfcs = 9
+  }
+
   return {
-    nfcs: score.data ?? -1,
-    tokenId: tokenId.data ? Number(tokenId.data) : undefined,
+    nfcs,
+    tokenId: tokenParsed,
     status: status,
     txHash,
     setTxHash: setNFCSTxHash,

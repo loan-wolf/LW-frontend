@@ -1,15 +1,18 @@
+import type { SWRConfiguration } from 'swr'
 import { useSWR } from 'modules/network/hooks/useSwr'
 import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
-import { FilterMethods, UnpackedPromise } from 'shared/utils/utilTypes'
+import { FilterAsyncMethods, UnpackedPromise } from 'shared/utils/utilTypes'
 
-export const useContractSwr = <
-  Contract,
-  Method extends FilterMethods<Contract>,
+export function useContractSwr<
+  C,
+  M extends FilterAsyncMethods<C>,
+  R extends UnpackedPromise<ReturnType<C[M]>>,
 >(
-  contract: Contract | undefined | null,
-  method: Method | null,
-  ...params: Parameters<Contract[Method]>
-) => {
+  contract: C,
+  method: M | false,
+  params: Parameters<C[M]>,
+  config?: SWRConfiguration<R, Error>,
+) {
   const { chainId, walletAddress } = useWeb3()
 
   const cacheKeys = [
@@ -20,8 +23,9 @@ export const useContractSwr = <
     ...params.map(String),
   ]
 
-  return useSWR<UnpackedPromise<ReturnType<Contract[Method]>>>(
-    method !== null && contract ? cacheKeys : null,
-    () => (method !== null && contract ? contract[method](...params) : null),
+  return useSWR<R>(
+    method ? cacheKeys : null,
+    () => (method ? contract[method as M](...params) : null),
+    config,
   )
 }

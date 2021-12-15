@@ -22,7 +22,7 @@ export function PoolLoan({
 }: Props) {
   const contractLoanWolfPool = ContractLoanWolfPool.useContractWeb3()
 
-  const isComplete = ContractLoanWolfPool.useSwrWeb3('isComplete', loanId)
+  const isComplete = ContractLoanWolfPool.useSwrWeb3('isComplete', [loanId])
 
   // Borrow
   const borrowSubmit = useCallback(() => {

@@ -11,6 +11,7 @@ import {
   Fetcher,
   SWRInfiniteConfiguration,
 } from 'swr/dist/types'
+import { fetcherStandard } from '../utils/fetcherStandard'
 
 export type SWRResponse<Data, Error = unknown> = SWRResponseSource<
   Data,
@@ -30,7 +31,7 @@ const defaultConfig = {
 
 export const useSWR = <Data = unknown, Error = unknown>(
   key: Key,
-  fetcher: Fetcher<Data> | null,
+  fetcher: Fetcher<Data> | null = fetcherStandard,
   config?: SWRConfiguration<Data, Error>,
 ) => {
   const result = useSWRSource(key, fetcher, {

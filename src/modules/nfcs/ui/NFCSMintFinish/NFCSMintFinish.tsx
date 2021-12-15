@@ -1,6 +1,4 @@
-import { ContractScoreDB } from 'modules/contracts/contracts'
 import { useNFCSState } from 'modules/nfcs/hooks/useNFCSState'
-import { useCallback } from 'react'
 
 import { Text } from 'shared/ui/common/Text'
 import { Button } from 'shared/ui/controls/Button'
@@ -12,12 +10,7 @@ type Props = {
 }
 
 export function NFCSMintFinish({ onClose }: Props) {
-  const { nfcs, tokenId } = useNFCSState()
-  const contractScoreDB = ContractScoreDB.useContractWeb3()
-  const handleGetScoreManually = useCallback(() => {
-    if (!tokenId) return
-    contractScoreDB.requestUpdatedScoreFrontend(tokenId)
-  }, [contractScoreDB, tokenId])
+  const { nfcs } = useNFCSState()
   return (
     <>
       <Text
@@ -27,19 +20,11 @@ export function NFCSMintFinish({ onClose }: Props) {
         isCentered
         className={s.undertitle}
       >
-        Your Credit Score is generated
+        Your Credit Score is generated
       </Text>
       <Text size={44} weight={700} isUppercased isCentered className={s.title}>
         Your Credit Score:
       </Text>
-      <Button
-        size={24}
-        isCentered
-        fashion="glass"
-        onClick={handleGetScoreManually}
-      >
-        Get score manually
-      </Button>
       <br />
       <div className={s.scoreWrap}>
         <div>{nfcs}</div>

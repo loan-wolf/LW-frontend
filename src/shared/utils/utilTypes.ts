@@ -2,6 +2,10 @@ export type FilterMethods<T> = {
   [K in keyof T]: T[K] extends Function ? K : never
 }[keyof T]
 
+export type FilterAsyncMethods<T> = {
+  [K in keyof T]: T[K] extends (...args: any[]) => Promise<any> ? K : never
+}[keyof T]
+
 export type UnpackedPromise<T> = T extends Promise<infer U> ? U : T
 
 export type KeyFromValue<V, T extends Record<PropertyKey, PropertyKey>> = {
