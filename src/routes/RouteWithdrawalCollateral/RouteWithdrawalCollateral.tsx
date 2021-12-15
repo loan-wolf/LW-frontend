@@ -59,6 +59,7 @@ function RouteWithdrawalCollateralRaw({ match }: Props) {
       <FormWithdrawalCollateral
         loan={loan}
         loanId={loanId}
+        investorAddress={investorAddress}
         collateralAddress={collateral[0]}
         collateralAmountWei={collateral[1]}
         onSuccess={setSuccessData}

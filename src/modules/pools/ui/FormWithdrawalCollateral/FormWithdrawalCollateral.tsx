@@ -16,6 +16,7 @@ import { getERCAssetByAddress } from 'modules/pools/constants/poolAssets'
 type Props = {
   loan: Loan
   loanId: string
+  investorAddress: string
   collateralAddress: string
   collateralAmountWei: ethers.BigNumberish
   onSuccess: (res: SuccessData) => void
@@ -24,6 +25,7 @@ type Props = {
 export function FormWithdrawalCollateral({
   loan,
   loanId,
+  investorAddress,
   collateralAddress,
   collateralAmountWei,
   onSuccess,
@@ -34,6 +36,7 @@ export function FormWithdrawalCollateral({
 
   const { submit, isSubmitting } = useWithdrawalCollateralSubmit({
     loanId,
+    investorAddress,
     onSuccess,
   })
 

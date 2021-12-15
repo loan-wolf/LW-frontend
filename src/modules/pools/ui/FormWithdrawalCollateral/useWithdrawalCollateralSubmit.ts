@@ -4,20 +4,24 @@ import { useCallback, useState } from 'react'
 import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useTransactionSender } from 'modules/blockChain/hooks/useTransactionSender'
 
-import { ContractCollateralManager } from 'modules/contracts/contracts'
 import type { FormValues, SuccessData } from './types'
 import { logGroup } from 'shared/utils/logGroup'
+import { getInvestorContractByAddress } from 'modules/pools/utils/getInvestorContract'
 import * as errors from 'shared/constants/errors'
 
 type Args = {
   loanId: string
+  investorAddress: string
   onSuccess: (res: SuccessData) => void
 }
 
-export function useWithdrawalCollateralSubmit({ loanId, onSuccess }: Args) {
-  const { walletAddress } = useWeb3()
+export function useWithdrawalCollateralSubmit({
+  loanId,
+  investorAddress,
+  onSuccess,
+}: Args) {
+  const { chainId, library, walletAddress } = useWeb3()
   const [isSubmitting, setSubmitting] = useState(false)
-  const contractCollateralManager = ContractCollateralManager.useContractWeb3()
 
   const populateWithdrawal = useCallback(
     async ({
@@ -33,18 +37,18 @@ export function useWithdrawalCollateralSubmit({ loanId, onSuccess }: Args) {
         'Amount in wei': String(amountWei),
       })
 
-      const populated =
-        await contractCollateralManager.populateTransaction.withdrawal(
-          loanId,
-          amountWei,
-          address,
-          {
-            gasLimit: 500000,
-          },
-        )
+      const Investor = getInvestorContractByAddress(chainId, investorAddress)
+      const investor = Investor.connectWeb3({ chainId, library })
+      const populated = await investor.populateTransaction.claimCollateral(
+        loanId,
+        amountWei,
+        {
+          gasLimit: 500000,
+        },
+      )
       return populated
     },
-    [contractCollateralManager, loanId],
+    [chainId, investorAddress, library, loanId],
   )
   const txWithdrawal = useTransactionSender(populateWithdrawal)
 
