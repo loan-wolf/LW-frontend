@@ -1,3 +1,5 @@
+import React from 'react'
+import { Tooltip } from 'shared/ui/common/Tooltip'
 import { Text, TextSize, TextColor } from 'shared/ui/common/Text'
 import s from './InfoFieldValue.module.scss'
 
@@ -7,6 +9,8 @@ type Props = {
   className?: string
   valueSize?: TextSize
   valueColor?: TextColor
+  isTruncated?: boolean
+  sign?: React.ReactNode
 }
 
 export function InfoFieldValue({
@@ -15,6 +19,8 @@ export function InfoFieldValue({
   valueSize = 16,
   valueColor = 'default',
   className,
+  isTruncated,
+  sign,
 }: Props) {
   return (
     <div className={className}>
@@ -34,7 +40,19 @@ export function InfoFieldValue({
         isUppercased
         className={s.value}
       >
-        {value}
+        {isTruncated ? (
+          <Tooltip tooltip={value} className={s.truncatedWrap}>
+            <span className={s.truncatedValue}>{value}</span>
+            {sign && (
+              <>
+                &nbsp;
+                <span>{sign}</span>
+              </>
+            )}
+          </Tooltip>
+        ) : (
+          value
+        )}
       </Text>
     </div>
   )

@@ -33,7 +33,9 @@ export function Tooltip({
       {children}
       <div
         style={{ maxWidth }}
-        className={cns(s.body, classNameBody, s[`position--${position}`])}
+        className={cns(s.body, classNameBody, s[`position--${position}`], {
+          [s.isBreaking]: maxWidth !== undefined,
+        })}
       >
         <Text size={12} weight={500} children={tooltip} />
       </div>

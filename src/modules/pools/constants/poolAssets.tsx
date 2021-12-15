@@ -6,18 +6,17 @@ import { ReactComponent as TokenUSDC } from 'assets/token-usdc.svg'
 import { ReactComponent as TokenUSDT } from 'assets/token-usdt.svg'
 import { ReactComponent as TokenETH } from 'assets/token-eth.svg'
 import { ReactComponent as TokenWBTC } from 'assets/token-wbtc.svg'
-import * as addresses from 'modules/contracts/contractAddresses'
 import * as contracts from 'modules/contracts/contracts'
 
-export const poolAssets = {
+export const PoolAsset = {
   DAI: 'DAI',
-  DAI2: 'DAI2',
   USDC: 'USDC',
   USDT: 'USDT',
   ETH: 'ETH',
   WBTC: 'WBTC',
 } as const
-export type PoolAsset = keyof typeof poolAssets
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type PoolAsset = keyof typeof PoolAsset
 
 export const poolAssetIcons = {
   DAI: <TokenDAI />,
@@ -31,74 +30,60 @@ export function getPoolAssetIcon(asset: string) {
   return getOr(null, asset, poolAssetIcons) as React.ReactNode | null
 }
 
-export const poolAssetAddresses = {
-  [poolAssets.DAI]: addresses.addressTestDAI,
-  [poolAssets.DAI2]: addresses.addressTestDAI2,
-  [poolAssets.USDC]: null,
-  [poolAssets.USDT]: null,
-  [poolAssets.ETH]: addresses.addressTestETH,
-  [poolAssets.WBTC]: null,
-} as const
-
-export function getPoolAssetAddress(asset: PoolAsset, chain: Chains) {
-  const addr = poolAssetAddresses[asset]
-  return addr?.get(chain)
-}
-
-export const getPoolAssetByAddress = memoize(
-  (address: string, chain: Chains) => {
-    return flow(
-      toPairs,
-      find(([asset, poolAddress]) => address === poolAddress?.get(chain)),
-      get(0),
-    )(poolAssetAddresses) as PoolAsset | undefined
-  },
-)
-
-export const poolAssetOptions = {
-  [poolAssets.DAI]: {
-    label: poolAssets.DAI,
-    value: poolAssets.DAI,
-    icon: poolAssetIcons.DAI,
-  },
-  [poolAssets.DAI2]: {
-    label: poolAssets.DAI2,
-    value: poolAssets.DAI2,
-    icon: poolAssetIcons.DAI,
-  },
-  [poolAssets.USDC]: {
-    label: poolAssets.USDC,
-    value: poolAssets.USDC,
-    icon: poolAssetIcons.USDC,
-  },
-  [poolAssets.USDT]: {
-    label: poolAssets.USDT,
-    value: poolAssets.USDT,
-    icon: poolAssetIcons.USDT,
-  },
-  [poolAssets.ETH]: {
-    label: poolAssets.ETH,
-    value: poolAssets.ETH,
-    icon: poolAssetIcons.ETH,
-  },
-  [poolAssets.WBTC]: {
-    label: poolAssets.WBTC,
-    value: poolAssets.WBTC,
-    icon: poolAssetIcons.WBTC,
-  },
-} as const
-
 export const assetERCContracts = {
-  [poolAssets.DAI]: contracts.ContractTestDAI,
-  [poolAssets.DAI2]: contracts.ContractTestDAI2,
-  [poolAssets.USDC]: null,
-  [poolAssets.USDT]: null,
-  [poolAssets.ETH]: contracts.ContractTestETH,
-  [poolAssets.WBTC]: null,
+  [PoolAsset.DAI]: contracts.ContractTestDAI,
+  [PoolAsset.USDC]: contracts.ContractTestUSDC,
+  [PoolAsset.USDT]: contracts.ContractTestUSDT,
+  [PoolAsset.ETH]: contracts.ContractTestETH,
+  [PoolAsset.WBTC]: contracts.ContractTestWBTC,
 } as const
 
 export function getERCContractByAsset(asset: PoolAsset) {
   const contract = assetERCContracts[asset]
-  if (!contract) throw new Error(`Contract for asset ${asset} not defined`)
+  // if (!contract) throw new Error(`Contract for asset ${asset} not defined`)
   return contract
 }
+
+export function getERCAssetAddress(asset: PoolAsset, chain: Chains) {
+  const addr = assetERCContracts[asset].chainAddress
+  return addr.get(chain)
+}
+
+export const getERCAssetByAddress = memoize(
+  (address: string, chain: Chains) => {
+    return flow(
+      toPairs,
+      find(([a, c]) => address === c.chainAddress?.get(chain)),
+      get(0),
+    )(assetERCContracts) as PoolAsset | undefined
+  },
+  (...args) => args.join('-'),
+)
+
+export const poolAssetOptions = {
+  [PoolAsset.DAI]: {
+    label: PoolAsset.DAI,
+    value: PoolAsset.DAI,
+    icon: poolAssetIcons.DAI,
+  },
+  [PoolAsset.USDC]: {
+    label: PoolAsset.USDC,
+    value: PoolAsset.USDC,
+    icon: poolAssetIcons.USDC,
+  },
+  [PoolAsset.USDT]: {
+    label: PoolAsset.USDT,
+    value: PoolAsset.USDT,
+    icon: poolAssetIcons.USDT,
+  },
+  [PoolAsset.ETH]: {
+    label: PoolAsset.ETH,
+    value: PoolAsset.ETH,
+    icon: poolAssetIcons.ETH,
+  },
+  [PoolAsset.WBTC]: {
+    label: PoolAsset.WBTC,
+    value: PoolAsset.WBTC,
+    icon: poolAssetIcons.WBTC,
+  },
+} as const

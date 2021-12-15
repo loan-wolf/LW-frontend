@@ -6,7 +6,7 @@ import {
   getERCContractByAsset,
 } from 'modules/pools/constants/poolAssets'
 
-export function useAssetContractGetter() {
+export function useConnectorAssetERC20() {
   const { library, chainId } = useWeb3()
 
   const getAssetContract = useCallback(
@@ -15,7 +15,7 @@ export function useAssetContractGetter() {
       const CollateralAssetContract = getERCContractByAsset(asset)
       const collateralAssetContract = CollateralAssetContract.connectWeb3({
         chainId,
-        library: library.getSigner(),
+        library,
       })
       return collateralAssetContract
     },

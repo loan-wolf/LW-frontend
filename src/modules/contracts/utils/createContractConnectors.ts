@@ -29,7 +29,10 @@ export function createContractConnectors<F extends ContractFactoryAbstract>({
   }
 
   const connectWeb3: ConnectWeb3Fn<F> = ({ chainId, library }) => {
-    return factory.connect(chainAddress.get(chainId), library) as Instance
+    return factory.connect(
+      chainAddress.get(chainId),
+      library?.getSigner(),
+    ) as Instance
   }
 
   return {

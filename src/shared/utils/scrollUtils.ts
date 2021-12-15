@@ -82,8 +82,7 @@ export const animateScroll = (to: number, duration = 350) => {
   })
 }
 
-export const saveScrollHistory = () => {
-  const key = JSON.stringify(window.history.state)
+export const saveScrollHistory = (key: string) => {
   sessionStorage.setItem(
     SCROLL_STORAGE_PREFIX + key,
     String(getScrollPosition()),
@@ -92,12 +91,11 @@ export const saveScrollHistory = () => {
 
 export const preventNextScrollRestoring = () => (preventScrollRestoring = true)
 
-export const restoreScrollHistory = () => {
+export const restoreScrollHistory = (key: string) => {
   if (preventScrollRestoring) {
     preventScrollRestoring = false
     return
   }
-  const key = JSON.stringify(window.history.state)
   const top = Number(sessionStorage.getItem(SCROLL_STORAGE_PREFIX + key) || 0)
   setScrollPosition(top)
 }

@@ -1,19 +1,15 @@
 import { useMemo } from 'react'
 import { useLoansList } from 'modules/pools/hooks/useLoansList'
-import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 
 import { PageLoader } from 'shared/ui/layout/PageLoader'
 import { DashboardRowLoan } from 'modules/pools/ui/DashboardRowLoan'
 import { DashboardEmptyCTA } from 'modules/pools/ui/DashboardEmptyCTA'
 
-import { ContractInvestor } from 'modules/contracts/contracts'
 import { createRoute } from 'modules/router/utils/createRoute'
 import * as links from 'modules/router/links'
 
 function RouteDashboardOldLoans() {
   const loans = useLoansList()
-  const { chainId } = useWeb3()
-  const investorAddress = ContractInvestor.chainAddress.get(chainId)
 
   const loansDisplay = useMemo(
     () => loans.data?.filter(loan => loan.isCompleted),
@@ -38,13 +34,13 @@ function RouteDashboardOldLoans() {
 
   return (
     <>
-      {loansDisplay.map(loan => (
+      {loansDisplay.map(loanData => (
         <DashboardRowLoan
-          key={loan.id}
-          loan={loan}
-          loanId={loan.id}
-          isCompleted={loan.isCompleted}
-          investorAddress={investorAddress}
+          key={loanData.id}
+          loan={loanData.loan}
+          loanId={loanData.id}
+          isCompleted={loanData.isCompleted}
+          investorAddress={loanData.investorAddress}
         />
       ))}
     </>

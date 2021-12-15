@@ -9,6 +9,7 @@ import { WalletConnectorsProvider } from 'modules/wallet/providers/walletConnect
 import { ThemeProvider } from 'modules/themes/ThemeProvider'
 import { ModalProvider } from 'modules/modal/providers/ModalProvider'
 import { SupportedChainGuard } from 'modules/blockChain/ui/SupportedChainGuard'
+import { ScrollRestorator } from 'shared/ui/utils/ScrollRestorator'
 
 import 'modules/appRoot/fonts.scss'
 import 'modules/appRoot/global-styles.scss'
@@ -22,6 +23,7 @@ export function AppRoot() {
         <WalletConnectorsProvider>
           <ThemeProvider>
             <BrowserRouter basename={BASE_URL}>
+              <ScrollRestorator />
               <SupportedChainGuard
                 switchTo={SUPPORTED_CHAINS[0]}
                 supportedChains={SUPPORTED_CHAINS}

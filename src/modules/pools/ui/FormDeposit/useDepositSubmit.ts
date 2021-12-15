@@ -5,13 +5,18 @@ import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useTransactionSender } from 'modules/blockChain/hooks/useTransactionSender'
 import { useTxAssetAllowance } from 'modules/contracts/hooks/useTxAssetAllowance'
 
-import { getPoolAssetAddress } from 'modules/pools/constants/poolAssets'
+import {
+  getERCAssetAddress,
+  PoolAsset,
+} from 'modules/pools/constants/poolAssets'
 import {
   ContractTrader,
   ContractLiquidityFarm,
-  ContractILiquidityPool,
 } from 'modules/contracts/contracts'
 import type { FormValues, SuccessData } from './types'
+import { logGroup } from 'shared/utils/logGroup'
+import { PoolRisk } from 'modules/pools/constants/PoolRisk'
+import { getILiquidityPoolByAssetAndRisk } from 'modules/pools/utils/getILiquidityPoolContract'
 import * as errors from 'shared/constants/errors'
 
 type Args = {
@@ -30,8 +35,27 @@ export function useDepositSubmit({ isLocked, setLocked, onSuccess }: Args) {
    * Deposit tx
    */
   const populateDeposit = useCallback(
-    async ({ amountWei }: { amountWei: ethers.BigNumberish }) => {
-      const poolAddress = ContractILiquidityPool.chainAddress.get(chainId)
+    async ({
+      depositedAsset,
+      amountWei,
+      risk,
+    }: {
+      depositedAsset: PoolAsset
+      amountWei: ethers.BigNumberish
+      risk: PoolRisk
+    }) => {
+      const { contract: PoolContract } = getILiquidityPoolByAssetAndRisk(
+        depositedAsset,
+        risk,
+      )
+      const poolAddress = PoolContract.chainAddress.get(chainId)
+
+      logGroup('Submitting deposit', {
+        'Pool address': poolAddress,
+        Amount: ethers.utils.formatEther(amountWei),
+        'Amount in wei': amountWei.toString(),
+      })
+
       const populated = await contractFarm.populateTransaction.depositZap(
         poolAddress,
         amountWei,
@@ -54,10 +78,11 @@ export function useDepositSubmit({ isLocked, setLocked, onSuccess }: Args) {
         setLocked(true)
       } else {
         try {
-          const { amount, depositedAsset } = formValues
+          const { amount, depositedAsset, targetRiskPool } = formValues
           if (!walletAddress) throw new Error(errors.connectWallet)
           if (!depositedAsset) throw new Error(errors.depositAssetNotSelected)
-          const assetAddress = getPoolAssetAddress(depositedAsset, chainId)
+          if (!targetRiskPool) throw new Error(errors.riskNotSelected)
+          const assetAddress = getERCAssetAddress(depositedAsset, chainId)
           if (!assetAddress) throw new Error(errors.assetAddressNotDefined)
 
           setSubmitting(true)
@@ -72,6 +97,8 @@ export function useDepositSubmit({ isLocked, setLocked, onSuccess }: Args) {
 
           const txDepositRes = await sendDeposit({
             amountWei,
+            depositedAsset,
+            risk: targetRiskPool,
           })
 
           setSubmitting(false)

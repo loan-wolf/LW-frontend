@@ -66,11 +66,11 @@ export const routes: RouteConfig[] = [
         ],
       },
       {
-        path: links.repayment(':loanId'),
+        path: links.repayment(':investorAddress', ':loanId'),
         ...routeRepayment,
       },
       {
-        path: links.withdrawalCollateral(':loanId'),
+        path: links.withdrawalCollateral(':investorAddress', ':loanId'),
         ...routeWithdrawalCollateral,
       },
       {

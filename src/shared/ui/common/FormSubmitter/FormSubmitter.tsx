@@ -25,7 +25,12 @@ export function FormSubmitter({
       )}
       {isLocked && (
         <div className={s.buttonsRow}>
-          <Button fashion="glass" className={s.edit} onClick={onClickUnlock}>
+          <Button
+            isDisabled={isSubmitting}
+            fashion="glass"
+            className={s.edit}
+            onClick={onClickUnlock}
+          >
             Edit
           </Button>
           <Button

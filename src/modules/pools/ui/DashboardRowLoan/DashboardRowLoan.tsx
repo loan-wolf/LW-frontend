@@ -1,7 +1,3 @@
-import * as ethers from 'ethers'
-import { useMemo } from 'react'
-import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
-
 import { Text } from 'shared/ui/common/Text'
 import { Tooltip } from 'shared/ui/common/Tooltip'
 import { Button } from 'shared/ui/controls/Button'
@@ -11,18 +7,12 @@ import { DropdownLoan } from '../DropdownLoan'
 import { DashboardRow } from 'shared/ui/common/DashboardRow'
 import { FormattedDate } from 'shared/ui/utils/FormattedDate'
 
-import {
-  getPoolAssetIcon,
-  getPoolAssetByAddress,
-} from 'modules/pools/constants/poolAssets'
+import { getPoolAssetIcon } from 'modules/pools/constants/poolAssets'
 
-import {
-  ContractCollateralManager,
-  ContractPriceFeed,
-} from 'modules/contracts/contracts'
 import type { Loan } from 'modules/pools/types/Loan'
-import * as links from 'modules/router/links'
+import { useLoanCalcs } from 'modules/pools/hooks/useLoanCalcs'
 import { trimMiddleString } from 'shared/utils/trimMiddleString'
+import * as links from 'modules/router/links'
 import s from './DashboardRowLoan.module.scss'
 
 type Props = {
@@ -40,47 +30,21 @@ export function DashboardRowLoan({
   investorAddress,
   className,
 }: Props) {
-  const { chainId } = useWeb3()
   const {
-    ERC20Address,
-    principal: principalRaw,
-    interestRate,
-    paymentDueDate,
-  } = loan
-
-  const borrowedAsset = useMemo(
-    () => getPoolAssetByAddress(ERC20Address, chainId),
-    [ERC20Address, chainId],
-  )
-
-  const collateralInfo = ContractCollateralManager.useSwrWeb3(
-    'getCollateralLookup',
-    investorAddress,
+    apr,
+    borrowedAsset,
+    principal,
+    interest,
+    totalDebt,
+    totalDebtUSD,
+    maturityTime,
+    collateralAmount,
+    collateralAsset,
+  } = useLoanCalcs({
+    loan,
     loanId,
-  )
-
-  const { data: borrowedAssetPrice } = ContractPriceFeed.useSwrWeb3(
-    'getLatestPriceUSD',
-    ERC20Address,
-  )
-
-  const maturityTime = Number(paymentDueDate)
-  const principal = Number(ethers.utils.formatEther(principalRaw))
-  const apr = Number(interestRate) / 100
-  const interest = principal / apr
-  const totalDebt = principal + interest
-  const totalDebtUSD =
-    borrowedAssetPrice && Number(borrowedAssetPrice) * totalDebt
-
-  const collateralAsset = useMemo(
-    () =>
-      collateralInfo.data &&
-      getPoolAssetByAddress(collateralInfo.data[0], chainId),
-    [collateralInfo.data, chainId],
-  )
-
-  const collateralAmount =
-    collateralInfo.data && ethers.utils.formatEther(collateralInfo.data[1])
+    investorAddress,
+  })
 
   return (
     <DashboardRow className={className}>
@@ -97,7 +61,7 @@ export function DashboardRowLoan({
             )
           }
         />
-        <InfoFieldValue label="APR" value={`${apr}%`} />
+        <InfoFieldValue isTruncated label="APR" value={apr} sign="%" />
       </div>
 
       <div className={s.column}>
@@ -105,42 +69,42 @@ export function DashboardRowLoan({
           label="Total debt"
           value={
             <div>
-              {totalDebt}&nbsp;{borrowedAsset}{' '}
+              <Tooltip tooltip={totalDebt} className={s.truncatedWrap}>
+                <span className={s.truncatedAmount}>{totalDebt}</span>&nbsp;
+                <span>{borrowedAsset}</span>
+              </Tooltip>
               <Text tag="span" size={16} color="secondary">
-                ({totalDebtUSD}&nbsp;USD)
+                <Tooltip tooltip={totalDebtUSD} className={s.truncatedWrap}>
+                  (<span className={s.truncatedAmount}>{totalDebtUSD}</span>
+                  &nbsp;
+                  <span>USD</span>)
+                </Tooltip>
               </Text>
             </div>
           }
         />
         <InfoFieldValueCouple>
           <InfoFieldValue
+            isTruncated
             label="Principal"
-            value={
-              <>
-                {principal}&nbsp;{borrowedAsset}
-              </>
-            }
+            value={principal}
+            sign={borrowedAsset}
           />
           <InfoFieldValue
+            isTruncated
             label="Interest"
-            value={
-              <>
-                {interest}&nbsp;{borrowedAsset}
-              </>
-            }
+            value={interest}
+            sign={borrowedAsset}
           />
         </InfoFieldValueCouple>
       </div>
 
       <div className={s.column}>
         <InfoFieldValue
+          isTruncated
           label="Collateral Amount"
-          value={
-            <Tooltip tooltip={collateralAmount} className={s.collateralWrap}>
-              <span className={s.collateralAmount}>{collateralAmount}</span>{' '}
-              <span>{collateralAsset}</span>
-            </Tooltip>
-          }
+          value={collateralAmount}
+          sign={collateralAsset}
         />
         <InfoFieldValue
           label="Maturity time "
@@ -160,7 +124,7 @@ export function DashboardRowLoan({
         <div className={s.actions}>
           {!isCompleted && (
             <Button
-              link={links.repayment(loanId)}
+              link={links.repayment(investorAddress, loanId)}
               className={s.action}
               fashion="greenapple-ghost"
               size={40}
@@ -169,8 +133,9 @@ export function DashboardRowLoan({
             </Button>
           )}
           <DropdownLoan
+            loanId={loanId}
+            investorAddress={investorAddress}
             onAddMore={() => console.log('onAddMore')}
-            onWithdraw={() => console.log('onWithdraw')}
             onBorrow={() => console.log('onBorrow')}
             className={s.action}
           />
@@ -178,15 +143,9 @@ export function DashboardRowLoan({
         <InfoFieldValue
           label="Loan Id"
           value={
-            <>
-              <Tooltip
-                position="top-right"
-                tooltip={loanId}
-                classNameBody={s.loanIdTooltip}
-              >
-                {trimMiddleString(loanId, 5)}
-              </Tooltip>
-            </>
+            <Tooltip position="top-right" tooltip={loanId} maxWidth={210}>
+              {trimMiddleString(loanId, 5)}
+            </Tooltip>
           }
         />
       </div>

@@ -20,6 +20,10 @@
   transition: opacity ease var(--durFast),
     transform var(--easeOutBack) var(--durNorm);
 
+  &.isBreaking {
+    word-break: break-all;
+  }
+
   .wrap:hover & {
     opacity: 1;
     transform: scale(1);

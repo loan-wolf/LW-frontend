@@ -3,14 +3,18 @@ import * as ethers from 'ethers'
 import { useCallback } from 'react'
 import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useTransactionSender } from 'modules/blockChain/hooks/useTransactionSender'
-import { useAssetContractGetter } from 'modules/pools/hooks/useAssetContractGetter'
+import { useConnectorAssetERC20 } from 'modules/pools/hooks/useConnectorAssetERC20'
 
-import { PoolAsset } from 'modules/pools/constants/poolAssets'
+import {
+  PoolAsset,
+  getERCAssetByAddress,
+} from 'modules/pools/constants/poolAssets'
+import { logGroup } from 'shared/utils/logGroup'
 import * as errors from 'shared/constants/errors'
 
 export function useTxAssetAllowance() {
-  const { walletAddress } = useWeb3()
-  const getAssetContract = useAssetContractGetter()
+  const { walletAddress, chainId } = useWeb3()
+  const connectAssetContract = useConnectorAssetERC20()
 
   const populateAllowance = useCallback(
     async ({
@@ -22,7 +26,13 @@ export function useTxAssetAllowance() {
       amountWei: ethers.BigNumberish
       asset: PoolAsset
     }) => {
-      const assetContract = getAssetContract(asset)
+      const assetContract = connectAssetContract(asset)
+
+      logGroup('Submitting new allowance', {
+        Amount: ethers.utils.formatEther(amountWei),
+        'Amount in wei': String(amountWei),
+      })
+
       const populated = await assetContract.populateTransaction.approve(
         spenderAddress,
         amountWei,
@@ -30,7 +40,7 @@ export function useTxAssetAllowance() {
 
       return populated
     },
-    [getAssetContract],
+    [connectAssetContract],
   )
   const txAllowance = useTransactionSender(populateAllowance)
 
@@ -48,11 +58,18 @@ export function useTxAssetAllowance() {
     }) => {
       if (!walletAddress) throw new Error(errors.connectWallet)
 
-      const assetContract = getAssetContract(asset)
+      const assetContract = connectAssetContract(asset)
       const allowance = await assetContract.allowance(
         walletAddress,
         spenderAddress,
       )
+
+      logGroup('Current allowance', {
+        Asset: getERCAssetByAddress(assetContract.address, chainId),
+        'Asset address': assetContract.address,
+        'Current allowance': ethers.utils.formatEther(allowance),
+        'Current allowance in wei': allowance.toString(),
+      })
 
       if (allowance.lt(amountWei)) {
         const txAllowanceRes = await sendAllowance({
@@ -63,7 +80,7 @@ export function useTxAssetAllowance() {
         await txAllowanceRes.wait()
       }
     },
-    [walletAddress, getAssetContract, sendAllowance],
+    [walletAddress, connectAssetContract, sendAllowance, chainId],
   )
 
   return {

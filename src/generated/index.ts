@@ -3,6 +3,7 @@
 /* eslint-disable */
 export type { Bonds } from "./Bonds";
 export type { CollateralManager } from "./CollateralManager";
+export type { HardcodedCreditScores } from "./HardcodedCreditScores";
 export type { IERC20 } from "./IERC20";
 export type { ILiquidityPool } from "./ILiquidityPool";
 export type { Investor } from "./Investor";
@@ -17,6 +18,7 @@ export type { Trader } from "./Trader";
 
 export { Bonds__factory } from "./factories/Bonds__factory";
 export { CollateralManager__factory } from "./factories/CollateralManager__factory";
+export { HardcodedCreditScores__factory } from "./factories/HardcodedCreditScores__factory";
 export { IERC20__factory } from "./factories/IERC20__factory";
 export { ILiquidityPool__factory } from "./factories/ILiquidityPool__factory";
 export { Investor__factory } from "./factories/Investor__factory";

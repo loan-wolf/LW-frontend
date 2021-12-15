@@ -4,9 +4,13 @@ import { useCallback, useState } from 'react'
 import { useWeb3 } from 'modules/blockChain/hooks/useWeb3'
 import { useTransactionSender } from 'modules/blockChain/hooks/useTransactionSender'
 import { useTxAssetAllowance } from 'modules/contracts/hooks/useTxAssetAllowance'
+import { useConnectorInvestor } from 'modules/pools/hooks/useConnectorInvestor'
 
-import { ContractBonds, ContractInvestor } from 'modules/contracts/contracts'
+import { ContractBonds } from 'modules/contracts/contracts'
 import type { FormValues, SuccessData } from './types'
+import type { PoolAsset } from 'modules/pools/constants/poolAssets'
+import { getInvestorContractByAsset } from 'modules/pools/utils/getInvestorContract'
+import { logGroup } from 'shared/utils/logGroup'
 import * as errors from 'shared/constants/errors'
 
 type Args = {
@@ -24,29 +28,51 @@ export function useRepaymentSubmit({
 }: Args) {
   const { chainId } = useWeb3()
   const contractBonds = ContractBonds.useContractWeb3()
-  const contractInvestor = ContractInvestor.useContractWeb3()
   const [isSubmitting, setSubmitting] = useState(false)
   const { makeAllowanceIfNeeded, txAllowance } = useTxAssetAllowance()
+  const connectInvstorContract = useConnectorInvestor()
 
   /**
    * Approval tx
    */
-  const populateApproval = useCallback(async () => {
-    const populated = await contractBonds.populateTransaction.setApprovalForAll(
-      contractInvestor.address,
-      true,
-    )
+  const populateApproval = useCallback(
+    async (investorAddress: string) => {
+      logGroup('Submitting setApprovalForAll', {
+        'Investor address': investorAddress,
+      })
 
-    return populated
-  }, [contractBonds, contractInvestor.address])
+      const populated =
+        await contractBonds.populateTransaction.setApprovalForAll(
+          investorAddress,
+          true,
+        )
+      return populated
+    },
+    [contractBonds],
+  )
   const txApproval = useTransactionSender(populateApproval)
 
   /**
    * Payment tx
    */
   const populatePayment = useCallback(
-    async ({ amountWei }: { amountWei: ethers.BigNumberish }) => {
-      const populated = await contractInvestor.populateTransaction.payment(
+    async ({
+      asset,
+      amountWei,
+    }: {
+      asset: PoolAsset
+      amountWei: ethers.BigNumberish
+    }) => {
+      const investor = connectInvstorContract(asset)
+
+      logGroup('Submitting repayment', {
+        'Loan id': loanId,
+        Amount: ethers.utils.formatEther(amountWei),
+        'Amount in wei': String(amountWei),
+        'Investor address': investor.address,
+      })
+
+      const populated = await investor.populateTransaction.payment(
         loanId,
         amountWei,
         {
@@ -55,7 +81,7 @@ export function useRepaymentSubmit({
       )
       return populated
     },
-    [contractInvestor, loanId],
+    [connectInvstorContract, loanId],
   )
   const txPayment = useTransactionSender(populatePayment)
 
@@ -68,26 +94,32 @@ export function useRepaymentSubmit({
         setLocked(true)
       } else {
         try {
-          const { amount, depositedAsset } = formValues
+          const { amount, borrowedAsset } = formValues
 
-          if (!depositedAsset) {
+          if (!borrowedAsset) {
             throw new Error(errors.depositAssetNotSelected)
           }
 
           setSubmitting(true)
 
-          const txApprovalRes = await sendApproval()
+          const Investor = getInvestorContractByAsset(borrowedAsset)
+          const investorAddress = Investor.chainAddress.get(chainId)
+
+          const txApprovalRes = await sendApproval(investorAddress)
           await txApprovalRes.wait()
 
           const amountWei = ethers.utils.parseEther(amount)
 
           await makeAllowanceIfNeeded({
-            spenderAddress: ContractInvestor.chainAddress.get(chainId),
+            spenderAddress: investorAddress,
             amountWei,
-            asset: depositedAsset,
+            asset: borrowedAsset,
           })
 
-          const txRepaymentRes = await sendPayment({ amountWei })
+          const txRepaymentRes = await sendPayment({
+            asset: borrowedAsset,
+            amountWei,
+          })
 
           setSubmitting(false)
           onSuccess({ tx: txRepaymentRes, formValues })
@@ -100,9 +132,9 @@ export function useRepaymentSubmit({
     [
       isLocked,
       setLocked,
+      chainId,
       sendApproval,
       makeAllowanceIfNeeded,
-      chainId,
       sendPayment,
       onSuccess,
     ],

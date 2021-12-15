@@ -1,4 +1,5 @@
 import cns from 'classnames'
+import { orderBy } from 'lodash'
 import { useState } from 'react'
 
 import { Link } from 'shared/ui/controls/Link'
@@ -12,46 +13,46 @@ import { ReactComponent as BorrowWBTC } from 'assets/borrow.svg'
 import { ReactComponent as LendWBTC } from 'assets/lend.svg'
 import { ReactComponent as Order } from 'assets/order.svg'
 
+import { PoolAsset } from 'modules/pools/constants/poolAssets'
 import * as links from 'modules/router/links'
 import s from './MarketsTable.module.scss'
-import { orderBy } from 'lodash'
 
 const data = [
   {
-    name: 'DAI',
+    name: PoolAsset.DAI,
     totalDeposit: 32.12,
     depositAPY: 19,
     totalBorrowed: 8.12,
     borrowAPR: 19,
   },
   {
-    name: 'USDC',
+    name: PoolAsset.USDC,
     totalDeposit: 123.12,
     depositAPY: 22,
     totalBorrowed: 11.42,
     borrowAPR: 14,
   },
   {
-    name: 'USDT',
+    name: PoolAsset.USDT,
     totalDeposit: 13.12,
     depositAPY: 21,
     totalBorrowed: 9.12,
     borrowAPR: 23,
   },
-  {
-    name: 'ETH',
-    totalDeposit: 42.23,
-    depositAPY: 42,
-    totalBorrowed: 6.43,
-    borrowAPR: 13,
-  },
-  {
-    name: 'WBTC',
-    totalDeposit: 12.32,
-    depositAPY: 32,
-    totalBorrowed: 32.4,
-    borrowAPR: 54,
-  },
+  // {
+  //   name: PoolAsset.ETH,
+  //   totalDeposit: 42.23,
+  //   depositAPY: 42,
+  //   totalBorrowed: 6.43,
+  //   borrowAPR: 13,
+  // },
+  // {
+  //   name: PoolAsset.WBTC,
+  //   totalDeposit: 12.32,
+  //   depositAPY: 32,
+  //   totalBorrowed: 32.4,
+  //   borrowAPR: 54,
+  // },
 ] as const
 
 const icons = {
@@ -191,13 +192,13 @@ export function MarketsTable() {
             </td>
             <td>
               {/* TODO: Add pool info to link when pools data will be real */}
-              <Link to={links.borrow}>
+              <Link to={`${links.borrow}?asset=${row.name}`}>
                 <BorrowWBTC className={s.borrowIcon} />
               </Link>
             </td>
             <td>
               {/* TODO: Add pool info to link when pools data will be real */}
-              <Link to={links.deposit}>
+              <Link to={`${links.deposit}?asset=${row.name}`}>
                 <LendWBTC className={s.lendIcon} />
               </Link>
             </td>

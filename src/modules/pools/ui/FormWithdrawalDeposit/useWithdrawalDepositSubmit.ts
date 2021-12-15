@@ -5,6 +5,7 @@ import { useTransactionSender } from 'modules/blockChain/hooks/useTransactionSen
 
 import { ContractLiquidityFarm } from 'modules/contracts/contracts'
 import type { FormValues, SuccessData } from './types'
+import { logGroup } from 'shared/utils/logGroup'
 import * as errors from 'shared/constants/errors'
 
 type Args = {
@@ -19,6 +20,10 @@ export function useWithdrawalDepositSubmit({ poolAddress, onSuccess }: Args) {
 
   const populateWithdrawal = useCallback(
     async (args: { poolAddress: string }) => {
+      logGroup('Submitting deposit withdrawal', {
+        'Pool address': args.poolAddress,
+      })
+
       const populated =
         await contractLiquidityFarm.populateTransaction.withdrawZapAndUnstake(
           args.poolAddress,

@@ -1,12 +1,15 @@
 import { useCallback, useState } from 'react'
 import { useForm, useFormContext } from 'react-hook-form'
 import { useDepositSubmit } from './useDepositSubmit'
+import { useDepositRiskOptions } from 'modules/pools/hooks/useDepositRiskOptions'
+import { useQueryParams } from 'modules/router/hooks/useQueryParams'
 
 import { InputControl } from 'shared/ui/controls/Input'
 import { SelectControl } from 'shared/ui/controls/Select'
 import { FormSubmitter } from 'shared/ui/common/FormSubmitter'
 import { Form } from 'shared/ui/controls/Form'
 import {
+  FormInfoItem,
   FormInfoFrame,
   FormInfoFramesList,
 } from 'shared/ui/common/FormInfoFrame'
@@ -21,10 +24,7 @@ import {
   poolAssetOptions,
   getPoolAssetIcon,
 } from 'modules/pools/constants/poolAssets'
-import {
-  targetRiskOptions,
-  getTargetRiskLabel,
-} from 'modules/pools/constants/riskOptions'
+import { assetOrUndef } from 'modules/pools/utils/assetOrUndef'
 import { formatNumber } from 'shared/utils/formatNumber'
 import type { FormValues, SuccessData } from './types'
 
@@ -35,7 +35,6 @@ const depositOptions = [
   poolAssetOptions.USDC,
   poolAssetOptions.USDT,
   poolAssetOptions.DAI,
-  poolAssetOptions.DAI2,
 ]
 
 function EstimatedEarning() {
@@ -52,15 +51,19 @@ type Props = {
 export function FormDeposit({ onSuccess }: Props) {
   const [isLocked, setLocked] = useState(false)
   const handleUnlock = useCallback(() => setLocked(false), [])
+  const { asset: defaultAsset } = useQueryParams()
 
   const formMethods = useForm<FormValues>({
     shouldUnregister: false,
     defaultValues: {
-      depositedAsset: '',
+      depositedAsset: assetOrUndef(defaultAsset as string),
       amount: '',
       targetRiskPool: '',
     },
   })
+
+  const depositedAsset = formMethods.watch('depositedAsset')
+  const { data: riskOptions = [] } = useDepositRiskOptions(depositedAsset)
 
   const { submit, isSubmitting, txAllowance } = useDepositSubmit({
     isLocked,
@@ -95,7 +98,7 @@ export function FormDeposit({ onSuccess }: Props) {
             concat="top"
             placeholder="Target risk pool"
             rules={{ required: formErrors.required }}
-            options={targetRiskOptions}
+            options={riskOptions}
           />
         </>
       )}
@@ -112,40 +115,38 @@ export function FormDeposit({ onSuccess }: Props) {
             label="Target risk pool"
             name="targetRiskPool"
             valueSize={16}
-            formatValue={getTargetRiskLabel}
+            formatValue={v => riskOptions.find(i => i.value === v)?.label}
           />
         </FormLockedValuesList>
       )}
 
       <FormInfoFramesList>
-        <FormInfoFrame
-          info={[
-            {
-              label: (
-                <>
-                  Estimated
-                  <br />
-                  earned per 30 days
-                </>
-              ),
-              value: (
-                <>
-                  <EstimatedEarning /> USD
-                </>
-              ),
-            },
-            {
-              label: (
-                <>
-                  Your share
-                  <br />
-                  of the pool
-                </>
-              ),
-              value: `${POOL_SHARE}%`,
-            },
-          ]}
-        />
+        <FormInfoFrame>
+          <FormInfoItem
+            label={
+              <>
+                Estimated
+                <br />
+                earned per 30 days
+              </>
+            }
+            value={
+              <>
+                <EstimatedEarning /> USD
+              </>
+            }
+          />
+          <FormInfoItem
+            label={
+              <>
+                Your share
+                <br />
+                of the pool
+              </>
+            }
+            value={`${POOL_SHARE}%`}
+          />
+        </FormInfoFrame>
       </FormInfoFramesList>
 
       {isLocked && (
