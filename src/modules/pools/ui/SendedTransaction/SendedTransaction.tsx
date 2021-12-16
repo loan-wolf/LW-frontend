@@ -1,19 +1,21 @@
 import * as ethers from 'ethers'
 
-import { Button } from 'shared/ui/controls/Button'
 import { InfoFieldValue } from 'shared/ui/common/InfoFieldValue'
 import { TransactionStatusBadge } from 'modules/blockChain/ui/TransactionStatusBadge'
 
 import s from './SendedTransaction.module.scss'
 import { useTransactionStatus } from 'modules/blockChain/hooks/useTransactionStatus'
 import { useEtherscanOpener } from 'modules/blockChain/hooks/useEtherscanOpener'
+import { FormattedDate } from 'shared/ui/utils/FormattedDate'
 
 type Props = {
   tx: ethers.ContractTransaction
   transactionType: React.ReactNode
+  withTotalAmount?: boolean
 }
 
-export function SendedTransaction({ tx, transactionType }: Props) {
+export function SendedTransaction(props: Props) {
+  const { tx, transactionType, withTotalAmount = true } = props
   const txStatus = useTransactionStatus({
     hash: tx.hash,
     defaultStatus: 'pending',
@@ -29,7 +31,17 @@ export function SendedTransaction({ tx, transactionType }: Props) {
           value={transactionType}
           className={s.column}
         />
-        <InfoFieldValue label="Time" value="—" className={s.column} />
+        <InfoFieldValue
+          label="Time"
+          value={
+            tx.timestamp ? (
+              <FormattedDate format="DD-MMM-YYYY hh:mm a" date={tx.timestamp} />
+            ) : (
+              '-'
+            )
+          }
+          className={s.column}
+        />
       </div>
       <div className={s.row}>
         <InfoFieldValue
@@ -47,12 +59,14 @@ export function SendedTransaction({ tx, transactionType }: Props) {
       </div>
       <div className={s.line} />
       <div className={s.row}>
-        <InfoFieldValue
-          label="Total Amount"
-          value="— USD"
-          valueSize={28}
-          className={s.column}
-        />
+        {withTotalAmount && (
+          <InfoFieldValue
+            label="Total Amount"
+            value="— USD"
+            valueSize={28}
+            className={s.column}
+          />
+        )}
         <div className={s.column}>
           <TransactionStatusBadge
             status={txStatus.status}
@@ -60,9 +74,6 @@ export function SendedTransaction({ tx, transactionType }: Props) {
           />
         </div>
       </div>
-      <Button size={40} fashion="glass" onClick={handleOpen}>
-        Show on etherscan
-      </Button>
     </div>
   )
 }
