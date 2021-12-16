@@ -26,11 +26,9 @@ function RouteRepaymentRaw({ match }: Props) {
   const Investor = getInvestorContractByAddress(chainId, investorAddress)
   const investor = useContractInstanceWeb3(Investor)
 
-  const { isLoading, data: loan } = useContractSwr(
-    investor,
-    'loanLookup',
+  const { isLoading, data: loan } = useContractSwr(investor, 'loanLookup', [
     loanId,
-  )
+  ])
 
   if (isLoading || !loan) {
     return <PageLoader />

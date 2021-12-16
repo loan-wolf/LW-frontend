@@ -1,24 +1,28 @@
+import { SWRConfiguration } from 'swr'
 import { useContractSwr } from '../hooks/useContractSwr'
 import {
   useContractInstanceRpc,
   useContractInstanceWeb3,
 } from '../hooks/useContractInstance'
 
-import type { FilterMethods } from 'shared/utils/utilTypes'
+import type {
+  FilterAsyncMethods,
+  UnpackedPromise,
+} from 'shared/utils/utilTypes'
 import type {
   FactoryInstance,
   ContractFactoryAbstract,
   ContractConnector,
 } from '../types'
 
-type Args<F extends ContractFactoryAbstract> = {
-  connector: ContractConnector<F>
+type Args<C extends ContractFactoryAbstract> = {
+  connector: ContractConnector<C>
 }
 
-export function createContractHooks<F extends ContractFactoryAbstract>({
+export function createContractHooks<CF extends ContractFactoryAbstract>({
   connector,
-}: Args<F>) {
-  type Instance = FactoryInstance<F>
+}: Args<CF>) {
+  type C = FactoryInstance<CF>
 
   function useContractRpc() {
     return useContractInstanceRpc(connector)
@@ -29,13 +33,17 @@ export function createContractHooks<F extends ContractFactoryAbstract>({
   }
 
   const getUseSwr = function (type: 'web3' | 'rpc') {
-    return function <M extends FilterMethods<Instance>>(
-      method: M | null,
-      ...params: Parameters<Instance[M]>
+    return function <
+      M extends FilterAsyncMethods<C>,
+      R extends UnpackedPromise<ReturnType<C[M]>>,
+    >(
+      method: M | false,
+      params: Parameters<C[M]>,
+      config?: SWRConfiguration<R, Error>,
     ) {
       const contractInstance =
         type === 'web3' ? useContractWeb3() : useContractRpc()
-      const data = useContractSwr(contractInstance, method, ...params)
+      const data = useContractSwr(contractInstance, method, params, config)
       return data
     }
   }

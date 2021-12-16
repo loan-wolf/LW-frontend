@@ -23,11 +23,14 @@ interface ScoreDBInterface extends ethers.utils.Interface {
   functions: {
     "fulfill(bytes32,uint16)": FunctionFragment;
     "getCurrentScore(uint256)": FunctionFragment;
+    "owner()": FunctionFragment;
+    "pause()": FunctionFragment;
+    "paused()": FunctionFragment;
+    "renounceOwnership()": FunctionFragment;
     "requestUpdatedScoreBorrow(uint256,uint256,bytes32,bytes)": FunctionFragment;
-    "requestUpdatedScoreFrontend(uint256)": FunctionFragment;
     "setBaseUri(string)": FunctionFragment;
-    "setInvestorAddress(address)": FunctionFragment;
-    "setTokenAddress(address)": FunctionFragment;
+    "transferOwnership(address)": FunctionFragment;
+    "unpause()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -38,64 +41,70 @@ interface ScoreDBInterface extends ethers.utils.Interface {
     functionFragment: "getCurrentScore",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(functionFragment: "pause", values?: undefined): string;
+  encodeFunctionData(functionFragment: "paused", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "renounceOwnership",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "requestUpdatedScoreBorrow",
     values: [BigNumberish, BigNumberish, BytesLike, BytesLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "requestUpdatedScoreFrontend",
-    values: [BigNumberish]
-  ): string;
   encodeFunctionData(functionFragment: "setBaseUri", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "setInvestorAddress",
+    functionFragment: "transferOwnership",
     values: [string]
   ): string;
-  encodeFunctionData(
-    functionFragment: "setTokenAddress",
-    values: [string]
-  ): string;
+  encodeFunctionData(functionFragment: "unpause", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "fulfill", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getCurrentScore",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "renounceOwnership",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "requestUpdatedScoreBorrow",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "requestUpdatedScoreFrontend",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "setBaseUri", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "setInvestorAddress",
+    functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "setTokenAddress",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "unpause", data: BytesLike): Result;
 
   events: {
     "ChainlinkCancelled(bytes32)": EventFragment;
     "ChainlinkFulfilled(bytes32)": EventFragment;
     "ChainlinkRequested(bytes32)": EventFragment;
+    "OwnershipTransferred(address,address)": EventFragment;
+    "Paused(address)": EventFragment;
     "ScoreGenerationError(uint256,uint16)": EventFragment;
     "ScoreNotGenerated(uint256,uint16)": EventFragment;
     "ScoreReceived(uint256,uint16)": EventFragment;
     "ScoreRequested(uint256)": EventFragment;
+    "Unpaused(address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "ChainlinkCancelled"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ChainlinkFulfilled"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ChainlinkRequested"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ScoreGenerationError"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ScoreNotGenerated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ScoreReceived"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ScoreRequested"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
 }
 
 export class ScoreDB extends BaseContract {
@@ -153,6 +162,18 @@ export class ScoreDB extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[number]>;
 
+    owner(overrides?: CallOverrides): Promise<[string]>;
+
+    pause(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    paused(overrides?: CallOverrides): Promise<[boolean]>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     requestUpdatedScoreBorrow(
       tokenId: BigNumberish,
       loanId: BigNumberish,
@@ -161,23 +182,17 @@ export class ScoreDB extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    requestUpdatedScoreFrontend(
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     setBaseUri(
       newBaseUri: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setInvestorAddress(
-      investorAddress: string,
+    transferOwnership(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setTokenAddress(
-      tokenAddress: string,
+    unpause(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
@@ -193,6 +208,18 @@ export class ScoreDB extends BaseContract {
     overrides?: CallOverrides
   ): Promise<number>;
 
+  owner(overrides?: CallOverrides): Promise<string>;
+
+  pause(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  paused(overrides?: CallOverrides): Promise<boolean>;
+
+  renounceOwnership(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   requestUpdatedScoreBorrow(
     tokenId: BigNumberish,
     loanId: BigNumberish,
@@ -201,23 +228,17 @@ export class ScoreDB extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  requestUpdatedScoreFrontend(
-    tokenId: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   setBaseUri(
     newBaseUri: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setInvestorAddress(
-    investorAddress: string,
+  transferOwnership(
+    newOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setTokenAddress(
-    tokenAddress: string,
+  unpause(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -233,6 +254,14 @@ export class ScoreDB extends BaseContract {
       overrides?: CallOverrides
     ): Promise<number>;
 
+    owner(overrides?: CallOverrides): Promise<string>;
+
+    pause(overrides?: CallOverrides): Promise<void>;
+
+    paused(overrides?: CallOverrides): Promise<boolean>;
+
+    renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
     requestUpdatedScoreBorrow(
       tokenId: BigNumberish,
       loanId: BigNumberish,
@@ -241,22 +270,14 @@ export class ScoreDB extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    requestUpdatedScoreFrontend(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     setBaseUri(newBaseUri: string, overrides?: CallOverrides): Promise<void>;
 
-    setInvestorAddress(
-      investorAddress: string,
+    transferOwnership(
+      newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setTokenAddress(
-      tokenAddress: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    unpause(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
@@ -271,6 +292,16 @@ export class ScoreDB extends BaseContract {
     ChainlinkRequested(
       id?: BytesLike | null
     ): TypedEventFilter<[string], { id: string }>;
+
+    OwnershipTransferred(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): TypedEventFilter<
+      [string, string],
+      { previousOwner: string; newOwner: string }
+    >;
+
+    Paused(account?: null): TypedEventFilter<[string], { account: string }>;
 
     ScoreGenerationError(
       tokenId?: BigNumberish | null,
@@ -299,6 +330,8 @@ export class ScoreDB extends BaseContract {
     ScoreRequested(
       tokenId?: BigNumberish | null
     ): TypedEventFilter<[BigNumber], { tokenId: BigNumber }>;
+
+    Unpaused(account?: null): TypedEventFilter<[string], { account: string }>;
   };
 
   estimateGas: {
@@ -313,6 +346,18 @@ export class ScoreDB extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
+
+    pause(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    paused(overrides?: CallOverrides): Promise<BigNumber>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     requestUpdatedScoreBorrow(
       tokenId: BigNumberish,
       loanId: BigNumberish,
@@ -321,23 +366,17 @@ export class ScoreDB extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    requestUpdatedScoreFrontend(
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     setBaseUri(
       newBaseUri: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setInvestorAddress(
-      investorAddress: string,
+    transferOwnership(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setTokenAddress(
-      tokenAddress: string,
+    unpause(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -354,6 +393,18 @@ export class ScoreDB extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    pause(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     requestUpdatedScoreBorrow(
       tokenId: BigNumberish,
       loanId: BigNumberish,
@@ -362,23 +413,17 @@ export class ScoreDB extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    requestUpdatedScoreFrontend(
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     setBaseUri(
       newBaseUri: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setInvestorAddress(
-      investorAddress: string,
+    transferOwnership(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setTokenAddress(
-      tokenAddress: string,
+    unpause(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

@@ -29,7 +29,7 @@ export function useLoanCalcs({ loan, loanId, investorAddress }: Args) {
 
   const { data: borrowedAssetPriceWei } = ContractPriceFeed.useSwrWeb3(
     'getLatestPriceUSD',
-    ERC20Address,
+    [ERC20Address],
   )
   const borrowedAsset = getERCAssetByAddress(ERC20Address, chainId)
   const borrowedAssetPrice =
@@ -50,8 +50,7 @@ export function useLoanCalcs({ loan, loanId, investorAddress }: Args) {
 
   const { data: collateralInfo } = ContractCollateralManager.useSwrWeb3(
     'getCollateralLookup',
-    investorAddress,
-    loanId,
+    [investorAddress, loanId],
   )
   const collateralAsset =
     collateralInfo && getERCAssetByAddress(collateralInfo[0], chainId)

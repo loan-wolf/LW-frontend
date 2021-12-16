@@ -64,7 +64,7 @@ export const ContractRociCreditToken = createContractHelpers({
   name: 'RociCreditToken',
   factory: generated.RociCreditToken__factory,
   address: {
-    [Chains.Kovan]: '0x99d9A66f85bF850a2A603786FA7D817F757aCE66',
+    [Chains.Kovan]: '0xFCbC5c9E4256887eC4e02dc05D845b8F6370589B',
   },
 })
 
@@ -72,7 +72,7 @@ export const ContractScoreDB = createContractHelpers({
   name: 'ScoreDB',
   factory: generated.ScoreDB__factory,
   address: {
-    [Chains.Kovan]: '0x98CB50fF1d5f808a5BfC6286D1a5c7b8a4d8697A',
+    [Chains.Kovan]: '0x07de88b22E3Af0D46a4A1416264eC2ccBa4829d5',
   },
 })
 

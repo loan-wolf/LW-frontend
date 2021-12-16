@@ -44,18 +44,17 @@ export function useBorrowFormCalcs({
   // )
 
   // TODO: Take real credit score when it will be possible
-  const { data: ltvWei } = ContractHardcodedCreditScores.useSwrWeb3(
-    'LTV',
+  const { data: ltvWei } = ContractHardcodedCreditScores.useSwrWeb3('LTV', [
     HARDCODED_CREDIT_SCORE,
-  )
+  ])
   const ltv = ltvWei && Number(ethers.utils.formatEther(ltvWei))
 
   const collateralAddress =
     collateralAsset && getERCAssetAddress(collateralAsset, chainId)
 
   const { data: collateralPriceData } = ContractPriceFeed.useSwrWeb3(
-    collateralAddress ? 'getLatestPriceUSD' : null,
-    collateralAddress!,
+    Boolean(collateralAddress) && 'getLatestPriceUSD',
+    [collateralAddress],
   )
 
   const collateralPrice =
