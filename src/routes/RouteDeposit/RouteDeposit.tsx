@@ -13,7 +13,9 @@ function RouteDeposit() {
   if (successData) {
     return (
       <>
-        <ContractSuccessTitle>Deposit is progress.</ContractSuccessTitle>
+        <ContractSuccessTitle txHash={successData.tx.hash}>
+          Deposit is progress.
+        </ContractSuccessTitle>
         <SendedTransaction tx={successData.tx} transactionType="Deposit" />
       </>
     )

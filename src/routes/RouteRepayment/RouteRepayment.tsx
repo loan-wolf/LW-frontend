@@ -39,7 +39,9 @@ function RouteRepaymentRaw({ match }: Props) {
   if (successData) {
     return (
       <>
-        <ContractSuccessTitle>Repayment is in progress.</ContractSuccessTitle>
+        <ContractSuccessTitle txHash={successData.tx.hash}>
+          Repayment is in progress.
+        </ContractSuccessTitle>
         <SendedTransaction transactionType="Repayment" tx={successData.tx} />
       </>
     )

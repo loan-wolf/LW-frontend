@@ -45,7 +45,9 @@ function RouteWithdrawalCollateralRaw({ match }: Props) {
   if (successData) {
     return (
       <>
-        <ContractSuccessTitle>Withdrawal is in progress.</ContractSuccessTitle>
+        <ContractSuccessTitle txHash={successData.tx.hash}>
+          Withdrawal is in progress.
+        </ContractSuccessTitle>
         <SendedTransaction
           transactionType="Withdrawal collateral"
           tx={successData.tx}
