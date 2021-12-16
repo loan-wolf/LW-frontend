@@ -2,15 +2,15 @@
   "files": {
     "static/js/0.cb169de2.chunk.js": "/LW-frontend/static/js/0.cb169de2.chunk.js",
     "static/js/0.cb169de2.chunk.js.map": "/LW-frontend/static/js/0.cb169de2.chunk.js.map",
-    "main.css": "/LW-frontend/static/css/main.41ca51da.chunk.css",
-    "main.js": "/LW-frontend/static/js/main.08759dd2.chunk.js",
-    "main.js.map": "/LW-frontend/static/js/main.08759dd2.chunk.js.map",
+    "main.css": "/LW-frontend/static/css/main.7a1bc25b.chunk.css",
+    "main.js": "/LW-frontend/static/js/main.86a29179.chunk.js",
+    "main.js.map": "/LW-frontend/static/js/main.86a29179.chunk.js.map",
     "runtime-main.js": "/LW-frontend/static/js/runtime-main.be8e1883.js",
     "runtime-main.js.map": "/LW-frontend/static/js/runtime-main.be8e1883.js.map",
     "static/js/3.9bc256be.chunk.js": "/LW-frontend/static/js/3.9bc256be.chunk.js",
     "static/js/3.9bc256be.chunk.js.map": "/LW-frontend/static/js/3.9bc256be.chunk.js.map",
-    "static/js/4.3a935901.chunk.js": "/LW-frontend/static/js/4.3a935901.chunk.js",
-    "static/js/4.3a935901.chunk.js.map": "/LW-frontend/static/js/4.3a935901.chunk.js.map",
+    "static/js/4.59471a38.chunk.js": "/LW-frontend/static/js/4.59471a38.chunk.js",
+    "static/js/4.59471a38.chunk.js.map": "/LW-frontend/static/js/4.59471a38.chunk.js.map",
     "static/js/5.792073f1.chunk.js": "/LW-frontend/static/js/5.792073f1.chunk.js",
     "static/js/5.792073f1.chunk.js.map": "/LW-frontend/static/js/5.792073f1.chunk.js.map",
     "static/js/6.5cfd8d65.chunk.js": "/LW-frontend/static/js/6.5cfd8d65.chunk.js",
@@ -18,10 +18,10 @@
     "static/js/7.9aff1860.chunk.js": "/LW-frontend/static/js/7.9aff1860.chunk.js",
     "static/js/7.9aff1860.chunk.js.map": "/LW-frontend/static/js/7.9aff1860.chunk.js.map",
     "index.html": "/LW-frontend/index.html",
-    "static/css/main.41ca51da.chunk.css.map": "/LW-frontend/static/css/main.41ca51da.chunk.css.map",
+    "static/css/main.7a1bc25b.chunk.css.map": "/LW-frontend/static/css/main.7a1bc25b.chunk.css.map",
     "static/js/0.cb169de2.chunk.js.LICENSE.txt": "/LW-frontend/static/js/0.cb169de2.chunk.js.LICENSE.txt",
     "static/js/3.9bc256be.chunk.js.LICENSE.txt": "/LW-frontend/static/js/3.9bc256be.chunk.js.LICENSE.txt",
-    "static/js/4.3a935901.chunk.js.LICENSE.txt": "/LW-frontend/static/js/4.3a935901.chunk.js.LICENSE.txt",
+    "static/js/4.59471a38.chunk.js.LICENSE.txt": "/LW-frontend/static/js/4.59471a38.chunk.js.LICENSE.txt",
     "static/js/5.792073f1.chunk.js.LICENSE.txt": "/LW-frontend/static/js/5.792073f1.chunk.js.LICENSE.txt",
     "static/media/fonts.scss": "/LW-frontend/static/media/Poppins-SemiBold.daed8dfe.otf",
     "static/media/analytics.56a69dfe.svg": "/LW-frontend/static/media/analytics.56a69dfe.svg",
@@ -48,8 +48,8 @@
   },
   "entrypoints": [
     "static/js/runtime-main.be8e1883.js",
-    "static/js/4.3a935901.chunk.js",
-    "static/css/main.41ca51da.chunk.css",
-    "static/js/main.08759dd2.chunk.js"
+    "static/js/4.59471a38.chunk.js",
+    "static/css/main.7a1bc25b.chunk.css",
+    "static/js/main.86a29179.chunk.js"
   ]
 }
