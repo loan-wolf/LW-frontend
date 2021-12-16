@@ -17,7 +17,7 @@ const esRules = {
 const reactRules = {
   'react/no-children-prop': 'off',
   'react/self-closing-comp': 'error',
-  'react/no-unused-prop-types': 'error',
+  'react/no-unused-prop-types': 'warn',
   'react-hooks/rules-of-hooks': 'error',
   'react-hooks/exhaustive-deps': [
     'error',
